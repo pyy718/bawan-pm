@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>试玩网 Admin Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
+        body { background: #f5f7fa; min-height: 100vh; }
+
+        /* 登录页样式 */
+        .login-page { min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); display: flex; justify-content: center; align-items: center; position: relative; }
+        .login-page .golden-lines { position: absolute; bottom: 0; left: 0; right: 0; height: 150px; overflow: hidden; }
+        .login-page .golden-lines::before, .login-page .golden-lines::after { content: ''; position: absolute; height: 2px; width: 150%; left: -25%; background: linear-gradient(90deg, transparent, #d4af37, transparent); opacity: 0.3; }
+        .login-page .golden-lines::before { bottom: 50px; transform: rotate(-5deg); }
+        .login-page .golden-lines::after { bottom: 80px; transform: rotate(-3deg); }
+        .login-container { background: rgba(26, 26, 46, 0.95); border-radius: 16px; padding: 50px 40px; width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 1px solid rgba(212,175,55,0.2); position: relative; z-index: 10; }
+        .login-header { text-align: center; margin-bottom: 40px; }
+        .login-header h1 { color: #fff; font-size: 28px; margin-bottom: 10px; }
+        .login-header p { color: #888; font-size: 14px; letter-spacing: 2px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; color: #fff; font-size: 14px; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 14px 15px 14px 45px; background: rgba(30,30,50,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 14px; }
+        .form-group input:focus { outline: none; border-color: #d4af37; }
+        .form-group input::placeholder { color: #666; }
+        .input-wrapper { position: relative; }
+        .input-wrapper .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+        .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); border: none; border-radius: 8px; color: #1a1a2e; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212,175,55,0.3); }
+        .error-text { color: #e74c3c; font-size: 12px; margin-top: 5px; display: none; }
+        .error-text.show { display: block; }
+        .lang-select-login { padding: 10px 15px; background: rgba(30,30,50,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; margin-bottom: 24px; }
+
+        /* 后台主体样式 */
+        .admin-page { display: none; }
+        .admin-page.active { display: block; }
+        .top-header { background: #fff; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #e8e8e8; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .menu-toggle { font-size: 20px; cursor: pointer; color: #333; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .lang-select { padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .user-info { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .user-dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #eee; border-radius: 4px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); display: none; min-width: 120px; }
+        .dropdown-menu.show { display: block; }
+        .dropdown-menu a { display: block; padding: 10px 15px; color: #333; text-decoration: none; font-size: 14px; }
+        .dropdown-menu a:hover { background: #f5f7fa; color: #409eff; }
+
+        /* 侧边栏 */
+        .sidebar { width: 220px; background: #304156; position: fixed; top: 60px; left: 0; bottom: 0; overflow-y: auto; }
+        .sidebar-menu { padding: 10px 0; }
+        .menu-item { position: relative; }
+        .menu-title { display: flex; align-items: center; padding: 14px 20px; color: #bfcbd9; cursor: pointer; transition: all 0.3s; }
+        .menu-title:hover, .menu-title.active { background: #263445; color: #409eff; }
+        .menu-title .icon { margin-right: 10px; font-size: 18px; }
+        .menu-title .arrow { margin-left: auto; transition: transform 0.3s; }
+        .menu-item.open .arrow { transform: rotate(90deg); }
+        .sub-menu { background: #1f2d3d; display: none; }
+        .menu-item.open .sub-menu { display: block; }
+        .sub-menu a { display: block; padding: 12px 20px 12px 50px; color: #bfcbd9; text-decoration: none; font-size: 14px; cursor: pointer; }
+        .sub-menu a:hover, .sub-menu a.active { color: #409eff; background: #001528; }
+
+        /* 主内容区 */
+        .main-content { margin-left: 220px; margin-top: 60px; padding: 20px; min-height: calc(100vh - 60px); }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* 通用组件 */
+        .content-card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .card-header h3 { font-size: 16px; color: #333; }
+        .btn { padding: 8px 20px; border-radius: 4px; font-size: 14px; cursor: pointer; border: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-primary { background: #409eff; color: #fff; }
+        .btn-success { background: #67c23a; color: #fff; }
+        .btn-warning { background: #e6a23c; color: #fff; }
+        .btn-danger { background: #f56c6c; color: #fff; }
+        .btn-default { background: #fff; color: #606266; border: 1px solid #dcdfe6; }
+        .btn:hover { opacity: 0.85; }
+
+        /* 统计卡片 */
+        .stat-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 20px; }
+        .stat-card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .stat-card h3 { font-size: 14px; color: #666; margin-bottom: 10px; font-weight: normal; }
+        .stat-card .value { font-size: 32px; font-weight: 600; color: #333; margin-bottom: 10px; }
+        .stat-card .value.blue { color: #409eff; }
+        .stat-card .value.green { color: #67c23a; }
+        .stat-card .value.orange { color: #e6a23c; }
+        .stat-card .sub-info { font-size: 12px; color: #999; }
+        .stat-card .sub-info span { display: block; margin-bottom: 4px; }
+        .stat-card .rate { color: #67c23a; font-weight: 500; }
+
+        /* 图表区域 */
+        .chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .chart-box { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .chart-header h3 { font-size: 16px; color: #333; }
+        .chart-area { height: 300px; }
+
+        /* 表格 */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { background: #fafafa; padding: 12px 10px; text-align: left; font-size: 14px; color: #666; font-weight: 500; border-bottom: 1px solid #ebeef5; white-space: nowrap; }
+        .data-table td { padding: 12px 10px; font-size: 14px; color: #333; border-bottom: 1px solid #ebeef5; }
+        .data-table tr:hover { background: #f5f7fa; }
+        .data-table .checkbox { width: 18px; height: 18px; cursor: pointer; }
+        .status-tag { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+        .status-tag.success { background: #f0f9eb; color: #67c23a; }
+        .status-tag.danger { background: #fef0f0; color: #f56c6c; }
+        .status-tag.warning { background: #fdf6ec; color: #e6a23c; }
+        .status-tag.info { background: #f4f4f5; color: #909399; }
+        .action-link { color: #409eff; text-decoration: none; margin-right: 10px; font-size: 14px; cursor: pointer; }
+        .action-link:hover { color: #66b1ff; }
+        .action-link.danger { color: #f56c6c; }
+        .action-link.success { color: #67c23a; }
+
+        /* 搜索栏 */
+        .search-bar { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .search-item { display: flex; align-items: center; gap: 8px; }
+        .search-item label { font-size: 14px; color: #666; white-space: nowrap; }
+        .search-item input, .search-item select { padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; font-size: 14px; min-width: 150px; }
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .action-bar-left { display: flex; gap: 10px; }
+
+        /* 分页 */
+        .pagination { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        .pagination span { font-size: 14px; color: #606266; }
+        .page-btn { padding: 6px 12px; border: 1px solid #dcdfe6; background: #fff; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .page-btn.active { background: #409eff; color: #fff; border-color: #409eff; }
+
+        /* 弹窗 */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: #fff; border-radius: 8px; width: 500px; max-width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 16px; color: #333; }
+        .modal-close { font-size: 20px; cursor: pointer; color: #999; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 16px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; }
+        .form-item { margin-bottom: 20px; }
+        .form-item label { display: block; font-size: 14px; color: #606266; margin-bottom: 8px; }
+        .form-item label .required { color: #f56c6c; margin-right: 4px; }
+        .form-item input, .form-item select, .form-item textarea { width: 100%; padding: 10px 12px; border: 1px solid #dcdfe6; border-radius: 4px; font-size: 14px; }
+        .form-item textarea { resize: vertical; min-height: 80px; }
+        .form-item .tip { font-size: 12px; color: #999; margin-top: 5px; }
+
+        /* 游戏封面 */
+        .game-cover { width: 50px; height: 50px; border-radius: 8px; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
+
+        /* 开关 */
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #dcdfe6; transition: .3s; border-radius: 22px; }
+        .switch .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+        .switch input:checked + .slider { background-color: #409eff; }
+        .switch input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Tab切换 */
+        .config-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .config-tab { padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; background: #f5f7fa; color: #666; border: 1px solid #e4e7ed; }
+        .config-tab.active { background: #409eff; color: #fff; border-color: #409eff; }
+
+        /* 白名单 */
+        .whitelist-item { display: flex; align-items: center; padding: 12px 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; }
+        .whitelist-item .ip { flex: 1; font-family: monospace; font-size: 14px; color: #333; }
+        .whitelist-item .remark { color: #999; font-size: 13px; margin-right: 20px; }
+
+        /* 时间筛选 */
+        .date-filter { display: flex; align-items: center; gap: 15px; }
+        .date-select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .refresh-btn { color: #409eff; cursor: pointer; font-size: 14px; }
+
+        /* 排行榜 */
+        .rank-table { width: 100%; }
+        .rank-table th, .rank-table td { padding: 10px 8px; text-align: left; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+        .rank-table th { color: #999; font-weight: normal; }
+        .rank-num { display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; border-radius: 4px; font-size: 12px; }
+        .rank-num.top1 { background: #f56c6c; color: #fff; }
+        .rank-num.top2 { background: #e6a23c; color: #fff; }
+        .rank-num.top3 { background: #409eff; color: #fff; }
+
+        .role-tag { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; background: #ecf5ff; color: #409eff; }
+        .secret-key { font-family: monospace; font-size: 12px; color: #999; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div class="login-page" id="loginPage">
+    <div class="golden-lines"></div>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>试玩网 Admin Panel</h1>
+            <p>Multi-Theme · Secure · Stable · Efficient</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Account</label>
+                <div class="input-wrapper">
+                    <span class="icon">👤</span>
+                    <input type="text" id="account" placeholder="Account" value="admin">
+                </div>
+                <div class="error-text" id="accountError">Please Enter Account</div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <span class="icon">🔒</span>
+                    <input type="password" id="password" placeholder="Password" value="123456">
+                </div>
+                <div class="error-text" id="passwordError">Please Enter Password</div>
+            </div>
+            <div class="form-group">
+                <label>Google Key</label>
+                <div class="input-wrapper">
+                    <span class="icon">🔑</span>
+                    <input type="text" id="googleKey" placeholder="Google Key">
+                </div>
+                <div class="error-text" id="ipError" style="color:#e6a23c;">您的IP不在白名单中，请联系管理员添加后再登录</div>
+            </div>
+            <select class="lang-select-login">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+            </select>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+    </div>
+</div>
+
+<!-- 后台主页 -->
+<div class="admin-page" id="adminPage">
+    <header class="top-header">
+        <div class="header-left">
+            <span class="menu-toggle">☰</span>
+            <span style="font-size:18px;font-weight:600;color:#333;">试玩网 Admin</span>
+        </div>
+        <div class="header-right">
+            <span style="cursor:pointer;">🔍</span>
+            <span style="cursor:pointer;">⛶</span>
+            <select class="lang-select"><option>中文</option><option>English</option></select>
+            <div class="user-dropdown">
+                <div class="user-info" onclick="toggleDropdown()">
+                    <span>admin(管理员)</span><span>▼</span>
+                </div>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="#" onclick="logout()">退出登录</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <aside class="sidebar">
+        <nav class="sidebar-menu">
+            <div class="menu-item open">
+                <div class="menu-title active"><span class="icon">📊</span><span>数据统计</span><span class="arrow">›</span></div>
+                <div class="sub-menu">
+                    <a class="active" onclick="showPage('dashboard')">数据看板</a>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-title"><span class="icon">👥</span><span>用户管理</span><span class="arrow">›</span></div>
+                <div class="sub-menu">
+                    <a onclick="showPage('adminUsers')">后台用户</a>
+                    <a onclick="showPage('trialUsers')">试玩用户</a>
+                    <a onclick="showPage('regUsers')">注册用户</a>
+                    <a onclick="showPage('permissions')">权限配置</a>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-title"><span class="icon">🎮</span><span>游戏管理</span><span class="arrow">›</span></div>
+                <div class="sub-menu">
+                    <a onclick="showPage('gameCategory')">游戏类别</a>
+                    <a onclick="showPage('gameList')">游戏列表</a>
+                    <a onclick="showPage('gameDeleted')">已删除游戏</a>
+                    <a onclick="showPage('gameRecommend')">推荐游戏</a>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-title"><span class="icon">📢</span><span>内容管理</span><span class="arrow">›</span></div>
+                <div class="sub-menu">
+                    <a onclick="showPage('contentBanner')">Banner管理</a>
+                    <a onclick="showPage('contentPromo')">优惠活动</a>
+                    <a onclick="showPage('contentMoments')">朋友圈动态</a>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-title"><span class="icon">⚙️</span><span>下游配置</span><span class="arrow">›</span></div>
+                <div class="sub-menu">
+                    <a onclick="showPage('configWeb')">网页配置</a>
+                    <a onclick="showPage('configApp')">APP配置</a>
+                    <a onclick="showPage('configContact')">联系方式</a>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-title"><span class="icon">🔧</span><span>系统管理</span><span class="arrow">›</span></div>
+                <div class="sub-menu">
+                    <a onclick="showPage('sysConfig')">网站配置</a>
+                    <a onclick="showPage('sysMessage')">站内信</a>
+                    <a onclick="showPage('sysWhitelist')">IP白名单</a>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <!-- 数据看板 -->
+        <div class="page-section active" id="page-dashboard">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📊 数据看板</h3>
+                    <div class="date-filter">
+                        <select class="date-select" onchange="changeDateFilter()"><option>今天</option><option>昨天</option><option>最近7天</option><option>最近30天</option></select>
+                        <span>🕐 2026-01-09 00:00:00 至 2026-01-09 23:59:59</span>
+                        <span class="refresh-btn" onclick="refreshDashboard()" style="cursor:pointer;">🔄 刷新</span>
+                    </div>
+                </div>
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <h3>有效点击</h3>
+                        <div class="value blue">1,286</div>
+                        <div class="sub-info"><span>进入网站记为一次（同一IP过滤）</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>有效试玩</h3>
+                        <div class="value green">856</div>
+                        <div class="sub-info"><span>触发游戏接口（相同IP过滤）</span><span class="rate">点击率: 66.5%</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>注册成功</h3>
+                        <div class="value orange">128</div>
+                        <div class="sub-info"><span>从试玩网注册成功</span><span class="rate">转化率: 14.9%</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>试玩用户</h3>
+                        <div class="value">3,562</div>
+                        <div class="sub-info"><span>累计试玩用户数</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>注册用户</h3>
+                        <div class="value">892</div>
+                        <div class="sub-info"><span>累计注册用户数</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <div class="chart-header"><h3>访问趋势统计</h3></div>
+                    <div class="chart-area" id="trendChart"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-header"><h3>游戏试玩排行 TOP5</h3></div>
+                    <table class="rank-table">
+                        <tr><th>排名</th><th>游戏名称</th><th>试玩次数</th></tr>
+                        <tr><td><span class="rank-num top1">1</span></td><td>真人百家乐</td><td>2,580</td></tr>
+                        <tr><td><span class="rank-num top2">2</span></td><td>捕鱼达人</td><td>1,856</td></tr>
+                        <tr><td><span class="rank-num top3">3</span></td><td>财神到</td><td>1,234</td></tr>
+                        <tr><td><span class="rank-num">4</span></td><td>德州扑克</td><td>986</td></tr>
+                        <tr><td><span class="rank-num">5</span></td><td>足球竞猜</td><td>756</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <div class="chart-header"><h3>时段分析（24小时流量分布）</h3></div>
+                    <div class="chart-area" id="hourChart"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-header"><h3>注册来源排行</h3></div>
+                    <table class="rank-table">
+                        <tr><th>排名</th><th>来源</th><th>注册数</th><th>转化率</th></tr>
+                        <tr><td><span class="rank-num top1">1</span></td><td>Web端</td><td>52</td><td>18.2%</td></tr>
+                        <tr><td><span class="rank-num top2">2</span></td><td>H5端</td><td>38</td><td>15.6%</td></tr>
+                        <tr><td><span class="rank-num top3">3</span></td><td>iOS App</td><td>21</td><td>12.3%</td></tr>
+                        <tr><td><span class="rank-num">4</span></td><td>Android</td><td>17</td><td>10.8%</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 后台用户 -->
+        <div class="page-section" id="page-adminUsers">
+            <div class="content-card">
+                <div class="card-header"><h3>👥 后台用户管理</h3><button class="btn btn-primary" onclick="openModal('adminUserModal')">+ 新增用户</button></div>
+                <div class="search-bar">
+                    <div class="search-item"><label>账号：</label><input type="text" placeholder="请输入账号"></div>
+                    <div class="search-item"><label>角色：</label><select><option value="">全部</option><option>超级管理员</option><option>运营</option><option>客服</option></select></div>
+                    <div class="search-item"><button class="btn btn-primary" onclick="performSearch('adminUsers')">🔍 搜索</button><button class="btn btn-default" onclick="resetSearch('adminUsers')">↺ 重置</button></div>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th><input type="checkbox" class="checkbox" onclick="toggleSelectAll(this, 'adminUsers')"></th><th>ID</th><th>账号</th><th>姓名</th><th>角色</th><th>Google密钥</th><th>最后登录IP</th><th>最后登录</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td>1</td><td>admin</td><td>系统管理员</td><td><span class="role-tag">超级管理员</span></td><td><span class="secret-key">JBSWY3DPEHPK3PXP</span></td><td>192.168.1.100</td><td>2026-01-09 18:30</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('adminUserModal')">编辑</a><a class="action-link">重置密钥</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td>2</td><td>operator01</td><td>张运营</td><td><span class="role-tag">运营</span></td><td><span class="secret-key">KRSXG5CTMVRXEZLU</span></td><td>192.168.1.101</td><td>2026-01-09 17:20</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('adminUserModal')">编辑</a><a class="action-link">重置密钥</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td>3</td><td>operator02</td><td>李运营</td><td><span class="role-tag">运营</span></td><td><span class="secret-key">GEZDGNBVGY3TQOJQ</span></td><td>192.168.1.102</td><td>2026-01-09 16:00</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('adminUserModal')">编辑</a><a class="action-link">重置密钥</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td>4</td><td>service01</td><td>王客服</td><td><span class="role-tag">客服</span></td><td><span class="secret-key">MFRGGZDFMY2TQNRR</span></td><td>192.168.1.103</td><td>2026-01-09 15:30</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('adminUserModal')">编辑</a><a class="action-link">重置密钥</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td>5</td><td>test</td><td>测试账号</td><td><span class="role-tag">运营</span></td><td><span class="secret-key">-</span></td><td>-</td><td>-</td><td><span class="status-tag danger">禁用</span></td><td><a class="action-link" onclick="openModal('adminUserModal')">编辑</a><a class="action-link">重置密钥</a><a class="action-link success">启用</a></td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination"><span>共 5 条</span><button class="page-btn active" onclick="goToPage(1, 'adminUsers')">1</button></div>
+            </div>
+        </div>
+
+        <!-- 试玩用户 -->
+        <div class="page-section" id="page-trialUsers">
+            <div class="content-card">
+                <div class="card-header"><h3>🎮 试玩用户列表</h3><button class="btn btn-success">📥 导出数据</button></div>
+                <div class="search-bar">
+                    <div class="search-item"><label>用户ID：</label><input type="text" placeholder="请输入"></div>
+                    <div class="search-item"><label>试玩游戏：</label><select><option value="">全部</option><option>真人百家乐</option><option>捕鱼达人</option><option>财神到</option><option>德州扑克</option><option>足球竞猜</option></select></div>
+                    <div class="search-item"><label>开始时间：</label><input type="date" value="2026-01-19"></div>
+                    <div class="search-item"><label>结束时间：</label><input type="date" value="2026-01-19"></div>
+                    <div class="search-item"><label>是否注册：</label><select><option value="">全部</option><option>已注册</option><option>未注册</option></select></div>
+                    <div class="search-item"><button class="btn btn-primary" onclick="performSearch('trialUsers')">🔍 搜索</button><button class="btn btn-default" onclick="resetSearch('trialUsers')">↺ 重置</button></div>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th>用户ID</th><th>设备指纹</th><th>试玩游戏</th><th>试玩时长</th><th>IP地址</th><th>首次试玩</th><th>最后试玩</th><th>试玩次数</th><th>是否注册</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>TU001</td><td>fp_8a7b6c5d</td><td>真人百家乐</td><td>45分钟</td><td>192.168.1.101</td><td>2026-01-09 10:30</td><td>2026-01-09 11:15</td><td>5</td><td><span class="status-tag success" style="cursor:pointer;" onclick="showPage('regUsers')">已注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU002</td><td>fp_1a2b3c4d</td><td>捕鱼达人</td><td>32分钟</td><td>192.168.1.102</td><td>2026-01-09 11:00</td><td>2026-01-09 11:32</td><td>3</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU003</td><td>fp_9z8y7x6w</td><td>财神到</td><td>28分钟</td><td>192.168.1.103</td><td>2026-01-09 14:20</td><td>2026-01-09 14:48</td><td>2</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU004</td><td>fp_2b3c4d5e</td><td>德州扑克</td><td>55分钟</td><td>192.168.1.104</td><td>2026-01-09 15:00</td><td>2026-01-09 15:55</td><td>8</td><td><span class="status-tag success" style="cursor:pointer;" onclick="showPage('regUsers')">已注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU005</td><td>fp_3c4d5e6f</td><td>足球竞猜</td><td>18分钟</td><td>192.168.1.105</td><td>2026-01-09 16:10</td><td>2026-01-09 16:28</td><td>1</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU006</td><td>fp_4e5f6g7h</td><td>真人百家乐</td><td>38分钟</td><td>192.168.1.106</td><td>2026-01-19 09:15</td><td>2026-01-19 09:53</td><td>4</td><td><span class="status-tag success" style="cursor:pointer;" onclick="showPage('regUsers')">已注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU007</td><td>fp_5f6g7h8i</td><td>捕鱼达人</td><td>22分钟</td><td>192.168.1.107</td><td>2026-01-19 10:20</td><td>2026-01-19 10:42</td><td>2</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU008</td><td>fp_6g7h8i9j</td><td>财神到</td><td>50分钟</td><td>192.168.1.108</td><td>2026-01-19 11:00</td><td>2026-01-19 11:50</td><td>6</td><td><span class="status-tag success" style="cursor:pointer;" onclick="showPage('regUsers')">已注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU009</td><td>fp_7h8i9j0k</td><td>德州扑克</td><td>15分钟</td><td>192.168.1.109</td><td>2026-01-19 13:30</td><td>2026-01-19 13:45</td><td>1</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU010</td><td>fp_8i9j0k1l</td><td>足球竞猜</td><td>42分钟</td><td>192.168.1.110</td><td>2026-01-19 14:10</td><td>2026-01-19 14:52</td><td>5</td><td><span class="status-tag success" style="cursor:pointer;" onclick="showPage('regUsers')">已注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU011</td><td>fp_9j0k1l2m</td><td>真人百家乐</td><td>28分钟</td><td>192.168.1.111</td><td>2026-01-19 15:20</td><td>2026-01-19 15:48</td><td>3</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU012</td><td>fp_0k1l2m3n</td><td>捕鱼达人</td><td>35分钟</td><td>192.168.1.112</td><td>2026-01-19 16:00</td><td>2026-01-19 16:35</td><td>4</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU013</td><td>fp_1l2m3n4o</td><td>财神到</td><td>52分钟</td><td>192.168.1.113</td><td>2026-01-19 16:30</td><td>2026-01-19 17:22</td><td>7</td><td><span class="status-tag success" style="cursor:pointer;" onclick="showPage('regUsers')">已注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU014</td><td>fp_2m3n4o5p</td><td>德州扑克</td><td>19分钟</td><td>192.168.1.114</td><td>2026-01-19 17:10</td><td>2026-01-19 17:29</td><td>2</td><td><span class="status-tag info">未注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                        <tr><td>TU015</td><td>fp_3n4o5p6q</td><td>足球竞猜</td><td>41分钟</td><td>192.168.1.115</td><td>2026-01-19 17:40</td><td>2026-01-19 18:21</td><td>6</td><td><span class="status-tag success" style="cursor:pointer;" onclick="showPage('regUsers')">已注册</span></td><td><a class="action-link" onclick="openModal('trialUserViewModal')">详情</a><a class="action-link" onclick="openModal('trialRecordModal')">记录</a></td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination"><span>共 156 条</span><button class="page-btn active" onclick="goToPage(1, 'trialUsers')">1</button><button class="page-btn" onclick="goToPage(2, 'trialUsers')">2</button><button class="page-btn" onclick="goToPage(3, 'trialUsers')">3</button></div>
+            </div>
+        </div>
+
+        <!-- 注册用户 -->
+        <div class="page-section" id="page-regUsers">
+            <div class="content-card">
+                <div class="card-header"><h3>✅ 注册用户列表</h3><button class="btn btn-success">📥 导出数据</button></div>
+                <div class="search-bar">
+                    <div class="search-item"><label>账号：</label><input type="text" placeholder="请输入"></div>
+                    <div class="search-item"><label>手机号：</label><input type="text" placeholder="请输入"></div>
+                    <div class="search-item"><label>状态：</label><select><option value="">全部</option><option>正常</option><option>禁用</option></select></div>
+                    <div class="search-item"><button class="btn btn-primary" onclick="performSearch('regUsers')">🔍 搜索</button><button class="btn btn-default" onclick="resetSearch('regUsers')">↺ 重置</button></div>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th>用户ID</th><th>账号</th><th>手机号</th><th>注册IP</th><th>注册时间</th><th>最后登录</th><th>来源</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>RU001</td><td>player001</td><td>138****1234</td><td>192.168.1.101</td><td>2026-01-09 10:58</td><td>2026-01-09 18:30</td><td>Web端</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU002</td><td>lucky888</td><td>139****5678</td><td>192.168.1.102</td><td>2026-01-09 11:45</td><td>2026-01-09 17:20</td><td>H5端</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU003</td><td>winner666</td><td>137****9012</td><td>192.168.1.103</td><td>2026-01-09 14:40</td><td>2026-01-09 16:50</td><td>iOS</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU004</td><td>test123</td><td>-</td><td>192.168.1.104</td><td>2026-01-09 15:58</td><td>2026-01-09 15:58</td><td>Android</td><td><span class="status-tag danger">禁用</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link success">启用</a></td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination"><span>共 89 条</span><button class="page-btn active" onclick="goToPage(1, 'regUsers')">1</button><button class="page-btn" onclick="goToPage(2, 'regUsers')">2</button></div>
+            </div>
+        </div>
+
+        <!-- 权限配置 -->
+        <div class="page-section" id="page-permissions">
+            <div class="content-card">
+                <div class="card-header"><h3>🔐 权限配置</h3><button class="btn btn-primary" onclick="openModal('roleModal')">+ 新增角色</button></div>
+                <table class="data-table">
+                    <thead><tr><th>ID</th><th>角色名称</th><th>角色代码</th><th>用户数</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>超级管理员</td><td>super_admin</td><td>1</td><td><span class="status-tag success">启用</span></td><td>2026-01-01 00:00</td><td><a class="action-link" onclick="openModal('permissionModal')">配置权限</a><a class="action-link">编辑</a></td></tr>
+                        <tr><td>2</td><td>运营</td><td>operator</td><td>2</td><td><span class="status-tag success">启用</span></td><td>2026-01-01 00:00</td><td><a class="action-link" onclick="openModal('permissionModal')">配置权限</a><a class="action-link">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>3</td><td>客服</td><td>service</td><td>1</td><td><span class="status-tag success">启用</span></td><td>2026-01-01 00:00</td><td><a class="action-link" onclick="openModal('permissionModal')">配置权限</a><a class="action-link">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 游戏类别 -->
+        <div class="page-section" id="page-gameCategory">
+            <div class="content-card">
+                <div class="card-header"><h3>📂 游戏类别管理</h3><button class="btn btn-primary" onclick="openModal('categoryModal')">+ 新增类别</button></div>
+                <table class="data-table">
+                    <thead><tr><th>ID</th><th>图标</th><th>类别名称</th><th>代码</th><th>游戏数量</th><th>排序</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>🎰</td><td>真人</td><td>live</td><td><a class="action-link" onclick="showPage('gameList')">128</a></td><td>1</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('categoryModal')">编辑</a><a class="action-link danger" onclick="confirmAction('禁用类别', '确定要禁用【真人】类别吗？')">禁用</a></td></tr>
+                        <tr><td>2</td><td>♠️</td><td>棋牌</td><td>chess</td><td><a class="action-link" onclick="showPage('gameList')">85</a></td><td>2</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('categoryModal')">编辑</a><a class="action-link danger" onclick="confirmAction('禁用类别', '确定要禁用【棋牌】类别吗？')">禁用</a></td></tr>
+                        <tr><td>3</td><td>🎮</td><td>电子</td><td>slot</td><td><a class="action-link" onclick="showPage('gameList')">256</a></td><td>3</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('categoryModal')">编辑</a><a class="action-link danger" onclick="confirmAction('禁用类别', '确定要禁用【电子】类别吗？')">禁用</a></td></tr>
+                        <tr><td>4</td><td>🐟</td><td>捕鱼</td><td>fish</td><td><a class="action-link" onclick="showPage('gameList')">42</a></td><td>4</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('categoryModal')">编辑</a><a class="action-link danger" onclick="confirmAction('禁用类别', '确定要禁用【捕鱼】类别吗？')">禁用</a></td></tr>
+                        <tr><td>5</td><td>⚽</td><td>体育</td><td>sport</td><td><a class="action-link" onclick="showPage('gameList')">18</a></td><td>5</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('categoryModal')">编辑</a><a class="action-link danger" onclick="confirmAction('禁用类别', '确定要禁用【体育】类别吗？')">禁用</a></td></tr>
+                        <tr><td>6</td><td>🎱</td><td>彩票</td><td>lottery</td><td><a class="action-link" onclick="showPage('gameList')">35</a></td><td>6</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('categoryModal')">编辑</a><a class="action-link danger" onclick="confirmAction('禁用类别', '确定要禁用【彩票】类别吗？')">禁用</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 游戏列表 -->
+        <div class="page-section" id="page-gameList">
+            <div class="content-card">
+                <div class="card-header"><h3>🎮 游戏列表</h3></div>
+                <div class="search-bar">
+                    <div class="search-item"><label>游戏名称：</label><input type="text" placeholder="请输入"></div>
+                    <div class="search-item"><label>类别：</label><select><option value="">全部</option><option>真人</option><option>棋牌</option><option>电子</option><option>捕鱼</option></select></div>
+                    <div class="search-item"><label>厂商：</label><select><option value="">全部</option><option>AG</option><option>BBIN</option><option>PG</option></select></div>
+                    <div class="search-item"><button class="btn btn-primary" onclick="performSearch('gameList')">🔍 搜索</button><button class="btn btn-default" onclick="resetSearch('gameList')">↺ 重置</button></div>
+                </div>
+                <div class="action-bar">
+                    <div class="action-bar-left">
+                        <button class="btn btn-primary" onclick="openModal('gameModal')">+ 新增游戏</button>
+                        <button class="btn btn-success" onclick="openModal('batchImportModal')">📥 批量导入</button>
+                        <button class="btn btn-danger" onclick="confirmAction('批量删除', '确定要删除选中的游戏吗？')">批量删除</button>
+                    </div>
+                    <span style="color:#999;">共 564 条</span>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th><input type="checkbox" class="checkbox" onclick="toggleSelectAll(this, 'gameList')"></th><th>封面</th><th>游戏名称</th><th>类别</th><th>厂商</th><th>排序</th><th>热门</th><th>推荐</th><th>状态</th><th>试玩次数</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover">🎰</div></td><td>真人百家乐</td><td>真人</td><td>AG</td><td>1</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>12,580</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【真人百家乐】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c);">🐟</div></td><td>捕鱼达人</td><td>捕鱼</td><td>CQ9</td><td>2</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>9,856</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【捕鱼达人】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">🎮</div></td><td>财神到</td><td>电子</td><td>PG</td><td>3</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>8,234</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【财神到】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#fa709a,#fee140);">♠️</div></td><td>德州扑克</td><td>棋牌</td><td>BBIN</td><td>4</td><td><label class="switch"><input type="checkbox"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>5,678</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【德州扑克】吗？删除后将移入回收站。')">删除</a></td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination"><span>共 564 条</span><button class="page-btn active" onclick="goToPage(1, 'gameList')">1</button><button class="page-btn" onclick="goToPage(2, 'gameList')">2</button><button class="page-btn" onclick="goToPage(3, 'gameList')">3</button><button class="page-btn">...</button><button class="page-btn" onclick="goToPage(57, 'gameList')">57</button></div>
+            </div>
+        </div>
+
+        <!-- 已删除游戏 -->
+        <div class="page-section" id="page-gameDeleted">
+            <div class="content-card">
+                <div class="card-header"><h3>🗑️ 已删除游戏（可恢复）</h3></div>
+                <div class="action-bar"><div class="action-bar-left"><button class="btn btn-success" onclick="confirmAction('批量恢复', '确定要恢复选中的游戏吗？')">批量恢复</button><button class="btn btn-danger" onclick="confirmAction('批量彻底删除', '确定要彻底删除选中的游戏吗？此操作不可恢复！')">彻底删除</button></div><span style="color:#999;">共 3 条</span></div>
+                <table class="data-table">
+                    <thead><tr><th><input type="checkbox" class="checkbox" onclick="toggleSelectAll(this, 'gameDeleted')"></th><th>封面</th><th>游戏名称</th><th>类别</th><th>厂商</th><th>删除时间</th><th>删除人</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#ff9a9e,#fad0c4);">🎲</div></td><td>骰宝经典</td><td>真人</td><td>AG</td><td>2026-01-08 15:30</td><td>admin</td><td><a class="action-link success" onclick="confirmAction('恢复游戏', '确定要恢复【骰宝经典】吗？')">恢复</a><a class="action-link danger" onclick="confirmAction('彻底删除', '确定要彻底删除【骰宝经典】吗？此操作不可恢复！')">彻底删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);">🃏</div></td><td>二十一点</td><td>棋牌</td><td>BBIN</td><td>2026-01-07 10:20</td><td>operator01</td><td><a class="action-link success" onclick="confirmAction('恢复游戏', '确定要恢复【二十一点】吗？')">恢复</a><a class="action-link danger" onclick="confirmAction('彻底删除', '确定要彻底删除【二十一点】吗？此操作不可恢复！')">彻底删除</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 推荐游戏 -->
+        <div class="page-section" id="page-gameRecommend">
+            <div class="content-card">
+                <div class="card-header"><h3>⭐ 推荐游戏管理</h3><button class="btn btn-primary" onclick="openModal('addRecommendModal')">+ 添加推荐</button></div>
+                <div class="config-tabs">
+                    <div class="config-tab active">🔥 热门推荐</div>
+                    <div class="config-tab">✨ 新游推荐</div>
+                    <div class="config-tab">⭐ 今日必玩</div>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th>排序</th><th>封面</th><th>游戏名称</th><th>类别</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td><div class="game-cover">🎰</div></td><td>真人百家乐</td><td>真人</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('editRecommendModal')">编辑</a><a class="action-link danger" onclick="confirmAction('移除推荐', '确定要移除【真人百家乐】的推荐吗？')">移除</a></td></tr>
+                        <tr><td>2</td><td><div class="game-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c);">🐟</div></td><td>捕鱼达人</td><td>捕鱼</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('editRecommendModal')">编辑</a><a class="action-link danger" onclick="confirmAction('移除推荐', '确定要移除【捕鱼达人】的推荐吗？')">移除</a></td></tr>
+                        <tr><td>3</td><td><div class="game-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">🎮</div></td><td>财神到</td><td>电子</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('editRecommendModal')">编辑</a><a class="action-link danger" onclick="confirmAction('移除推荐', '确定要移除【财神到】的推荐吗？')">移除</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Banner管理 -->
+        <div class="page-section" id="page-contentBanner">
+            <div class="content-card">
+                <div class="card-header"><h3>🖼️ Banner管理</h3><button class="btn btn-primary" onclick="openModal('bannerModal')">+ 新增Banner</button></div>
+                <table class="data-table">
+                    <thead><tr><th>排序</th><th>预览</th><th>标题</th><th>跳转链接</th><th>位置</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td><div style="width:120px;height:60px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px;"></div></td><td>新年活动</td><td>https://example.com/promo1</td><td>首页轮播</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('bannerModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除Banner', '确定要删除【新年活动】Banner吗？')">删除</a></td></tr>
+                        <tr><td>2</td><td><div style="width:120px;height:60px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;"></div></td><td>首存优惠</td><td>https://example.com/promo2</td><td>首页轮播</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('bannerModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除Banner', '确定要删除【首存优惠】Banner吗？')">删除</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>按钮跳转配置</h3><button class="btn btn-primary" onclick="confirmAction('保存配置', '确定要保存按钮跳转配置吗？')">💾 保存</button></div>
+                <div class="form-item"><label>立即试玩 跳转URL</label><input type="text" value="#games"><p class="tip">首页Banner"立即试玩"按钮跳转地址</p></div>
+                <div class="form-item"><label>了解更多 跳转URL</label><input type="text" value="#about"><p class="tip">首页Banner"了解更多"按钮跳转地址</p></div>
+            </div>
+        </div>
+
+        <!-- 优惠活动管理 -->
+        <div class="page-section" id="page-contentPromo">
+            <div class="content-card">
+                <div class="card-header"><h3>🎁 优惠活动管理</h3><button class="btn btn-primary" onclick="openModal('promoModal')">+ 新增活动</button></div>
+                <table class="data-table">
+                    <thead><tr><th>ID</th><th>封面</th><th>活动标题</th><th>标签</th><th>开始时间</th><th>结束时间</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td><div style="width:80px;height:50px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px;"></div></td><td>新用户福利大放送</td><td><span class="status-tag warning">新人首存</span></td><td>2026-01-01</td><td>长期</td><td><span class="status-tag success">进行中</span></td><td><a class="action-link" onclick="openModal('promoModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除活动', '确定要删除【新用户福利大放送】活动吗？')">删除</a></td></tr>
+                        <tr><td>2</td><td><div style="width:80px;height:50px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;"></div></td><td>首存即送388</td><td><span class="status-tag warning">新人首存</span></td><td>2026-01-01</td><td>长期</td><td><span class="status-tag success">进行中</span></td><td><a class="action-link" onclick="openModal('promoModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除活动', '确定要删除【首存即送388】活动吗？')">删除</a></td></tr>
+                        <tr><td>3</td><td><div style="width:80px;height:50px;background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:4px;"></div></td><td>专项首存福利多多</td><td><span class="status-tag info">会员专享</span></td><td>2026-01-05</td><td>2026-02-28</td><td><span class="status-tag success">进行中</span></td><td><a class="action-link" onclick="openModal('promoModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除活动', '确定要删除【专项首存福利多多】活动吗？')">删除</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 朋友圈动态管理 -->
+        <div class="page-section" id="page-contentMoments">
+            <div class="content-card">
+                <div class="card-header"><h3>💬 朋友圈动态管理</h3><button class="btn btn-primary" onclick="openModal('momentModal')">+ 发布动态</button></div>
+                <div class="config-tabs">
+                    <div class="config-tab active">官方动态</div>
+                    <div class="config-tab">大舞台</div>
+                    <div class="config-tab">公告中心</div>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th>ID</th><th>发布者</th><th>内容</th><th>点赞数</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>官方公告</td><td>新年活动火热进行中，首存即送888体验金！</td><td>128</td><td>2026-01-09 10:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
+                        <tr><td>2</td><td>系统通知</td><td>系统维护已完成，感谢您的耐心等待。</td><td>23</td><td>2026-01-08 15:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
+                        <tr><td>3</td><td>活动专员</td><td>周末双倍积分活动开启，快来参与吧！</td><td>89</td><td>2026-01-07 09:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 网页配置 -->
+        <div class="page-section" id="page-configWeb">
+            <div class="content-card">
+                <div class="card-header"><h3>🌐 网页配置</h3><button class="btn btn-primary" onclick="confirmAction('保存配置', '确定要保存网页配置吗？')">💾 保存</button></div>
+                <div class="form-item"><label>Web端登录URL</label><input type="text" value="https://www.example.com/login?channel=trial&source=web"><p class="tip">PC网页端用户点击登录跳转地址</p></div>
+                <div class="form-item"><label>H5端登录URL</label><input type="text" value="https://m.example.com/login?channel=trial&source=h5"><p class="tip">移动H5端用户点击登录跳转地址</p></div>
+                <div class="form-item"><label>Web端注册URL</label><input type="text" value="https://www.example.com/register?channel=trial&source=web"><p class="tip">PC网页端用户点击注册跳转地址</p></div>
+                <div class="form-item"><label>H5端注册URL</label><input type="text" value="https://m.example.com/register?channel=trial&source=h5"><p class="tip">移动H5端用户点击注册跳转地址</p></div>
+            </div>
+        </div>
+
+        <!-- APP配置 -->
+        <div class="page-section" id="page-configApp">
+            <div class="content-card">
+                <div class="card-header"><h3>📱 APP配置</h3><button class="btn btn-primary" onclick="confirmAction('保存配置', '确定要保存APP配置吗？')">💾 保存</button></div>
+                <div class="form-item"><label>iOS描述文件地址</label><input type="text" value="https://cdn.example.com/ios/profile.mobileconfig"><p class="tip">iOS企业签名描述文件下载地址</p></div>
+                <div class="form-item"><label>Android下载链接</label><input type="text" value="https://cdn.example.com/android/app.apk"><p class="tip">Android APK下载地址</p></div>
+            </div>
+        </div>
+
+        <!-- 联系方式 -->
+        <div class="page-section" id="page-configContact">
+            <div class="content-card">
+                <div class="card-header"><h3>📞 联系方式配置</h3><button class="btn btn-primary" onclick="openModal('contactModal')">+ 添加</button></div>
+                <table class="data-table">
+                    <thead><tr><th>类型</th><th>名称</th><th>跳转链接</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>Telegram</td><td>Telegram客服</td><td>https://t.me/customer</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('contactModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除联系方式', '确定要删除【Telegram客服】吗？')">删除</a></td></tr>
+                        <tr><td>WhatsApp</td><td>WhatsApp客服</td><td>https://wa.me/123456</td><td><span class="status-tag success">启用</span></td><td><a class="action-link" onclick="openModal('contactModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除联系方式', '确定要删除【WhatsApp客服】吗？')">删除</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 网站配置 -->
+        <div class="page-section" id="page-sysConfig">
+            <div class="content-card">
+                <div class="card-header"><h3>⚙️ 网站配置</h3><button class="btn btn-primary" onclick="confirmAction('保存配置', '确定要保存网站配置吗？')">💾 保存</button></div>
+                <div class="form-item"><label>网站名称</label><input type="text" value="试玩网"></div>
+                <div class="form-item"><label>网站副标题</label><input type="text" value="免费体验 精彩无限"></div>
+                <div class="form-item"><label>版权信息</label><input type="text" value="Copyright © 2026 试玩网 All Rights Reserved"></div>
+            </div>
+        </div>
+
+        <!-- 站内信 -->
+        <div class="page-section" id="page-sysMessage">
+            <div class="content-card">
+                <div class="card-header"><h3>📧 站内信管理</h3><button class="btn btn-primary" onclick="openModal('messageModal')">+ 发送站内信</button></div>
+                <table class="data-table">
+                    <thead><tr><th>ID</th><th>标题</th><th>接收对象</th><th>发送时间</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>新年活动通知</td><td>全部用户</td><td>2026-01-01 00:00</td><td><span class="status-tag success">已发送</span></td><td><a class="action-link" onclick="openModal('messageViewModal')">查看</a><a class="action-link danger" onclick="confirmAction('删除站内信', '确定要删除该站内信吗？')">删除</a></td></tr>
+                        <tr><td>2</td><td>系统维护公告</td><td>全部用户</td><td>2026-01-05 10:00</td><td><span class="status-tag success">已发送</span></td><td><a class="action-link" onclick="openModal('messageViewModal')">查看</a><a class="action-link danger" onclick="confirmAction('删除站内信', '确定要删除该站内信吗？')">删除</a></td></tr>
+                        <tr><td>3</td><td>春节活动预告</td><td>注册用户</td><td>-</td><td><span class="status-tag warning">草稿</span></td><td><a class="action-link" onclick="openModal('messageModal')">编辑</a><a class="action-link" onclick="confirmAction('发送站内信', '确定要发送该站内信吗？')">发送</a><a class="action-link danger" onclick="confirmAction('删除站内信', '确定要删除该站内信吗？')">删除</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- IP白名单 -->
+        <div class="page-section" id="page-sysWhitelist">
+            <div class="content-card">
+                <div class="card-header"><h3>🔒 IP白名单（登录必须）</h3><button class="btn btn-primary" onclick="openModal('whitelistModal')">+ 添加IP</button></div>
+                <p style="color:#e6a23c;font-size:14px;margin-bottom:20px;padding:10px;background:#fdf6ec;border-radius:4px;">⚠️ 重要提示：只有白名单内的IP才能登录后台，请确保您的IP已添加到白名单中！</p>
+                <div class="whitelist-item"><span class="ip">192.168.1.100</span><span class="remark">办公室IP - 管理员</span><a class="action-link" onclick="openModal('whitelistModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除IP', '确定要删除IP【192.168.1.100】吗？')">删除</a></div>
+                <div class="whitelist-item"><span class="ip">192.168.1.101</span><span class="remark">办公室IP - 运营</span><a class="action-link" onclick="openModal('whitelistModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除IP', '确定要删除IP【192.168.1.101】吗？')">删除</a></div>
+                <div class="whitelist-item"><span class="ip">192.168.1.102</span><span class="remark">办公室IP - 运营</span><a class="action-link" onclick="openModal('whitelistModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除IP', '确定要删除IP【192.168.1.102】吗？')">删除</a></div>
+                <div class="whitelist-item"><span class="ip">10.0.0.0/24</span><span class="remark">内网网段</span><a class="action-link" onclick="openModal('whitelistModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除IP', '确定要删除IP【10.0.0.0/24】吗？')">删除</a></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 弹窗：后台用户 -->
+<div class="modal-overlay" id="adminUserModal">
+    <div class="modal">
+        <div class="modal-header"><h3>新增/编辑后台用户</h3><span class="modal-close" onclick="closeModal('adminUserModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>账号</label><input type="text" placeholder="请输入登录账号"></div>
+            <div class="form-item"><label><span class="required">*</span>姓名</label><input type="text" placeholder="请输入姓名"></div>
+            <div class="form-item"><label><span class="required">*</span>密码</label><input type="password" placeholder="请输入密码"></div>
+            <div class="form-item"><label><span class="required">*</span>角色</label><select><option>超级管理员</option><option>运营</option><option>客服</option></select></div>
+            <div class="form-item"><label>Google密钥</label><input type="text" value="自动生成" disabled><p class="tip">新增时自动生成，可点击"重置密钥"重新生成</p></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('adminUserModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：白名单 -->
+<div class="modal-overlay" id="whitelistModal">
+    <div class="modal">
+        <div class="modal-header"><h3>添加IP白名单</h3><span class="modal-close" onclick="closeModal('whitelistModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>IP地址</label><input type="text" placeholder="请输入IP地址或网段，如：192.168.1.100 或 10.0.0.0/24"></div>
+            <div class="form-item"><label>备注</label><input type="text" placeholder="请输入备注说明"></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('whitelistModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：注册用户查看详情 -->
+<div class="modal-overlay" id="regUserViewModal">
+    <div class="modal">
+        <div class="modal-header"><h3>注册用户详情</h3><span class="modal-close" onclick="closeModal('regUserViewModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label>用户ID</label><input type="text" value="RU001" disabled></div>
+            <div class="form-item"><label>账号</label><input type="text" value="player001" disabled></div>
+            <div class="form-item"><label>手机号</label><input type="text" value="138****1234" disabled></div>
+            <div class="form-item"><label>注册IP</label><input type="text" value="192.168.1.101" disabled></div>
+            <div class="form-item"><label>注册时间</label><input type="text" value="2026-01-09 10:58" disabled></div>
+            <div class="form-item"><label>最后登录</label><input type="text" value="2026-01-09 18:30" disabled></div>
+            <div class="form-item"><label>来源</label><input type="text" value="Web端" disabled></div>
+            <div class="form-item"><label>状态</label><input type="text" value="正常" disabled></div>
+            <div class="form-item"><label>试玩次数</label><input type="text" value="5次" disabled></div>
+            <div class="form-item"><label>备注</label><textarea disabled>无</textarea></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('regUserViewModal')">关闭</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：注册用户编辑 -->
+<div class="modal-overlay" id="regUserModal">
+    <div class="modal">
+        <div class="modal-header"><h3>编辑注册用户</h3><span class="modal-close" onclick="closeModal('regUserModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label>用户ID</label><input type="text" value="RU001" disabled></div>
+            <div class="form-item"><label>账号</label><input type="text" value="player001" disabled><p class="tip">账号不可修改</p></div>
+            <div class="form-item"><label>手机号</label><input type="text" value="138****1234" placeholder="请输入手机号"></div>
+            <div class="form-item"><label>注册IP</label><input type="text" value="192.168.1.101" disabled></div>
+            <div class="form-item"><label>注册时间</label><input type="text" value="2026-01-09 10:58" disabled></div>
+            <div class="form-item"><label>来源</label><select><option selected>Web端</option><option>H5端</option><option>iOS</option><option>Android</option></select></div>
+            <div class="form-item"><label>状态</label><select><option selected>正常</option><option>禁用</option></select></div>
+            <div class="form-item"><label>备注</label><textarea placeholder="请输入备注信息"></textarea></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('regUserModal')">取消</button><button class="btn btn-primary">保存</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：试玩用户详情 -->
+<div class="modal-overlay" id="trialUserViewModal">
+    <div class="modal">
+        <div class="modal-header"><h3>试玩用户详情</h3><span class="modal-close" onclick="closeModal('trialUserViewModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label>用户ID</label><input type="text" value="TU001" disabled></div>
+            <div class="form-item"><label>设备指纹</label><input type="text" value="fp_8a7b6c5d" disabled></div>
+            <div class="form-item"><label>试玩游戏</label><input type="text" value="真人百家乐" disabled></div>
+            <div class="form-item"><label>试玩时长</label><input type="text" value="45分钟" disabled></div>
+            <div class="form-item"><label>IP地址</label><input type="text" value="192.168.1.101" disabled></div>
+            <div class="form-item"><label>首次试玩</label><input type="text" value="2026-01-09 10:30" disabled></div>
+            <div class="form-item"><label>最后试玩</label><input type="text" value="2026-01-09 11:15" disabled></div>
+            <div class="form-item"><label>试玩次数</label><input type="text" value="5次" disabled></div>
+            <div class="form-item"><label>是否注册</label><input type="text" value="已注册" disabled></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('trialUserViewModal')">关闭</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：试玩记录 -->
+<div class="modal-overlay" id="trialRecordModal">
+    <div class="modal" style="width:800px;max-width:95%;">
+        <div class="modal-header"><h3>试玩记录</h3><span class="modal-close" onclick="closeModal('trialRecordModal')">×</span></div>
+        <div class="modal-body">
+            <table class="data-table">
+                <thead><tr><th>游戏名称</th><th>试玩时长</th><th>试玩时间</th><th>IP地址</th></tr></thead>
+                <tbody>
+                    <tr><td>真人百家乐</td><td>15分钟</td><td>2026-01-09 10:30</td><td>192.168.1.101</td></tr>
+                    <tr><td>真人百家乐</td><td>12分钟</td><td>2026-01-09 10:50</td><td>192.168.1.101</td></tr>
+                    <tr><td>捕鱼达人</td><td>8分钟</td><td>2026-01-09 11:00</td><td>192.168.1.101</td></tr>
+                    <tr><td>真人百家乐</td><td>6分钟</td><td>2026-01-09 11:10</td><td>192.168.1.101</td></tr>
+                    <tr><td>真人百家乐</td><td>4分钟</td><td>2026-01-09 11:15</td><td>192.168.1.101</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('trialRecordModal')">关闭</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：Banner -->
+<div class="modal-overlay" id="bannerModal">
+    <div class="modal">
+        <div class="modal-header"><h3>新增/编辑Banner</h3><span class="modal-close" onclick="closeModal('bannerModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>Banner标题</label><input type="text" placeholder="请输入Banner标题"></div>
+            <div class="form-item"><label><span class="required">*</span>Banner图片</label><input type="file" accept="image/*"><p class="tip">建议尺寸：1200x400px，支持JPG/PNG格式</p></div>
+            <div class="form-item"><label>跳转链接</label><input type="text" placeholder="请输入点击跳转URL"></div>
+            <div class="form-item"><label>显示位置</label><select><option>首页轮播</option><option>活动页顶部</option></select></div>
+            <div class="form-item"><label>排序</label><input type="number" value="1" min="1"></div>
+            <div class="form-item"><label>状态</label><select><option>启用</option><option>禁用</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('bannerModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：游戏类别 -->
+<div class="modal-overlay" id="categoryModal">
+    <div class="modal">
+        <div class="modal-header"><h3>新增/编辑游戏类别</h3><span class="modal-close" onclick="closeModal('categoryModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>图标</label><input type="text" placeholder="请输入emoji图标，如：🎰" maxlength="2"></div>
+            <div class="form-item"><label><span class="required">*</span>类别名称</label><input type="text" placeholder="请输入类别名称"></div>
+            <div class="form-item"><label><span class="required">*</span>代码</label><input type="text" placeholder="请输入代码，如：live"><p class="tip">代码用于系统识别，只能包含小写字母</p></div>
+            <div class="form-item"><label>排序</label><input type="number" value="1" min="1"><p class="tip">数字越小越靠前</p></div>
+            <div class="form-item"><label>状态</label><select><option>启用</option><option>禁用</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('categoryModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：游戏列表 -->
+<div class="modal-overlay" id="gameModal">
+    <div class="modal">
+        <div class="modal-header"><h3>新增/编辑游戏</h3><span class="modal-close" onclick="closeModal('gameModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>游戏名称</label><input type="text" placeholder="请输入游戏名称"></div>
+            <div class="form-item"><label><span class="required">*</span>游戏类别</label><select><option>真人</option><option>棋牌</option><option>电子</option><option>捕鱼</option><option>体育</option><option>彩票</option></select></div>
+            <div class="form-item"><label><span class="required">*</span>游戏厂商</label><input type="text" placeholder="请输入厂商名称，如：AG"></div>
+            <div class="form-item"><label>游戏封面</label><input type="file" accept="image/*"><p class="tip">建议尺寸：300x300px，支持JPG/PNG格式</p></div>
+            <div class="form-item"><label>排序</label><input type="number" value="1" min="1"><p class="tip">数字越小越靠前</p></div>
+            <div class="form-item"><label>标签</label><select><option value="">无</option><option value="hot">HOT</option><option value="new">NEW</option><option value="vip">VIP</option></select></div>
+            <div class="form-item"><label>热门游戏</label><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+            <div class="form-item"><label>推荐游戏</label><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+            <div class="form-item"><label>状态</label><select><option>启用</option><option>禁用</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('gameModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：新增/编辑角色 -->
+<div class="modal-overlay" id="roleModal">
+    <div class="modal">
+        <div class="modal-header"><h3>新增/编辑角色</h3><span class="modal-close" onclick="closeModal('roleModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>角色名称</label><input type="text" placeholder="请输入角色名称"></div>
+            <div class="form-item"><label><span class="required">*</span>角色代码</label><input type="text" placeholder="请输入角色代码，如：operator"><p class="tip">角色代码用于系统识别，只能包含字母、数字和下划线</p></div>
+            <div class="form-item"><label>状态</label><select><option>启用</option><option>禁用</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('roleModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：权限配置 -->
+<div class="modal-overlay" id="permissionModal">
+    <div class="modal" style="width:800px;max-width:95%;">
+        <div class="modal-header"><h3>权限配置 - 运营</h3><span class="modal-close" onclick="closeModal('permissionModal')">×</span></div>
+        <div class="modal-body">
+            <h4 style="font-size:14px;margin-bottom:15px;color:#333;">功能权限</h4>
+            <table class="data-table" style="margin-bottom:20px;">
+                <thead><tr><th style="width:40%;">功能模块</th><th>查看</th><th>新增</th><th>编辑</th><th>删除</th></tr></thead>
+                <tbody>
+                    <tr><td>数据统计</td><td><input type="checkbox" checked></td><td><input type="checkbox" disabled></td><td><input type="checkbox" disabled></td><td><input type="checkbox" disabled></td></tr>
+                    <tr><td>后台用户管理</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                    <tr><td>试玩用户管理</td><td><input type="checkbox" checked></td><td><input type="checkbox" disabled></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td></tr>
+                    <tr><td>注册用户管理</td><td><input type="checkbox" checked></td><td><input type="checkbox" disabled></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td></tr>
+                    <tr><td>游戏类别管理</td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td></tr>
+                    <tr><td>游戏列表管理</td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td></tr>
+                    <tr><td>Banner管理</td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td></tr>
+                    <tr><td>优惠活动管理</td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td></tr>
+                    <tr><td>朋友圈动态管理</td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td></tr>
+                    <tr><td>下游配置管理</td><td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td></tr>
+                    <tr><td>系统配置管理</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                    <tr><td>IP白名单管理</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                </tbody>
+            </table>
+            <h4 style="font-size:14px;margin-bottom:15px;color:#333;">数据权限</h4>
+            <div style="padding:15px;background:#f5f7fa;border-radius:8px;margin-bottom:20px;">
+                <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><input type="checkbox" checked><span>查看用户手机号</span></label>
+                <label style="display:flex;align-items:center;gap:8px;"><input type="checkbox" checked><span>导出用户数据</span></label>
+            </div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('permissionModal')">取消</button><button class="btn btn-primary">保存</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：批量导入游戏 -->
+<div class="modal-overlay" id="batchImportModal">
+    <div class="modal">
+        <div class="modal-header"><h3>批量导入游戏</h3><span class="modal-close" onclick="closeModal('batchImportModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>选择文件</label><input type="file" accept=".xlsx,.xls,.csv"><p class="tip">支持Excel和CSV格式，请按照模板格式填写</p></div>
+            <div class="form-item"><a href="#" style="color:#409eff;font-size:14px;">📥 下载导入模板</a></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('batchImportModal')">取消</button><button class="btn btn-primary">开始导入</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：添加推荐游戏 -->
+<div class="modal-overlay" id="addRecommendModal">
+    <div class="modal">
+        <div class="modal-header"><h3>添加推荐游戏</h3><span class="modal-close" onclick="closeModal('addRecommendModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>选择游戏</label><select><option value="">请选择游戏</option><option>真人百家乐</option><option>捕鱼达人</option><option>财神到</option><option>德州扑克</option></select></div>
+            <div class="form-item"><label><span class="required">*</span>推荐类型</label><select><option>热门推荐</option><option>新游推荐</option><option>今日必玩</option></select></div>
+            <div class="form-item"><label>排序</label><input type="number" value="1" min="1"><p class="tip">数字越小越靠前</p></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('addRecommendModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：编辑推荐游戏 -->
+<div class="modal-overlay" id="editRecommendModal">
+    <div class="modal">
+        <div class="modal-header"><h3>编辑推荐游戏</h3><span class="modal-close" onclick="closeModal('editRecommendModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label>游戏名称</label><input type="text" value="真人百家乐" disabled></div>
+            <div class="form-item"><label>排序</label><input type="number" value="1" min="1"><p class="tip">数字越小越靠前</p></div>
+            <div class="form-item"><label>状态</label><select><option>启用</option><option>禁用</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('editRecommendModal')">取消</button><button class="btn btn-primary">保存</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：优惠活动 -->
+<div class="modal-overlay" id="promoModal">
+    <div class="modal">
+        <div class="modal-header"><h3>新增/编辑优惠活动</h3><span class="modal-close" onclick="closeModal('promoModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>活动标题</label><input type="text" placeholder="请输入活动标题"></div>
+            <div class="form-item"><label><span class="required">*</span>活动封面</label><input type="file" accept="image/*"><p class="tip">建议尺寸：800x400px，支持JPG/PNG格式</p></div>
+            <div class="form-item"><label><span class="required">*</span>活动标签</label><select><option>新人首存</option><option>会员专享</option><option>限时优惠</option><option>每日福利</option></select></div>
+            <div class="form-item"><label>开始时间</label><input type="date"></div>
+            <div class="form-item"><label>结束时间</label><input type="text" placeholder="长期 或 选择日期"></div>
+            <div class="form-item"><label>活动内容</label><textarea placeholder="请输入活动详细内容" rows="4"></textarea></div>
+            <div class="form-item"><label>状态</label><select><option>进行中</option><option>已结束</option><option>草稿</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('promoModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：朋友圈动态 -->
+<div class="modal-overlay" id="momentModal">
+    <div class="modal">
+        <div class="modal-header"><h3>发布/编辑动态</h3><span class="modal-close" onclick="closeModal('momentModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>发布者</label><input type="text" placeholder="请输入发布者名称"></div>
+            <div class="form-item"><label><span class="required">*</span>动态内容</label><textarea placeholder="请输入动态内容" rows="4"></textarea></div>
+            <div class="form-item"><label>动态类型</label><select><option>官方动态</option><option>大舞台</option><option>公告中心</option></select></div>
+            <div class="form-item"><label>配图</label><input type="file" accept="image/*" multiple><p class="tip">可选，支持多张图片</p></div>
+            <div class="form-item"><label>状态</label><select><option>已发布</option><option>草稿</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('momentModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：联系方式 -->
+<div class="modal-overlay" id="contactModal">
+    <div class="modal">
+        <div class="modal-header"><h3>新增/编辑联系方式</h3><span class="modal-close" onclick="closeModal('contactModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>类型</label><select><option>Telegram</option><option>WhatsApp</option><option>微信</option><option>QQ</option><option>Line</option></select></div>
+            <div class="form-item"><label><span class="required">*</span>名称</label><input type="text" placeholder="请输入名称，如：Telegram客服"></div>
+            <div class="form-item"><label><span class="required">*</span>跳转链接</label><input type="text" placeholder="请输入完整URL"><p class="tip">例如：https://t.me/customer</p></div>
+            <div class="form-item"><label>状态</label><select><option>启用</option><option>禁用</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('contactModal')">取消</button><button class="btn btn-primary">确定</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：站内信发送/编辑 -->
+<div class="modal-overlay" id="messageModal">
+    <div class="modal">
+        <div class="modal-header"><h3>发送/编辑站内信</h3><span class="modal-close" onclick="closeModal('messageModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label><span class="required">*</span>标题</label><input type="text" placeholder="请输入站内信标题"></div>
+            <div class="form-item"><label><span class="required">*</span>接收对象</label><select><option>全部用户</option><option>注册用户</option><option>试玩用户</option><option>VIP用户</option></select></div>
+            <div class="form-item"><label><span class="required">*</span>内容</label><textarea placeholder="请输入站内信内容" rows="6"></textarea></div>
+            <div class="form-item"><label>发送时间</label><select><option>立即发送</option><option>定时发送</option></select></div>
+            <div class="form-item"><label>状态</label><select><option>草稿</option><option>待发送</option></select></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('messageModal')">取消</button><button class="btn btn-primary">保存</button></div>
+    </div>
+</div>
+
+<!-- 弹窗：站内信查看 -->
+<div class="modal-overlay" id="messageViewModal">
+    <div class="modal">
+        <div class="modal-header"><h3>站内信详情</h3><span class="modal-close" onclick="closeModal('messageViewModal')">×</span></div>
+        <div class="modal-body">
+            <div class="form-item"><label>标题</label><input type="text" value="新年活动通知" disabled></div>
+            <div class="form-item"><label>接收对象</label><input type="text" value="全部用户" disabled></div>
+            <div class="form-item"><label>发送时间</label><input type="text" value="2026-01-01 00:00" disabled></div>
+            <div class="form-item"><label>内容</label><textarea disabled rows="6">新年活动火热进行中，首存即送888体验金！</textarea></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('messageViewModal')">关闭</button></div>
+    </div>
+</div>
+
+<script>
+// 登录逻辑
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const account = document.getElementById('account').value;
+    const password = document.getElementById('password').value;
+
+    if (!account) { document.getElementById('accountError').classList.add('show'); return; }
+    if (!password) { document.getElementById('passwordError').classList.add('show'); return; }
+
+    // 模拟IP白名单检查（实际应后端验证）
+    const isInWhitelist = true; // 模拟在白名单中
+    if (!isInWhitelist) {
+        document.getElementById('ipError').classList.add('show');
+        return;
+    }
+
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('adminPage').classList.add('active');
+    initCharts();
+});
+
+// 退出登录
+function logout() {
+    document.getElementById('adminPage').classList.remove('active');
+    document.getElementById('loginPage').style.display = 'flex';
+}
+
+// 页面切换
+function showPage(pageId) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    document.querySelectorAll('.sub-menu a').forEach(a => a.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+// 菜单展开
+document.querySelectorAll('.menu-title').forEach(item => {
+    item.addEventListener('click', function() {
+        this.parentElement.classList.toggle('open');
+    });
+});
+
+// 弹窗
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// 下拉菜单
+function toggleDropdown() {
+    document.getElementById('userDropdown').classList.toggle('show');
+}
+
+// 确认操作弹窗
+function confirmAction(title, message) {
+    if (confirm(message)) {
+        alert('操作成功：' + title);
+        return true;
+    }
+    return false;
+}
+
+// 搜索功能（模拟）
+function performSearch(pageId) {
+    const searchBar = document.querySelector(`#page-${pageId} .search-bar`);
+    if (!searchBar) return;
+
+    const inputs = searchBar.querySelectorAll('input, select');
+    let hasValue = false;
+    inputs.forEach(input => {
+        if (input.value && input.value !== '') hasValue = true;
+    });
+
+    if (hasValue) {
+        alert('搜索功能已触发，正在筛选数据...');
+    } else {
+        alert('请至少输入一个搜索条件');
+    }
+}
+
+// 重置搜索（模拟）
+function resetSearch(pageId) {
+    const searchBar = document.querySelector(`#page-${pageId} .search-bar`);
+    if (!searchBar) return;
+
+    const inputs = searchBar.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        if (input.type === 'text' || input.type === 'date') {
+            input.value = '';
+        } else if (input.tagName === 'SELECT') {
+            input.selectedIndex = 0;
+        }
+    });
+    alert('搜索条件已重置');
+}
+
+// 分页功能（模拟）
+function goToPage(pageNum, pageId) {
+    const pagination = document.querySelector(`#page-${pageId} .pagination`);
+    if (!pagination) return;
+
+    const buttons = pagination.querySelectorAll('.page-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    const targetBtn = Array.from(buttons).find(btn => btn.textContent === pageNum.toString());
+    if (targetBtn) {
+        targetBtn.classList.add('active');
+        alert(`已跳转到第 ${pageNum} 页`);
+    }
+}
+
+// 全选/反选复选框
+function toggleSelectAll(checkbox, pageId) {
+    const page = document.getElementById('page-' + pageId);
+    if (!page) return;
+
+    const checkboxes = page.querySelectorAll('.data-table tbody .checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = checkbox.checked;
+    });
+}
+
+// 数据看板时间筛选
+function changeDateFilter() {
+    const select = document.querySelector('#page-dashboard .date-select');
+    if (!select) return;
+
+    const value = select.value;
+    alert(`已切换到【${select.options[select.selectedIndex].text}】的数据`);
+}
+
+// 数据看板刷新
+function refreshDashboard() {
+    alert('正在刷新数据看板...');
+    // 模拟刷新图表
+    if (typeof initCharts === 'function') {
+        setTimeout(() => {
+            alert('数据刷新完成！');
+        }, 500);
+    }
+}
+
+// 图表初始化
+function initCharts() {
+    // 访问趋势图
+    const trendChart = echarts.init(document.getElementById('trendChart'));
+    trendChart.setOption({
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['有效点击', '有效试玩', '注册成功'], bottom: 0 },
+        grid: { left: 50, right: 20, top: 20, bottom: 50 },
+        xAxis: { type: 'category', data: ['01-03', '01-04', '01-05', '01-06', '01-07', '01-08', '01-09'] },
+        yAxis: { type: 'value' },
+        series: [
+            { name: '有效点击', type: 'line', smooth: true, data: [820, 932, 901, 1034, 1190, 1230, 1286], itemStyle: { color: '#409eff' } },
+            { name: '有效试玩', type: 'line', smooth: true, data: [520, 632, 601, 734, 790, 820, 856], itemStyle: { color: '#67c23a' } },
+            { name: '注册成功', type: 'line', smooth: true, data: [80, 92, 88, 105, 112, 118, 128], itemStyle: { color: '#e6a23c' } }
+        ]
+    });
+
+    // 时段分析图
+    const hourChart = echarts.init(document.getElementById('hourChart'));
+    hourChart.setOption({
+        tooltip: { trigger: 'axis' },
+        grid: { left: 50, right: 20, top: 20, bottom: 30 },
+        xAxis: { type: 'category', data: ['00', '02', '04', '06', '08', '10', '12', '14', '16', '18', '20', '22'] },
+        yAxis: { type: 'value' },
+        series: [{
+            type: 'bar',
+            data: [20, 15, 10, 8, 25, 68, 95, 120, 135, 158, 142, 88],
+            itemStyle: { color: '#409eff' }
+        }]
+    });
+
+    window.addEventListener('resize', () => { trendChart.resize(); hourChart.resize(); });
+}
+</script>
+</body>
+</html>

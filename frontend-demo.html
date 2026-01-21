@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>试玩网</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #0f0f1a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 响应式容器 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
+        /* 顶部公告条 */
+        .top-notice {
+            background: linear-gradient(90deg, #1a1a2e 0%, #2d1f3d 50%, #1a1a2e 100%);
+            padding: 10px 15px;
+            text-align: center;
+            font-size: 13px;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            text-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(180deg, rgba(26,26,46,0.98) 0%, rgba(15,15,26,0.98) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* 导航菜单 - PC端 */
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+        .nav-menu a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 15px;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #fff;
+            border-bottom-color: #ffd700;
+        }
+
+        /* 右侧按钮区 */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-login {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .btn-login:hover {
+            border-color: #ffd700;
+            color: #ffd700;
+            background: rgba(255,215,0,0.1);
+        }
+        .btn-register {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: #fff;
+            font-size: 16px;
+            padding: 12px 28px;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255,107,157,0.5);
+        }
+
+        /* 联系方式悬浮按钮 */
+        .contact-float {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .contact-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .contact-btn.tg { background: linear-gradient(135deg, #0088cc, #00aaff); }
+        .contact-btn.wa { background: linear-gradient(135deg, #25d366, #128c7e); }
+        .contact-btn:hover {
+            transform: scale(1.15) translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Banner轮播 */
+        .banner-section {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .banner-slider {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .banner-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .banner-slide {
+            min-width: 100%;
+            position: relative;
+        }
+        .banner-slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+        .banner-title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .banner-title span { color: #ffd700; }
+        .banner-subtitle {
+            font-size: 18px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 30px;
+        }
+        .banner-btns {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .btn-trial {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+            font-size: 18px;
+            padding: 15px 40px;
+            font-weight: bold;
+        }
+        .btn-more {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 18px;
+            padding: 15px 40px;
+        }
+        .banner-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .banner-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+        .banner-dot.active { background: #ffd700; }
+
+        /* 游戏分类图标 */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .category-item {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .category-item:hover { transform: translateY(-8px) scale(1.05); }
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        .category-item:hover .category-icon {
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+        }
+        .category-name { font-size: 14px; color: #ccc; }
+
+        /* 游戏卡片 */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-title h2 { font-size: 20px; }
+        .section-title a { color: #ffd700; text-decoration: none; font-size: 14px; }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .game-card {
+            background: linear-gradient(145deg, #1e1e32, #1a1a2e);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,215,0,0.2);
+        }
+        .game-cover {
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+        }
+        .game-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .game-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .game-tag.hot { background: #ff4757; }
+        .game-tag.new { background: #2ed573; }
+        .game-tag.vip { background: #ffd700; color: #1a1a2e; }
+        .game-info { padding: 12px; }
+        .game-name { font-size: 14px; margin-bottom: 5px; }
+        .game-vendor { font-size: 12px; color: #888; }
+
+        /* 滚动公告 */
+        .win-marquee {
+            background: rgba(255,215,0,0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .win-marquee-inner {
+            display: flex;
+            animation: marquee 20s linear infinite;
+        }
+        .win-item {
+            white-space: nowrap;
+            margin-right: 50px;
+            font-size: 13px;
+            color: #ffd700;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 底部导航 - 移动端 */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(26,26,46,0.98) 0%, rgba(15,15,26,0.98) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 8px 0 12px;
+            border-top: 1px solid rgba(255,215,0,0.1);
+            z-index: 100;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.3);
+        }
+        .mobile-nav-inner {
+            display: flex;
+            justify-content: space-around;
+        }
+        .nav-item {
+            text-align: center;
+            color: #888;
+            text-decoration: none;
+            padding: 5px 15px;
+            transition: all 0.3s;
+        }
+        .nav-item.active { color: #ffd700; }
+        .nav-item:hover { color: #ffd700; }
+        .nav-item .icon { font-size: 22px; display: block; }
+        .nav-item .label { font-size: 11px; margin-top: 3px; }
+
+        /* 弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: linear-gradient(145deg, #1e1e32, #1a1a2e);
+            border-radius: 16px;
+            width: 400px;
+            max-width: 90%;
+            border: 1px solid rgba(255,215,0,0.2);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { font-size: 18px; }
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+        .modal-body { padding: 20px; }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,215,0,0.4);
+        }
+
+        /* 优惠活动页 */
+        .promo-list { padding: 15px; }
+        .promo-card {
+            background: #1a1a2e;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .promo-img { width: 100%; height: 180px; object-fit: cover; }
+        .promo-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #ff4757;
+            color: #fff;
+            font-size: 12px;
+            border-radius: 4px;
+            margin: 10px;
+        }
+
+        /* 朋友圈页 */
+        #page-moments {
+            margin: 0;
+            padding: 0;
+        }
+        .moments-notice {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0;
+        }
+        .moments-banner {
+            width: 100%;
+            line-height: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 0;
+        }
+        .moments-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            padding: 0;
+            vertical-align: top;
+        }
+        .moments-header {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .moments-tabs { display: flex; gap: 15px; }
+        .moments-tab {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .moments-tab.active { background: #ffd700; color: #1a1a2e; }
+        .moment-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .moment-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .moment-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* 响应式 - 移动端 */
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            .mobile-nav { display: block; }
+            .header-right .btn-login {
+                display: inline-flex;
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            .header-right .btn-register {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            .banner-slider { border-radius: 8px; }
+            .banner-slide > div:first-child { height: 220px !important; }
+            .banner-content { width: 90%; padding: 10px; }
+            .banner-title { font-size: 20px; line-height: 1.3; margin-bottom: 8px; }
+            .banner-subtitle { font-size: 12px; margin-bottom: 15px; }
+            .banner-btns { flex-direction: row; gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .btn-trial, .btn-more { padding: 10px 20px; font-size: 13px; white-space: nowrap; }
+            .banner-dots { bottom: 10px; }
+            .banner-dot { width: 8px; height: 8px; }
+            .category-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            .category-icon { width: 50px; height: 50px; font-size: 24px; }
+            .category-name { font-size: 12px; }
+            .game-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .game-cover { height: 100px; }
+            .game-name { font-size: 13px; }
+            .game-vendor { font-size: 11px; }
+            .contact-float { bottom: 80px; right: 10px; }
+            .contact-btn { width: 42px; height: 42px; font-size: 18px; }
+            main { padding-bottom: 70px; }
+            .container { padding: 0 10px; }
+            .section-title h2 { font-size: 16px; }
+            .win-marquee { padding: 8px 10px; margin: 15px 0; }
+            .win-item { font-size: 12px; }
+        }
+</style>
+</head>
+<body>
+    <!-- 顶部公告 -->
+    <div class="top-notice">
+        <span class="fire">🔥</span>
+        <span>新用户注册即送 888 体验金 | 首存100%红利</span>
+        <span class="fire">🔥</span>
+    </div>
+
+    <!-- 头部 -->
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo">
+                <div class="logo-icon">👑</div>
+                <span>试玩网</span>
+            </div>
+            <nav class="nav-menu" id="navMenu">
+                <a href="#" class="active" data-page="home">首页</a>
+                <a href="#" data-page="promo">优惠</a>
+                <a href="#" data-page="moments">朋友圈</a>
+                <a href="#" data-page="live">真人</a>
+                <a href="#" data-page="chess">棋牌</a>
+                <a href="#" data-page="slot">电子</a>
+                <a href="#" data-page="sport">体育</a>
+                <a href="#" data-page="lottery">彩票</a>
+                <a href="#" data-page="fish">捕鱼</a>
+            </nav>
+            <div class="header-right">
+                <button class="btn btn-login" onclick="goToLogin()">登录</button>
+                <button class="btn btn-register" onclick="goToRegister()">注册</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 联系方式悬浮按钮 -->
+    <div class="contact-float">
+        <div class="contact-btn tg" onclick="openContact('tg')" title="Telegram">📱</div>
+        <div class="contact-btn wa" onclick="openContact('wa')" title="WhatsApp">💬</div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <main id="mainContent">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <!-- Banner轮播 -->
+            <section class="banner-section">
+                <div class="banner-slider">
+                    <div class="banner-track" id="bannerTrack">
+                        <div class="banner-slide">
+                            <div style="width:100%;height:400px;background:linear-gradient(135deg,#1a1a2e,#2d1f3d);"></div>
+                            <div class="banner-content">
+                                <h1 class="banner-title">极致游戏体验</h1>
+                                <p class="banner-subtitle">全球顶尖热门游戏，一触即发，立即试玩!</p>
+                                <div class="banner-btns">
+                                    <button class="btn btn-trial" onclick="handleAction('trial')">立即试玩</button>
+                                    <button class="btn btn-more" onclick="handleAction('more')">了解更多</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="banner-slide">
+                            <div style="width:100%;height:400px;background:linear-gradient(135deg,#2d1f3d,#4a1942);"></div>
+                            <div class="banner-content">
+                                <h1 class="banner-title"><span>新春</span> 豪礼送不停</h1>
+                                <p class="banner-subtitle">注册即送888体验金 · 首存100%红利</p>
+                                <div class="banner-btns">
+                                    <button class="btn btn-trial" onclick="handleAction('trial')">立即试玩</button>
+                                    <button class="btn btn-more" onclick="handleAction('more')">了解更多</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="banner-slide">
+                            <div style="width:100%;height:400px;background:linear-gradient(135deg,#1a3a2e,#0d2818);"></div>
+                            <div class="banner-content">
+                                <h1 class="banner-title"><span>VIP</span> 专属特权</h1>
+                                <p class="banner-subtitle">尊享返水 · 专属客服 · 极速提款</p>
+                                <div class="banner-btns">
+                                    <button class="btn btn-trial" onclick="handleAction('trial')">立即试玩</button>
+                                    <button class="btn btn-more" onclick="handleAction('more')">了解更多</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="banner-dots" id="bannerDots">
+                        <span class="banner-dot active" onclick="goToSlide(0)"></span>
+                        <span class="banner-dot" onclick="goToSlide(1)"></span>
+                        <span class="banner-dot" onclick="goToSlide(2)"></span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="container">
+                <!-- 游戏分类 -->
+                <div class="category-grid" id="categoryGrid"></div>
+
+                <!-- 中奖滚动 -->
+                <div class="win-marquee">
+                    <div class="win-marquee-inner" id="winMarquee"></div>
+                </div>
+
+                <!-- 热门游戏 -->
+                <section class="game-section">
+                    <div class="section-title">
+                        <h2>热门推荐</h2>
+                        <a href="#" onclick="handleAction('viewAll')">查看全部 ></a>
+                    </div>
+                    <div class="game-grid" id="hotGames"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- 优惠活动页 -->
+    <div class="page" id="page-promo" style="display:none;">
+        <div class="promo-list" id="promoList"></div>
+    </div>
+
+    <!-- 朋友圈页 -->
+    <div class="page" id="page-moments" style="display:none;">
+        <!-- 朋友圈专属提示条 -->
+        <div class="moments-notice">
+            <span>🔔 注册即可发布动态、获得官方打赏</span>
+        </div>
+        <!-- 朋友圈顶部图片 -->
+        <div class="moments-banner">
+            <img src="https://brave.wzznft.com/i/2026/01/13/ovhpa1.png" alt="朋友圈">
+        </div>
+        <div class="moments-header">
+            <div class="moments-tabs">
+                <div class="moments-tab active">官方动态</div>
+                <div class="moments-tab">大舞台</div>
+                <div class="moments-tab">公告中心</div>
+            </div>
+        </div>
+        <div class="moments-list" id="momentsList"></div>
+    </div>
+
+    <!-- 底部导航 - 移动端 -->
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-inner">
+            <a href="#" class="nav-item active" data-page="home">
+                <span class="icon">🏠</span>
+                <span class="label">首页</span>
+            </a>
+            <a href="#" class="nav-item" data-page="promo">
+                <span class="icon">🎁</span>
+                <span class="label">优惠</span>
+            </a>
+            <a href="#" class="nav-item" data-page="moments">
+                <span class="icon">💬</span>
+                <span class="label">朋友圈</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 弹窗容器 -->
+    <div id="modalContainer">
+        <!-- 反馈弹窗 -->
+        <div class="modal-overlay" id="feedbackModal">
+            <div class="modal" style="text-align:center;">
+                <div class="modal-body" style="padding:40px 20px;">
+                    <div style="font-size:50px;margin-bottom:15px;" id="feedbackIcon">✅</div>
+                    <h3 id="feedbackTitle" style="margin-bottom:10px;">操作成功</h3>
+                    <p id="feedbackMsg" style="color:#888;font-size:14px;">您已成功完成操作</p>
+                    <button class="btn-submit" style="margin-top:20px;width:auto;padding:10px 40px;" onclick="closeModal('feedbackModal')">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 配置数据 - 模拟后台配置
+    const CONFIG = {
+        siteName: '试玩网',
+        loginUrl: 'https://qaawic.xbgczl.com/login',
+        registerUrl: 'https://qaawic.xbgczl.com/login',
+        trialUrl: '#games',
+        moreUrl: '#about',
+        contacts: {
+            telegram: 'https://t.me/customer',
+            whatsapp: 'https://wa.me/123456'
+        }
+    };
+
+    // 游戏分类数据
+    const categories = [
+        { name: '真人', icon: '🎰', color: '#ff6b9d' },
+        { name: '棋牌', icon: '🀄', color: '#ffd700' },
+        { name: '电子', icon: '🎮', color: '#00d4ff' },
+        { name: '体育', icon: '⚽', color: '#2ed573' },
+        { name: '彩票', icon: '🎱', color: '#a55eea' },
+        { name: '捕鱼', icon: '🐟', color: '#ff9f43' }
+    ];
+
+    // 游戏数据 - 按分类组织
+    const games = [
+        // 真人
+        { name: '真人百家乐', vendor: 'AG', tag: 'hot', category: '真人' },
+        { name: '龙虎斗', vendor: 'AG', tag: '', category: '真人' },
+        { name: '真人轮盘', vendor: 'BBIN', tag: 'new', category: '真人' },
+        { name: '骰宝', vendor: 'AG', tag: '', category: '真人' },
+        // 棋牌
+        { name: '德州扑克', vendor: 'BBIN', tag: 'hot', category: '棋牌' },
+        { name: '斗地主', vendor: 'KY', tag: 'new', category: '棋牌' },
+        { name: '二十一点', vendor: 'AG', tag: '', category: '棋牌' },
+        { name: '炸金花', vendor: 'KY', tag: 'hot', category: '棋牌' },
+        // 电子
+        { name: '财神到', vendor: 'PG', tag: 'hot', category: '电子' },
+        { name: '糖果派对', vendor: 'PP', tag: 'new', category: '电子' },
+        { name: '水果机', vendor: 'JDB', tag: '', category: '电子' },
+        { name: '金鸡报喜', vendor: 'PG', tag: 'vip', category: '电子' },
+        // 体育
+        { name: '足球竞猜', vendor: 'SB', tag: 'hot', category: '体育' },
+        { name: '篮球投注', vendor: 'SB', tag: '', category: '体育' },
+        { name: '电竞赛事', vendor: 'IM', tag: 'new', category: '体育' },
+        { name: '网球竞猜', vendor: 'SB', tag: '', category: '体育' },
+        // 彩票
+        { name: '时时彩', vendor: 'JDB', tag: 'hot', category: '彩票' },
+        { name: '快三', vendor: 'JDB', tag: '', category: '彩票' },
+        { name: '六合彩', vendor: 'JDB', tag: 'vip', category: '彩票' },
+        { name: 'PC蛋蛋', vendor: 'JDB', tag: 'new', category: '彩票' },
+        // 捕鱼
+        { name: '捕鱼达人', vendor: 'CQ9', tag: 'hot', category: '捕鱼' },
+        { name: '捕鱼王', vendor: 'JDB', tag: 'new', category: '捕鱼' },
+        { name: '海王捕鱼', vendor: 'CQ9', tag: '', category: '捕鱼' },
+        { name: '千炮捕鱼', vendor: 'AG', tag: 'vip', category: '捕鱼' }
+    ];
+
+    // 优惠活动数据
+    const promos = [
+        { title: '新用户福利大放送', tag: '新人首存', img: '#' },
+        { title: '首存即送388', tag: '新人首存', img: '#' },
+        { title: '专项首存福利多多', tag: '会员专享', img: '#' }
+    ];
+
+    // 当前分类和Banner索引
+    let currentCategory = null;
+    let currentSlide = 0;
+    let bannerInterval = null;
+
+    // 初始化页面
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCategories();
+        renderGames();
+        renderWinMarquee();
+        renderPromos();
+        renderMoments();
+        initNavigation();
+        initBannerSlider();
+    });
+
+    // 渲染分类
+    function renderCategories() {
+        const grid = document.getElementById('categoryGrid');
+        grid.innerHTML = categories.map(cat => `
+            <div class="category-item" onclick="filterByCategory('${cat.name}')">
+                <div class="category-icon" style="background:${cat.color}">${cat.icon}</div>
+                <div class="category-name">${cat.name}</div>
+            </div>
+        `).join('');
+    }
+
+    // 分类筛选
+    function filterByCategory(categoryName) {
+        currentCategory = categoryName;
+        const filtered = games.filter(g => g.category === categoryName);
+        renderGames(filtered);
+        // 更新标题
+        document.querySelector('.section-title h2').textContent = categoryName + '游戏';
+        showFeedback('分类筛选', `已为您筛选【${categoryName}】类游戏，共${filtered.length}款`);
+    }
+
+    // 渲染游戏
+    function renderGames(gameList) {
+        const grid = document.getElementById('hotGames');
+        const displayGames = gameList || games.filter(g => g.tag === 'hot' || g.tag === 'new').slice(0, 8);
+        grid.innerHTML = displayGames.map(game => `
+            <div class="game-card" onclick="handleAction('game', '${game.name}')">
+                <div class="game-cover">
+                    <div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);"></div>
+                    ${game.tag ? `<span class="game-tag ${game.tag}">${game.tag.toUpperCase()}</span>` : ''}
+                </div>
+                <div class="game-info">
+                    <div class="game-name">${game.name}</div>
+                    <div class="game-vendor">${game.vendor}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // 渲染中奖滚动
+    function renderWinMarquee() {
+        const marquee = document.getElementById('winMarquee');
+        const wins = [
+            '恭喜 玩家A*** 在真人百家乐中赢得 ¥12,888',
+            '恭喜 玩家B*** 在捕鱼达人中赢得 ¥8,666',
+            '恭喜 玩家C*** 在财神到中赢得 ¥25,000',
+            '恭喜 玩家D*** 在德州扑克中赢得 ¥6,888',
+            '恭喜 玩家E*** 在足球竞猜中赢得 ¥15,000'
+        ];
+        marquee.innerHTML = wins.map(w => `<span class="win-item">${w}</span>`).join('') +
+                           wins.map(w => `<span class="win-item">${w}</span>`).join('');
+    }
+
+    // 渲染优惠活动
+    function renderPromos() {
+        const list = document.getElementById('promoList');
+        list.innerHTML = promos.map(p => `
+            <div class="promo-card" onclick="handleAction('promo', '${p.title}')">
+                <div style="width:100%;height:180px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;">
+                    ${p.tag}
+                </div>
+                <span class="promo-tag">${p.tag}</span>
+                <div style="padding:15px;">
+                    <h3 style="font-size:16px;margin-bottom:8px;">${p.title}</h3>
+                    <p style="font-size:13px;color:#888;">活动时间：长期有效</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // 渲染朋友圈/动态
+    function renderMoments() {
+        const list = document.getElementById('momentsList');
+        const moments = [
+            { user: '官方公告', avatar: '📢', content: '新年活动火热进行中，首存即送888体验金！', time: '10分钟前', likes: 128 },
+            { user: '幸运玩家', avatar: '🎉', content: '刚刚在真人百家乐赢了一万多，太开心了！', time: '30分钟前', likes: 56 },
+            { user: '系统通知', avatar: '🔔', content: '系统维护已完成，感谢您的耐心等待。', time: '1小时前', likes: 23 },
+            { user: '活动专员', avatar: '🎁', content: '周末双倍积分活动开启，快来参与吧！', time: '2小时前', likes: 89 }
+        ];
+        list.innerHTML = moments.map(m => `
+            <div class="moment-item" onclick="handleAction('moment')">
+                <div class="moment-user">
+                    <div class="moment-avatar">${m.avatar}</div>
+                    <div>
+                        <div style="font-weight:500;">${m.user}</div>
+                        <div style="font-size:12px;color:#888;">${m.time}</div>
+                    </div>
+                </div>
+                <p style="font-size:14px;line-height:1.6;margin-bottom:10px;">${m.content}</p>
+                <div style="font-size:12px;color:#888;">❤️ ${m.likes} 点赞</div>
+            </div>
+        `).join('');
+    }
+
+    // 初始化导航
+    function initNavigation() {
+        // PC端导航
+        document.querySelectorAll('.nav-menu a').forEach(a => {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-menu a').forEach(x => x.classList.remove('active'));
+                this.classList.add('active');
+                const page = this.dataset.page;
+                // 处理页面切换
+                if (page === 'home' || page === 'promo' || page === 'moments') {
+                    showPage(page);
+                } else {
+                    // 分类筛选
+                    showPage('home');
+                    const categoryMap = {
+                        'live': '真人', 'chess': '棋牌', 'slot': '电子',
+                        'sport': '体育', 'lottery': '彩票', 'fish': '捕鱼'
+                    };
+                    if (categoryMap[page]) {
+                        filterByCategory(categoryMap[page]);
+                    }
+                }
+            });
+        });
+
+        // 移动端底部导航
+        document.querySelectorAll('.mobile-nav .nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.mobile-nav .nav-item').forEach(x => x.classList.remove('active'));
+                this.classList.add('active');
+                const page = this.dataset.page;
+                showPage(page);
+            });
+        });
+    }
+
+    // 显示页面
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        const target = document.getElementById('page-' + pageId);
+        if (target) target.style.display = 'block';
+    }
+
+    // 统一操作处理
+    function handleAction(type, data) {
+        let title = '操作成功';
+        let msg = '';
+
+        switch(type) {
+            case 'trial':
+                // 滑动到游戏区域
+                document.getElementById('hotGames').scrollIntoView({ behavior: 'smooth' });
+                return; // 不显示弹窗
+            case 'more':
+                // 跳转到介绍页（这里用优惠页代替演示）
+                showPage('promo');
+                document.querySelectorAll('.nav-menu a').forEach(x => x.classList.remove('active'));
+                document.querySelector('.nav-menu a[data-page="promo"]')?.classList.add('active');
+                return;
+            case 'game':
+                title = '进入游戏';
+                msg = `您已进入【${data}】游戏，祝您游戏愉快！`;
+                break;
+            case 'category':
+                title = '分类筛选';
+                msg = `正在为您筛选【${data}】类游戏...`;
+                break;
+            case 'promo':
+                title = '活动详情';
+                msg = `正在查看【${data}】活动详情...`;
+                break;
+            case 'moment':
+                title = '动态详情';
+                msg = '正在加载动态详情...';
+                break;
+            case 'viewAll':
+                title = '查看全部';
+                msg = '正在加载更多游戏...';
+                break;
+            default:
+                msg = '操作已完成';
+        }
+
+        showFeedback(title, msg);
+    }
+
+    // 显示反馈弹窗
+    function showFeedback(title, msg) {
+        document.getElementById('feedbackTitle').textContent = title;
+        document.getElementById('feedbackMsg').textContent = msg;
+        showModal('feedbackModal');
+    }
+
+    // 弹窗控制
+    function showModal(id) {
+        document.getElementById(id).classList.add('show');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+    }
+
+    // 打开联系方式
+    function openContact(type) {
+        if (type === 'tg') {
+            showFeedback('Telegram客服', '正在跳转到Telegram...');
+            setTimeout(() => window.open(CONFIG.contacts.telegram, '_blank'), 1000);
+        } else if (type === 'wa') {
+            showFeedback('WhatsApp客服', '正在跳转到WhatsApp...');
+            setTimeout(() => window.open(CONFIG.contacts.whatsapp, '_blank'), 1000);
+        }
+    }
+
+    // 跳转登录（正式站）
+    function goToLogin() {
+        window.open(CONFIG.loginUrl, '_blank');
+    }
+
+    // 跳转注册（正式站）
+    function goToRegister() {
+        window.open(CONFIG.registerUrl, '_blank');
+    }
+
+    // Banner轮播功能
+    function initBannerSlider() {
+        bannerInterval = setInterval(nextSlide, 4000);
+    }
+
+    function goToSlide(index) {
+        currentSlide = index;
+        updateBanner();
+        resetBannerInterval();
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % 3;
+        updateBanner();
+    }
+
+    function updateBanner() {
+        const track = document.getElementById('bannerTrack');
+        const dots = document.querySelectorAll('#bannerDots .banner-dot');
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentSlide);
+        });
+    }
+
+    function resetBannerInterval() {
+        clearInterval(bannerInterval);
+        bannerInterval = setInterval(nextSlide, 4000);
+    }
+    </script>
+</body>
+</html>

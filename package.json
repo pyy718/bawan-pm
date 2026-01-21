@@ -1,0 +1,12 @@
+{
+  "name": "trial-gaming-platform",
+  "version": "1.0.0",
+  "description": "试玩网 - 游戏试玩推广平台",
+  "scripts": {
+    "dev": "echo 'Open frontend-demo.html or admin-all-in-one.html in browser'",
+    "build": "echo 'Static site, no build needed'"
+  },
+  "keywords": ["gaming", "trial", "platform"],
+  "author": "",
+  "license": "MIT"
+}
