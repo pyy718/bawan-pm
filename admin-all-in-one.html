@@ -431,7 +431,7 @@
         <!-- 试玩用户 -->
         <div class="page-section" id="page-trialUsers">
             <div class="content-card">
-                <div class="card-header"><h3>🎮 试玩用户列表</h3><button class="btn btn-success">📥 导出数据</button></div>
+                <div class="card-header"><h3>🎮 试玩用户列表</h3><button class="btn btn-success" onclick="exportToExcel('trialUsers')">📥 导出数据</button></div>
                 <div class="search-bar">
                     <div class="search-item"><label>用户ID：</label><input type="text" placeholder="请输入"></div>
                     <div class="search-item"><label>试玩游戏：</label><select><option value="">全部</option><option>真人百家乐</option><option>捕鱼达人</option><option>财神到</option><option>德州扑克</option><option>足球竞猜</option></select></div>
@@ -467,7 +467,7 @@
         <!-- 注册用户 -->
         <div class="page-section" id="page-regUsers">
             <div class="content-card">
-                <div class="card-header"><h3>✅ 注册用户列表</h3><button class="btn btn-success">📥 导出数据</button></div>
+                <div class="card-header"><h3>✅ 注册用户列表</h3><button class="btn btn-success" onclick="exportToExcel('regUsers')">📥 导出数据</button></div>
                 <div class="search-bar">
                     <div class="search-item"><label>账号：</label><input type="text" placeholder="请输入"></div>
                     <div class="search-item"><label>手机号：</label><input type="text" placeholder="请输入"></div>
@@ -481,9 +481,15 @@
                         <tr><td>RU002</td><td>lucky888</td><td>139****5678</td><td>192.168.1.102</td><td>2026-01-09 11:45</td><td>2026-01-09 17:20</td><td>H5端</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
                         <tr><td>RU003</td><td>winner666</td><td>137****9012</td><td>192.168.1.103</td><td>2026-01-09 14:40</td><td>2026-01-09 16:50</td><td>iOS</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
                         <tr><td>RU004</td><td>test123</td><td>-</td><td>192.168.1.104</td><td>2026-01-09 15:58</td><td>2026-01-09 15:58</td><td>Android</td><td><span class="status-tag danger">禁用</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link success">启用</a></td></tr>
+                        <tr><td>RU005</td><td>dragon999</td><td>136****2345</td><td>192.168.1.105</td><td>2026-01-10 09:20</td><td>2026-01-10 20:15</td><td>Web端</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU006</td><td>tiger777</td><td>135****6789</td><td>192.168.1.106</td><td>2026-01-10 11:30</td><td>2026-01-10 19:45</td><td>H5端</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU007</td><td>phoenix520</td><td>134****3456</td><td>192.168.1.107</td><td>2026-01-11 08:15</td><td>2026-01-11 22:30</td><td>iOS</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU008</td><td>eagle168</td><td>133****7890</td><td>192.168.1.108</td><td>2026-01-11 10:45</td><td>2026-01-11 21:00</td><td>Android</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU009</td><td>shark456</td><td>132****4567</td><td>192.168.1.109</td><td>2026-01-12 09:00</td><td>2026-01-12 18:20</td><td>Web端</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
+                        <tr><td>RU010</td><td>lion321</td><td>131****8901</td><td>192.168.1.110</td><td>2026-01-12 14:30</td><td>2026-01-12 23:15</td><td>H5端</td><td><span class="status-tag success">正常</span></td><td><a class="action-link" onclick="openModal('regUserViewModal')">查看</a><a class="action-link" onclick="openModal('regUserModal')">编辑</a><a class="action-link danger">禁用</a></td></tr>
                     </tbody>
                 </table>
-                <div class="pagination"><span>共 89 条</span><button class="page-btn active" onclick="goToPage(1, 'regUsers')">1</button><button class="page-btn" onclick="goToPage(2, 'regUsers')">2</button></div>
+                <div class="pagination"><span>共 128 条</span><button class="page-btn active" onclick="goToPage(1, 'regUsers')">1</button><button class="page-btn" onclick="goToPage(2, 'regUsers')">2</button><button class="page-btn" onclick="goToPage(3, 'regUsers')">3</button></div>
             </div>
         </div>
 
@@ -545,6 +551,14 @@
                         <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c);">🐟</div></td><td>捕鱼达人</td><td>捕鱼</td><td>CQ9</td><td>2</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '捕鱼达人', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '捕鱼达人', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>9,856</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【捕鱼达人】吗？删除后将移入回收站。')">删除</a></td></tr>
                         <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">🎮</div></td><td>财神到</td><td>电子</td><td>PG</td><td>3</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '财神到', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '财神到', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>8,234</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【财神到】吗？删除后将移入回收站。')">删除</a></td></tr>
                         <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#fa709a,#fee140);">♠️</div></td><td>德州扑克</td><td>棋牌</td><td>BBIN</td><td>4</td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '德州扑克', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '德州扑克', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>5,678</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【德州扑克】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#30cfd0,#330867);">⚽</div></td><td>足球竞猜</td><td>体育</td><td>SB</td><td>5</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '足球竞猜', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '足球竞猜', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>4,892</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【足球竞猜】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#a8edea,#fed6e3);">🎱</div></td><td>时时彩</td><td>彩票</td><td>JDB</td><td>6</td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '时时彩', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '时时彩', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>3,456</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【时时彩】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#ff9a9e,#fecfef);">🎰</div></td><td>龙虎斗</td><td>真人</td><td>AG</td><td>7</td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '龙虎斗', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '龙虎斗', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>3,234</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【龙虎斗】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#ffecd2,#fcb69f);">🐟</div></td><td>捕鱼王</td><td>捕鱼</td><td>JDB</td><td>8</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '捕鱼王', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '捕鱼王', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>2,987</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【捕鱼王】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#ff6e7f,#bfe9ff);">🎮</div></td><td>糖果派对</td><td>电子</td><td>PP</td><td>9</td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '糖果派对', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '糖果派对', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>2,765</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【糖果派对】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#fbc2eb,#a6c1ee);">♠️</div></td><td>斗地主</td><td>棋牌</td><td>KY</td><td>10</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '斗地主', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '斗地主', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>2,543</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【斗地主】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#fdcbf1,#e6dee9);">🎮</div></td><td>水果机</td><td>电子</td><td>JDB</td><td>11</td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '水果机', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '水果机', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>2,321</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【水果机】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#a1c4fd,#c2e9fb);">⚽</div></td><td>篮球投注</td><td>体育</td><td>SB</td><td>12</td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '篮球投注', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '篮球投注', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>2,098</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【篮球投注】吗？删除后将移入回收站。')">删除</a></td></tr>
                     </tbody>
                 </table>
                 <div class="pagination"><span>共 564 条</span><button class="page-btn active" onclick="goToPage(1, 'gameList')">1</button><button class="page-btn" onclick="goToPage(2, 'gameList')">2</button><button class="page-btn" onclick="goToPage(3, 'gameList')">3</button><button class="page-btn">...</button><button class="page-btn" onclick="goToPage(57, 'gameList')">57</button></div>
@@ -1128,6 +1142,62 @@ function initTabs() {
 function toggleGameStatus(checkbox, gameName, type) {
     const status = checkbox.checked ? '开启' : '关闭';
     showToast(`已${status}【${gameName}】的${type}状态`, 'success');
+}
+
+// 导出Excel功能
+function exportToExcel(pageId) {
+    const page = document.getElementById('page-' + pageId);
+    if (!page) return;
+
+    const table = page.querySelector('.data-table');
+    if (!table) return;
+
+    // 获取表头
+    const headers = [];
+    table.querySelectorAll('thead th').forEach(th => {
+        const text = th.textContent.trim();
+        if (text && text !== '') headers.push(text);
+    });
+
+    // 获取数据行
+    const rows = [];
+    table.querySelectorAll('tbody tr').forEach(tr => {
+        const row = [];
+        tr.querySelectorAll('td').forEach(td => {
+            // 跳过复选框列
+            if (td.querySelector('.checkbox')) return;
+            // 获取纯文本内容
+            let text = td.textContent.trim();
+            // 移除多余空格
+            text = text.replace(/\s+/g, ' ');
+            row.push(text);
+        });
+        if (row.length > 0) rows.push(row);
+    });
+
+    // 生成CSV内容
+    let csv = '\ufeff'; // UTF-8 BOM
+    csv += headers.join(',') + '\n';
+    rows.forEach(row => {
+        csv += row.map(cell => `"${cell}"`).join(',') + '\n';
+    });
+
+    // 创建下载链接
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    const fileName = pageId === 'trialUsers' ? '试玩用户列表' : '注册用户列表';
+    const date = new Date().toISOString().split('T')[0];
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${fileName}_${date}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast('数据导出成功！', 'success');
 }
 
 // 搜索功能（模拟）
