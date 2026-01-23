@@ -16,6 +16,10 @@
       "dest": "/admin-all-in-one.html"
     },
     {
+      "src": "/docs",
+      "dest": "/docs.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }

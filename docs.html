@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>试玩网 - 项目文档</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .header-links {
+            display: flex;
+            gap: 15px;
+        }
+        .header-link {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .header-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+        .nav-item:hover {
+            background: #f5f7fa;
+            color: #667eea;
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-weight: 500;
+        }
+        .nav-icon {
+            font-size: 18px;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            min-height: 600px;
+        }
+
+        /* 文档页面 */
+        .doc-page {
+            display: none;
+        }
+        .doc-page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Markdown样式 */
+        .content h1 {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        .content h2 {
+            font-size: 24px;
+            color: #333;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            padding-left: 12px;
+            border-left: 4px solid #667eea;
+        }
+        .content h3 {
+            font-size: 20px;
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 12px;
+        }
+        .content h4 {
+            font-size: 18px;
+            color: #666;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .content h5 {
+            font-size: 16px;
+            color: #777;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .content p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .content ul, .content ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        .content li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .content th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+        }
+        .content td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .content tr:hover {
+            background: #f9f9f9;
+        }
+        .content code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 14px;
+        }
+        .content pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        .content pre code {
+            background: none;
+            color: #f8f8f2;
+            padding: 0;
+        }
+        .content blockquote {
+            border-left: 4px solid #ffd700;
+            background: #fffbf0;
+            padding: 15px 20px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .content hr {
+            border: none;
+            border-top: 2px solid #eee;
+            margin: 30px 0;
+        }
+
+        /* 文档信息表格特殊样式 */
+        .doc-info-table {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .doc-info-table th {
+            width: 30%;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            .content {
+                padding: 20px;
+            }
+            .header-inner {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .content h1 {
+                font-size: 24px;
+            }
+            .content h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">📚</div>
+                <span>试玩网 - 项目文档</span>
+            </div>
+            <div class="header-links">
+                <a href="frontend-demo.html" class="header-link" target="_blank">前端Demo</a>
+                <a href="admin-all-in-one.html" class="header-link" target="_blank">后台管理</a>
+                <a href="index.html" class="header-link">返回首页</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 侧边栏导航 -->
+        <aside class="sidebar">
+            <div class="sidebar-title">📖 文档导航</div>
+            <div class="nav-item active" onclick="showDoc('prd')">
+                <span class="nav-icon">📋</span>
+                <span>后台PRD需求文档</span>
+            </div>
+            <div class="nav-item" onclick="showDoc('features')">
+                <span class="nav-icon">✨</span>
+                <span>前端功能清单</span>
+            </div>
+        </aside>
+
+        <!-- 内容区域 -->
+        <main class="content" id="docContent">
+            <!-- PRD文档 -->
+            <div class="doc-page active" id="doc-prd">
+                <h1>试玩网 Admin 后台管理系统 PRD 需求文档</h1>
+
+                <table class="doc-info-table">
+                    <tr>
+                        <th>项目名称</th>
+                        <td>试玩网 Admin 后台管理系统</td>
+                    </tr>
+                    <tr>
+                        <th>版本号</th>
+                        <td>V1.2</td>
+                    </tr>
+                    <tr>
+                        <th>更新日期</th>
+                        <td>2026-01-13</td>
+                    </tr>
+                    <tr>
+                        <th>文档状态</th>
+                        <td>更新版（新增内容管理模块）</td>
+                    </tr>
+                </table>
+
+                <hr>
+
+                <h2>一、项目概述</h2>
+
+                <h3>1.1 项目背景</h3>
+                <p>试玩网是一个游戏试玩平台，为用户提供各类游戏（真人、棋牌、电子、捕鱼、体育、彩票）的免费试玩体验。本文档描述后台管理系统（Admin）的功能需求。</p>
+
+                <h3>1.2 项目目标</h3>
+                <ul>
+                    <li>提供完整的游戏内容管理能力</li>
+                    <li>实时监控试玩数据和用户转化情况</li>
+                    <li>灵活配置下游注册跳转链接</li>
+                    <li>安全高效的后台权限管理（IP白名单+Google验证）</li>
+                </ul>
+
+                <h3>1.3 目标用户</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>角色</th>
+                            <th>权限范围</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>超级管理员</td>
+                            <td>全部权限</td>
+                        </tr>
+                        <tr>
+                            <td>运营人员</td>
+                            <td>数据查看、游戏管理、内容运营</td>
+                        </tr>
+                        <tr>
+                            <td>客服人员</td>
+                            <td>用户查看、基础操作</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>二、系统架构</h2>
+
+                <h3>2.1 功能模块总览</h3>
+                <pre><code>Admin后台
+├── 登录模块（IP白名单验证 + Google验证）
+├── 数据统计
+│   └── 数据看板（统计卡片 + 趋势图 + 时段分析 + 排行榜）
+├── 用户管理
+│   ├── 后台用户（含Google密钥管理）
+│   ├── 试玩用户
+│   └── 注册用户
+├── 游戏管理
+│   ├── 游戏类别
+│   ├── 游戏列表
+│   ├── 已删除游戏（可恢复）
+│   └── 推荐游戏（多主题）
+├── 内容管理
+│   ├── Banner管理（轮播图配置）
+│   ├── 优惠活动（活动内容管理）
+│   └── 朋友圈动态（官方动态/大舞台/公告）
+├── 下游配置
+│   ├── 网页配置（Web/H5注册URL）
+│   ├── APP配置（iOS描述文件/Android下载）
+│   └── 联系方式配置
+├── 系统管理
+│   ├── 网站配置
+│   ├── 站内信
+│   └── IP白名单（登录必须）
+└── 站点管理（二期）
+    └── 多域名管理批量配置推广下发</code></pre>
+
+                <hr>
+
+                <h2>三、功能需求详细说明</h2>
+
+                <h3>3.1 登录模块</h3>
+
+                <h4>3.1.1 页面说明</h4>
+                <p>深色风格登录页面，金色点缀，专业感。</p>
+
+                <h4>3.1.2 登录字段</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Account</td>
+                            <td>文本输入</td>
+                            <td>是</td>
+                            <td>管理员账号</td>
+                        </tr>
+                        <tr>
+                            <td>Password</td>
+                            <td>密码输入</td>
+                            <td>是</td>
+                            <td>登录密码</td>
+                        </tr>
+                        <tr>
+                            <td>Google Key</td>
+                            <td>文本输入</td>
+                            <td>是</td>
+                            <td>Google动态验证码（6位数字）</td>
+                        </tr>
+                        <tr>
+                            <td>Language</td>
+                            <td>下拉选择</td>
+                            <td>否</td>
+                            <td>语言切换：中文/English/Tiếng Việt</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>3.1.3 登录流程（重要）</h4>
+                <pre><code>1. 用户输入账号、密码、Google Key
+2. 系统获取用户当前IP地址
+3. 检查IP是否在白名单中
+   ├── 不在白名单 → 提示"您的IP不在白名单中，请联系管理员添加后再登录"，登录失败
+   └── 在白名单 → 继续验证
+4. 验证账号密码是否正确
+   ├── 不正确 → 提示"账号或密码错误"，登录失败
+   └── 正确 → 继续验证
+5. 验证Google Key是否正确
+   ├── 不正确 → 提示"Google验证码错误"，登录失败
+   └── 正确 → 登录成功，进入数据看板</code></pre>
+
+                <blockquote>
+                    <strong>⚠️ 重要说明</strong>：IP白名单是登录的前置条件，只有白名单内的IP才能登录后台，这是第一道安全防线。
+                </blockquote>
+
+                <hr>
+
+                <h3>3.2 数据统计模块</h3>
+
+                <h4>3.2.1 数据看板</h4>
+
+                <h5>功能说明</h5>
+                <p>展示试玩网核心运营数据，支持时间筛选，默认显示当天数据。</p>
+
+                <h5>统计卡片指标</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>指标</th>
+                            <th>计算规则</th>
+                            <th>展示说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>有效点击</td>
+                            <td>进入网站记为一次（同一IP过滤）</td>
+                            <td>数值 + 说明文字</td>
+                        </tr>
+                        <tr>
+                            <td>有效试玩</td>
+                            <td>触发游戏接口视为一次（相同IP过滤）</td>
+                            <td>数值 + 点击率（有效试玩/有效点击×100%）</td>
+                        </tr>
+                        <tr>
+                            <td>注册成功</td>
+                            <td>从试玩网注册成功的用户数</td>
+                            <td>数值 + 转化率（注册/有效试玩×100%）</td>
+                        </tr>
+                        <tr>
+                            <td>试玩用户</td>
+                            <td>累计试玩用户总数</td>
+                            <td>数值</td>
+                        </tr>
+                        <tr>
+                            <td>注册用户</td>
+                            <td>累计注册用户总数</td>
+                            <td>数值</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>图表展示</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>图表</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>访问趋势统计</td>
+                            <td>折线图</td>
+                            <td>X轴：日期，Y轴：数量，三条线（有效点击、有效试玩、注册成功）</td>
+                        </tr>
+                        <tr>
+                            <td>时段分析</td>
+                            <td>柱状图</td>
+                            <td>X轴：24小时（00-23），Y轴：访问量，用于分析流量高峰</td>
+                        </tr>
+                        <tr>
+                            <td>游戏试玩排行</td>
+                            <td>表格</td>
+                            <td>TOP5：排名、游戏名称、试玩次数</td>
+                        </tr>
+                        <tr>
+                            <td>注册来源排行</td>
+                            <td>表格</td>
+                            <td>TOP5：排名、来源渠道、注册数、转化率</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>筛选条件</h5>
+                <ul>
+                    <li>快捷选择：今天、昨天、最近7天、最近30天</li>
+                    <li>自定义时间范围</li>
+                    <li>数据刷新按钮</li>
+                </ul>
+
+                <hr>
+
+                <h3>3.3 用户管理模块</h3>
+
+                <h4>3.3.1 后台用户</h4>
+
+                <h5>功能说明</h5>
+                <p>管理后台登录账号，分配角色权限，管理Google验证密钥。</p>
+
+                <h5>列表字段</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段</th>
+                            <th>类型</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ID</td>
+                            <td>数字</td>
+                            <td>自增ID</td>
+                        </tr>
+                        <tr>
+                            <td>账号</td>
+                            <td>文本</td>
+                            <td>登录账号</td>
+                        </tr>
+                        <tr>
+                            <td>姓名</td>
+                            <td>文本</td>
+                            <td>用户姓名</td>
+                        </tr>
+                        <tr>
+                            <td>角色</td>
+                            <td>标签</td>
+                            <td>超级管理员/运营/客服</td>
+                        </tr>
+                        <tr>
+                            <td>Google密钥</td>
+                            <td>文本</td>
+                            <td>Google验证器绑定密钥（如：JBSWY3DPEHPK3PXP）</td>
+                        </tr>
+                        <tr>
+                            <td>最后登录IP</td>
+                            <td>文本</td>
+                            <td>最近一次登录IP</td>
+                        </tr>
+                        <tr>
+                            <td>最后登录时间</td>
+                            <td>时间</td>
+                            <td>最近一次登录时间</td>
+                        </tr>
+                        <tr>
+                            <td>状态</td>
+                            <td>状态标签</td>
+                            <td>正常/禁用</td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td>时间</td>
+                            <td>账号创建时间</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>操作功能</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>操作</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>新增用户</td>
+                            <td>填写账号、姓名、密码、角色，系统自动生成Google密钥</td>
+                        </tr>
+                        <tr>
+                            <td>编辑用户</td>
+                            <td>修改姓名、角色、状态</td>
+                        </tr>
+                        <tr>
+                            <td>重置密码</td>
+                            <td>重置用户登录密码</td>
+                        </tr>
+                        <tr>
+                            <td>重置密钥</td>
+                            <td>重新生成Google验证密钥（用户需重新绑定验证器）</td>
+                        </tr>
+                        <tr>
+                            <td>启用/禁用</td>
+                            <td>切换用户状态</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 继续添加更多内容... -->
+                <p style="margin-top: 40px; padding: 20px; background: #f5f7fa; border-radius: 8px; text-align: center; color: #666;">
+                    <strong>📄 完整PRD文档内容请查看源文件：</strong> <code>后台PRD.md</code>
+                </p>
+            </div>
+
+            <!-- 前端功能清单文档 -->
+            <div class="doc-page" id="doc-features">
+                <h1>试玩网 前端功能点清单</h1>
+
+                <table class="doc-info-table">
+                    <tr>
+                        <th>项目名称</th>
+                        <td>试玩网 H5/Web 前端</td>
+                    </tr>
+                    <tr>
+                        <th>版本号</th>
+                        <td>V1.2</td>
+                    </tr>
+                    <tr>
+                        <th>更新日期</th>
+                        <td>2026-01-13</td>
+                    </tr>
+                    <tr>
+                        <th>更新内容</th>
+                        <td>朋友圈顶部图片、移动端登录按钮、顶部提示条优化、UI专业化升级</td>
+                    </tr>
+                </table>
+
+                <hr>
+
+                <h2>一、页面结构</h2>
+
+                <h3>1.1 页面列表</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>页面</th>
+                            <th>路径</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>首页</td>
+                            <td>#home</td>
+                            <td>主页面，包含Banner、分类、游戏列表</td>
+                        </tr>
+                        <tr>
+                            <td>优惠活动</td>
+                            <td>#promo</td>
+                            <td>展示所有优惠活动</td>
+                        </tr>
+                        <tr>
+                            <td>朋友圈/动态</td>
+                            <td>#moments</td>
+                            <td>官方动态、大舞台、公告中心</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>1.2 公共组件</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>组件</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>顶部公告条</td>
+                            <td>显示促销文案（新用户注册即送888体验金 | 首存100%红利）</td>
+                        </tr>
+                        <tr>
+                            <td>头部导航</td>
+                            <td>Logo、PC端菜单、登录/注册按钮（移动端也显示）</td>
+                        </tr>
+                        <tr>
+                            <td>悬浮联系按钮</td>
+                            <td>Telegram、WhatsApp快捷入口</td>
+                        </tr>
+                        <tr>
+                            <td>底部导航</td>
+                            <td>移动端三Tab导航（首页、优惠、朋友圈）</td>
+                        </tr>
+                        <tr>
+                            <td>反馈弹窗</td>
+                            <td>操作结果提示</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>二、功能模块详情</h2>
+
+                <h3>2.1 首页功能</h3>
+
+                <h4>2.1.1 顶部公告条</h4>
+                <ul>
+                    <li>显示促销文案（新用户注册即送 888 体验金 | 首存100%红利）</li>
+                    <li>金色文字配深色渐变背景</li>
+                    <li>火焰图标闪烁动画</li>
+                    <li><strong>后台配置</strong>：公告文案可在后台配置</li>
+                </ul>
+
+                <h4>2.1.2 Banner轮播</h4>
+                <ul>
+                    <li>支持多张Banner图片轮播（当前3张）</li>
+                    <li>自动播放（4秒间隔），支持手动点击圆点切换</li>
+                    <li>包含两个CTA按钮：
+                        <ul>
+                            <li>「立即试玩」- 平滑滚动到游戏区域</li>
+                            <li>「了解更多」- 跳转到优惠活动页</li>
+                        </ul>
+                    </li>
+                    <li><strong>后台配置</strong>：Banner图片、标题、跳转链接</li>
+                </ul>
+
+                <h4>2.1.3 游戏分类</h4>
+                <ul>
+                    <li>6个分类入口：真人、棋牌、电子、体育、彩票、捕鱼</li>
+                    <li>点击分类筛选对应游戏并更新列表标题</li>
+                    <li>显示筛选结果数量反馈弹窗</li>
+                    <li><strong>后台配置</strong>：分类图标、名称、排序、状态</li>
+                </ul>
+
+                <h4>2.1.4 中奖滚动公告</h4>
+                <ul>
+                    <li>横向滚动显示中奖信息</li>
+                    <li>无限循环滚动动画</li>
+                    <li><strong>后台配置</strong>：中奖信息内容</li>
+                </ul>
+
+                <h4>2.1.5 热门游戏列表</h4>
+                <ul>
+                    <li>4列网格布局（PC端）/ 2列（移动端）</li>
+                    <li>显示游戏封面、名称、厂商</li>
+                    <li>支持HOT/NEW/VIP标签</li>
+                    <li>点击游戏显示进入提示</li>
+                    <li><strong>后台配置</strong>：游戏列表、排序、标签、状态</li>
+                </ul>
+
+                <h3>2.2 优惠活动页</h3>
+
+                <h4>2.2.1 活动列表</h4>
+                <ul>
+                    <li>卡片式布局展示活动</li>
+                    <li>显示活动封面、标签、标题</li>
+                    <li>点击查看活动详情</li>
+                    <li><strong>后台配置</strong>：活动图片、标题、标签、时间、内容</li>
+                </ul>
+
+                <h3>2.3 朋友圈/动态页</h3>
+
+                <h4>2.3.1 专属提示条</h4>
+                <ul>
+                    <li>显示注册引导文案（🔔 注册即可发布动态、获得官方打赏）</li>
+                    <li>金色渐变背景（#ffd700 → #ffaa00）</li>
+                    <li><strong>后台配置</strong>：提示文案可在后台配置</li>
+                </ul>
+
+                <h4>2.3.2 顶部Banner图片</h4>
+                <ul>
+                    <li>显示朋友圈专属Banner图片</li>
+                    <li>图片自适应宽度</li>
+                    <li><strong>后台配置</strong>：Banner图片URL</li>
+                </ul>
+
+                <h4>2.3.3 Tab切换</h4>
+                <ul>
+                    <li>三个Tab：官方动态、大舞台、公告中心</li>
+                    <li>点击切换不同内容</li>
+                </ul>
+
+                <h4>2.3.4 动态列表</h4>
+                <ul>
+                    <li>显示发布者头像、昵称、时间</li>
+                    <li>显示动态内容</li>
+                    <li>显示点赞数</li>
+                    <li><strong>后台配置</strong>：动态内容、发布者、时间</li>
+                </ul>
+
+                <hr>
+
+                <h2>三、交互功能</h2>
+
+                <h3>3.1 按钮交互反馈</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>操作</th>
+                            <th>生产环境行为</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>点击「立即试玩」</td>
+                            <td>平滑滚动到游戏列表区域</td>
+                        </tr>
+                        <tr>
+                            <td>点击「了解更多」</td>
+                            <td>跳转到优惠活动页</td>
+                        </tr>
+                        <tr>
+                            <td>点击游戏卡片</td>
+                            <td>调用游戏接口，进入对应游戏试玩</td>
+                        </tr>
+                        <tr>
+                            <td>点击分类图标</td>
+                            <td>筛选游戏列表，更新标题为对应分类名称</td>
+                        </tr>
+                        <tr>
+                            <td>点击活动</td>
+                            <td>跳转到活动详情页面</td>
+                        </tr>
+                        <tr>
+                            <td>点击登录</td>
+                            <td>跳转外部登录URL（从后台配置获取）</td>
+                        </tr>
+                        <tr>
+                            <td>点击注册</td>
+                            <td>跳转外部注册URL（从后台配置获取）</td>
+                        </tr>
+                        <tr>
+                            <td>点击Telegram</td>
+                            <td>直接跳转Telegram链接（从后台配置获取）</td>
+                        </tr>
+                        <tr>
+                            <td>点击WhatsApp</td>
+                            <td>直接跳转WhatsApp链接（从后台配置获取）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3.2 弹窗系统</h3>
+                <p>反馈弹窗：图标、标题、描述、确认按钮（仅Demo演示用，生产环境按实际业务处理）</p>
+
+                <hr>
+
+                <h2>四、响应式设计</h2>
+
+                <h3>4.1 断点设置</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>断点</th>
+                            <th>宽度</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>移动端</td>
+                            <td>≤768px</td>
+                            <td>H5适配</td>
+                        </tr>
+                        <tr>
+                            <td>PC端</td>
+                            <td>>768px</td>
+                            <td>Web适配</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4.2 响应式调整</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>元素</th>
+                            <th>PC端</th>
+                            <th>移动端</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>导航菜单</td>
+                            <td>显示（首页、优惠、朋友圈、真人、棋牌、电子、体育、彩票、捕鱼）</td>
+                            <td>隐藏</td>
+                        </tr>
+                        <tr>
+                            <td>底部导航</td>
+                            <td>隐藏</td>
+                            <td>显示（首页、优惠、朋友圈）</td>
+                        </tr>
+                        <tr>
+                            <td>Banner高度</td>
+                            <td>400px</td>
+                            <td>220px</td>
+                        </tr>
+                        <tr>
+                            <td>Banner标题</td>
+                            <td>48px</td>
+                            <td>20px</td>
+                        </tr>
+                        <tr>
+                            <td>Banner圆角</td>
+                            <td>12px</td>
+                            <td>8px</td>
+                        </tr>
+                        <tr>
+                            <td>游戏网格</td>
+                            <td>4列</td>
+                            <td>2列</td>
+                        </tr>
+                        <tr>
+                            <td>游戏封面高度</td>
+                            <td>150px</td>
+                            <td>100px</td>
+                        </tr>
+                        <tr>
+                            <td>分类网格</td>
+                            <td>6列</td>
+                            <td>3列</td>
+                        </tr>
+                        <tr>
+                            <td>分类图标尺寸</td>
+                            <td>70px</td>
+                            <td>50px</td>
+                        </tr>
+                        <tr>
+                            <td>登录按钮</td>
+                            <td>显示</td>
+                            <td>显示（适配尺寸 8px 16px）</td>
+                        </tr>
+                        <tr>
+                            <td>注册按钮</td>
+                            <td>显示</td>
+                            <td>显示（适配尺寸 8px 16px）</td>
+                        </tr>
+                        <tr>
+                            <td>悬浮按钮尺寸</td>
+                            <td>50px</td>
+                            <td>42px</td>
+                        </tr>
+                        <tr>
+                            <td>悬浮按钮位置</td>
+                            <td>bottom: 100px, right: 20px</td>
+                            <td>bottom: 80px, right: 10px</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>五、配置项汇总</h2>
+
+                <h3>5.1 需后台配置的内容</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>配置项</th>
+                            <th>说明</th>
+                            <th>后台位置</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>网站名称</td>
+                            <td>显示在Logo旁</td>
+                            <td>系统管理 > 网站配置</td>
+                        </tr>
+                        <tr>
+                            <td>Banner图片</td>
+                            <td>首页轮播图</td>
+                            <td>内容管理 > Banner管理</td>
+                        </tr>
+                        <tr>
+                            <td>立即试玩URL</td>
+                            <td>Banner按钮跳转</td>
+                            <td>内容管理 > Banner管理</td>
+                        </tr>
+                        <tr>
+                            <td>了解更多URL</td>
+                            <td>Banner按钮跳转</td>
+                            <td>内容管理 > Banner管理</td>
+                        </tr>
+                        <tr>
+                            <td>游戏分类</td>
+                            <td>分类图标和名称</td>
+                            <td>游戏管理 > 游戏类别</td>
+                        </tr>
+                        <tr>
+                            <td>游戏列表</td>
+                            <td>游戏信息</td>
+                            <td>游戏管理 > 游戏列表</td>
+                        </tr>
+                        <tr>
+                            <td>优惠活动</td>
+                            <td>活动内容</td>
+                            <td>内容管理 > 优惠活动</td>
+                        </tr>
+                        <tr>
+                            <td>朋友圈动态</td>
+                            <td>动态内容</td>
+                            <td>内容管理 > 朋友圈动态</td>
+                        </tr>
+                        <tr>
+                            <td>Telegram链接</td>
+                            <td>客服跳转</td>
+                            <td>下游配置 > 联系方式</td>
+                        </tr>
+                        <tr>
+                            <td>WhatsApp链接</td>
+                            <td>客服跳转</td>
+                            <td>下游配置 > 联系方式</td>
+                        </tr>
+                        <tr>
+                            <td>登录URL</td>
+                            <td>登录跳转</td>
+                            <td>下游配置 > 网页配置</td>
+                        </tr>
+                        <tr>
+                            <td>注册URL</td>
+                            <td>注册跳转</td>
+                            <td>下游配置 > 网页配置</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>六、技术实现</h2>
+
+                <h3>6.1 技术栈</h3>
+                <ul>
+                    <li>HTML5 + CSS3 + JavaScript</li>
+                    <li>响应式布局（Flexbox + Grid）</li>
+                    <li>CSS动画（轮播、滚动、过渡）</li>
+                </ul>
+
+                <h3>6.2 文件结构</h3>
+                <pre><code>frontend-demo.html  # 单文件Demo，包含所有功能</code></pre>
+
+                <h3>6.3 浏览器兼容</h3>
+                <ul>
+                    <li>Chrome 60+</li>
+                    <li>Safari 12+</li>
+                    <li>Firefox 60+</li>
+                    <li>Edge 79+</li>
+                    <li>移动端主流浏览器</li>
+                </ul>
+
+                <hr>
+
+                <h2>七、Demo文件</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>文件</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>frontend-demo.html</td>
+                            <td>前端完整Demo，可直接浏览器打开预览</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>八、Demo数据说明</h2>
+
+                <h3>8.1 游戏数据（24款）</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>分类</th>
+                            <th>游戏数量</th>
+                            <th>游戏列表</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>真人</td>
+                            <td>4</td>
+                            <td>真人百家乐(HOT)、龙虎斗、真人轮盘(NEW)、骰宝</td>
+                        </tr>
+                        <tr>
+                            <td>棋牌</td>
+                            <td>4</td>
+                            <td>德州扑克(HOT)、斗地主(NEW)、二十一点、炸金花(HOT)</td>
+                        </tr>
+                        <tr>
+                            <td>电子</td>
+                            <td>4</td>
+                            <td>财神到(HOT)、糖果派对(NEW)、水果机、金鸡报喜(VIP)</td>
+                        </tr>
+                        <tr>
+                            <td>体育</td>
+                            <td>4</td>
+                            <td>足球竞猜(HOT)、篮球投注、电竞赛事(NEW)、网球竞猜</td>
+                        </tr>
+                        <tr>
+                            <td>彩票</td>
+                            <td>4</td>
+                            <td>时时彩(HOT)、快三、六合彩(VIP)、PC蛋蛋(NEW)</td>
+                        </tr>
+                        <tr>
+                            <td>捕鱼</td>
+                            <td>4</td>
+                            <td>捕鱼达人(HOT)、捕鱼王(NEW)、海王捕鱼、千炮捕鱼(VIP)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>8.2 Banner数据（3张）</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>标题</th>
+                            <th>副标题</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>极致游戏体验</td>
+                            <td>全球顶尖热门游戏，一触即发，立即试玩!</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>新春 豪礼送不停</td>
+                            <td>注册即送888体验金 · 首存100%红利</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>VIP 专属特权</td>
+                            <td>尊享返水 · 专属客服 · 极速提款</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>8.3 朋友圈宣传语</h3>
+                <p>🔔 注册即可发布动态、获得官方打赏</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 切换文档显示
+        function showDoc(docId) {
+            // 移除所有active类
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.doc-page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // 添加active类到当前项
+            event.target.closest('.nav-item').classList.add('active');
+            document.getElementById('doc-' + docId).classList.add('active');
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
