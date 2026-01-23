@@ -180,9 +180,36 @@
 
         .role-tag { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; background: #ecf5ff; color: #409eff; }
         .secret-key { font-family: monospace; font-size: 12px; color: #999; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
+
+        /* Toast提示 */
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 2000; display: none; align-items: center; gap: 10px; min-width: 300px; }
+        .toast.show { display: flex; animation: slideDown 0.3s ease; }
+        .toast.success { border-left: 4px solid #67c23a; }
+        .toast.error { border-left: 4px solid #f56c6c; }
+        .toast.warning { border-left: 4px solid #e6a23c; }
+        .toast.info { border-left: 4px solid #409eff; }
+        .toast-icon { font-size: 20px; }
+        .toast-message { flex: 1; font-size: 14px; color: #333; }
+        @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        /* 页面切换动画 */
+        .page-section { display: none; animation: fadeIn 0.3s ease; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* 按钮loading状态 */
+        .btn.loading { opacity: 0.6; cursor: not-allowed; position: relative; }
+        .btn.loading::after { content: ''; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
     </style>
 </head>
 <body>
+
+<!-- Toast提示组件 -->
+<div class="toast" id="toast">
+    <span class="toast-icon" id="toastIcon">✓</span>
+    <span class="toast-message" id="toastMessage">操作成功</span>
+</div>
 
 <!-- 登录页 -->
 <div class="login-page" id="loginPage">
@@ -514,10 +541,10 @@
                 <table class="data-table">
                     <thead><tr><th><input type="checkbox" class="checkbox" onclick="toggleSelectAll(this, 'gameList')"></th><th>封面</th><th>游戏名称</th><th>类别</th><th>厂商</th><th>排序</th><th>热门</th><th>推荐</th><th>状态</th><th>试玩次数</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover">🎰</div></td><td>真人百家乐</td><td>真人</td><td>AG</td><td>1</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>12,580</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【真人百家乐】吗？删除后将移入回收站。')">删除</a></td></tr>
-                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c);">🐟</div></td><td>捕鱼达人</td><td>捕鱼</td><td>CQ9</td><td>2</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>9,856</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【捕鱼达人】吗？删除后将移入回收站。')">删除</a></td></tr>
-                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">🎮</div></td><td>财神到</td><td>电子</td><td>PG</td><td>3</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>8,234</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【财神到】吗？删除后将移入回收站。')">删除</a></td></tr>
-                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#fa709a,#fee140);">♠️</div></td><td>德州扑克</td><td>棋牌</td><td>BBIN</td><td>4</td><td><label class="switch"><input type="checkbox"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>5,678</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【德州扑克】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover">🎰</div></td><td>真人百家乐</td><td>真人</td><td>AG</td><td>1</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '真人百家乐', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '真人百家乐', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>12,580</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【真人百家乐】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c);">🐟</div></td><td>捕鱼达人</td><td>捕鱼</td><td>CQ9</td><td>2</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '捕鱼达人', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '捕鱼达人', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>9,856</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【捕鱼达人】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">🎮</div></td><td>财神到</td><td>电子</td><td>PG</td><td>3</td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '财神到', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" checked onchange="toggleGameStatus(this, '财神到', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>8,234</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【财神到】吗？删除后将移入回收站。')">删除</a></td></tr>
+                        <tr><td><input type="checkbox" class="checkbox"></td><td><div class="game-cover" style="background:linear-gradient(135deg,#fa709a,#fee140);">♠️</div></td><td>德州扑克</td><td>棋牌</td><td>BBIN</td><td>4</td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '德州扑克', '热门')"><span class="slider"></span></label></td><td><label class="switch"><input type="checkbox" onchange="toggleGameStatus(this, '德州扑克', '推荐')"><span class="slider"></span></label></td><td><span class="status-tag success">启用</span></td><td>5,678</td><td><a class="action-link" onclick="openModal('gameModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除游戏', '确定要删除【德州扑克】吗？删除后将移入回收站。')">删除</a></td></tr>
                     </tbody>
                 </table>
                 <div class="pagination"><span>共 564 条</span><button class="page-btn active" onclick="goToPage(1, 'gameList')">1</button><button class="page-btn" onclick="goToPage(2, 'gameList')">2</button><button class="page-btn" onclick="goToPage(3, 'gameList')">3</button><button class="page-btn">...</button><button class="page-btn" onclick="goToPage(57, 'gameList')">57</button></div>
@@ -1019,6 +1046,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('adminPage').classList.add('active');
     initCharts();
+    initTabs();
 });
 
 // 退出登录
@@ -1054,10 +1082,52 @@ function toggleDropdown() {
 // 确认操作弹窗
 function confirmAction(title, message) {
     if (confirm(message)) {
-        alert('操作成功：' + title);
+        showToast('操作成功：' + title, 'success');
         return true;
     }
     return false;
+}
+
+// Toast提示函数
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const icon = document.getElementById('toastIcon');
+    const msg = document.getElementById('toastMessage');
+
+    // 设置图标
+    const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+    icon.textContent = icons[type] || icons.success;
+
+    // 设置消息
+    msg.textContent = message;
+
+    // 设置样式
+    toast.className = 'toast show ' + type;
+
+    // 3秒后自动隐藏
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// Tab切换功能
+function initTabs() {
+    document.querySelectorAll('.config-tabs').forEach(tabContainer => {
+        const tabs = tabContainer.querySelectorAll('.config-tab');
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                showToast(`已切换到【${this.textContent}】`, 'info');
+            });
+        });
+    });
+}
+
+// 游戏状态切换（热门/推荐）
+function toggleGameStatus(checkbox, gameName, type) {
+    const status = checkbox.checked ? '开启' : '关闭';
+    showToast(`已${status}【${gameName}】的${type}状态`, 'success');
 }
 
 // 搜索功能（模拟）
@@ -1072,9 +1142,9 @@ function performSearch(pageId) {
     });
 
     if (hasValue) {
-        alert('搜索功能已触发，正在筛选数据...');
+        showToast('搜索功能已触发，正在筛选数据...', 'info');
     } else {
-        alert('请至少输入一个搜索条件');
+        showToast('请至少输入一个搜索条件', 'warning');
     }
 }
 
@@ -1091,7 +1161,7 @@ function resetSearch(pageId) {
             input.selectedIndex = 0;
         }
     });
-    alert('搜索条件已重置');
+    showToast('搜索条件已重置', 'success');
 }
 
 // 分页功能（模拟）
@@ -1105,7 +1175,7 @@ function goToPage(pageNum, pageId) {
     const targetBtn = Array.from(buttons).find(btn => btn.textContent === pageNum.toString());
     if (targetBtn) {
         targetBtn.classList.add('active');
-        alert(`已跳转到第 ${pageNum} 页`);
+        showToast(`已跳转到第 ${pageNum} 页`, 'success');
     }
 }
 
@@ -1126,16 +1196,16 @@ function changeDateFilter() {
     if (!select) return;
 
     const value = select.value;
-    alert(`已切换到【${select.options[select.selectedIndex].text}】的数据`);
+    showToast(`已切换到【${select.options[select.selectedIndex].text}】的数据`, 'success');
 }
 
 // 数据看板刷新
 function refreshDashboard() {
-    alert('正在刷新数据看板...');
+    showToast('正在刷新数据看板...', 'info');
     // 模拟刷新图表
     if (typeof initCharts === 'function') {
         setTimeout(() => {
-            alert('数据刷新完成！');
+            showToast('数据刷新完成！', 'success');
         }, 500);
     }
 }
