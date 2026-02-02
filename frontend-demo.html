@@ -120,16 +120,46 @@
             color: #ffd700;
             background: rgba(255,215,0,0.1);
         }
-        .btn-register {
-            background: linear-gradient(135deg, #ff6b9d, #c44569);
-            color: #fff;
-            font-size: 16px;
-            padding: 12px 28px;
-            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+
+        /* 用户下拉菜单 */
+        .user-area { position: relative; }
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
         }
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255,107,157,0.5);
+        .user-name {
+            color: #ffd700;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid #ffd700;
+            border-radius: 20px;
+            background: rgba(255,215,0,0.1);
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: #1e1e32;
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 8px;
+            min-width: 120px;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .user-dropdown:hover .dropdown-menu { display: block; }
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 16px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .dropdown-menu a:hover {
+            background: rgba(255,215,0,0.1);
+            color: #ffd700;
         }
 
         /* 联系方式悬浮按钮 */
@@ -496,6 +526,90 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
+        /* 发布区域样式 */
+        .publish-area {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .publish-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .publish-box:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        .publish-icon { font-size: 24px; }
+        .publish-text {
+            flex: 1;
+            color: #888;
+            font-size: 14px;
+        }
+        .publish-btn {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 评论区域样式 */
+        .comment-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .comment-input-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .comment-input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 13px;
+        }
+        .comment-input::placeholder { color: #666; }
+        .comment-submit {
+            background: #ffd700;
+            color: #1a1a2e;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .comment-list { margin-top: 10px; }
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        .comment-avatar {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .comment-content { flex: 1; }
+        .comment-user { color: #ffd700; margin-right: 8px; }
+
         /* 响应式 - 移动端 */
         @media (max-width: 768px) {
             .nav-menu { display: none; }
@@ -505,9 +619,9 @@
                 padding: 8px 16px;
                 font-size: 13px;
             }
-            .header-right .btn-register {
-                padding: 8px 16px;
-                font-size: 13px;
+            .user-name {
+                padding: 6px 12px;
+                font-size: 12px;
             }
             .banner-slider { border-radius: 8px; }
             .banner-slide > div:first-child { height: 220px !important; }
@@ -562,8 +676,15 @@
                 <a href="#" data-page="fish">捕鱼</a>
             </nav>
             <div class="header-right">
-                <button class="btn btn-login" onclick="goToLogin()">登录</button>
-                <button class="btn btn-register" onclick="goToRegister()">注册</button>
+                <div class="user-area" id="userArea">
+                    <button class="btn btn-login" id="loginBtn" onclick="goToLogin()">登录</button>
+                    <div class="user-dropdown" id="userDropdown" style="display:none;">
+                        <span class="user-name" id="userName">用户名</span>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <a href="#" onclick="handleLogout()">退出登录</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -662,9 +783,17 @@
         </div>
         <div class="moments-header">
             <div class="moments-tabs">
-                <div class="moments-tab active">官方动态</div>
-                <div class="moments-tab">大舞台</div>
-                <div class="moments-tab">公告中心</div>
+                <div class="moments-tab active" onclick="switchMomentsTab('official')">官方动态</div>
+                <div class="moments-tab" onclick="switchMomentsTab('stage')">大舞台</div>
+                <div class="moments-tab" onclick="switchMomentsTab('notice')">公告中心</div>
+            </div>
+        </div>
+        <!-- 大舞台发布区域 -->
+        <div class="publish-area" id="publishArea" style="display:none;">
+            <div class="publish-box" onclick="handlePublish()">
+                <span class="publish-icon">📝</span>
+                <span class="publish-text">分享你的精彩时刻...</span>
+                <button class="publish-btn">发布</button>
             </div>
         </div>
         <div class="moments-list" id="momentsList"></div>
@@ -698,6 +827,19 @@
                     <h3 id="feedbackTitle" style="margin-bottom:10px;">操作成功</h3>
                     <p id="feedbackMsg" style="color:#888;font-size:14px;">您已成功完成操作</p>
                     <button class="btn-submit" style="margin-top:20px;width:auto;padding:10px 40px;" onclick="closeModal('feedbackModal')">确定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 登录提示弹窗 -->
+        <div class="modal-overlay" id="loginRequiredModal">
+            <div class="modal" style="text-align:center;">
+                <div class="modal-body" style="padding:40px 20px;">
+                    <div style="font-size:50px;margin-bottom:15px;">🔐</div>
+                    <h3 style="margin-bottom:10px;">需要登录</h3>
+                    <p style="color:#888;font-size:14px;margin-bottom:20px;">请先登录后才能发布动态或评论</p>
+                    <button class="btn-submit" style="width:auto;padding:12px 40px;" onclick="goToLoginFromModal()">立即登录</button>
+                    <button class="btn" style="margin-left:10px;padding:12px 30px;background:rgba(255,255,255,0.1);color:#fff;" onclick="closeModal('loginRequiredModal')">取消</button>
                 </div>
             </div>
         </div>
@@ -772,6 +914,11 @@
     let currentCategory = null;
     let currentSlide = 0;
     let bannerInterval = null;
+    let currentMomentsTab = 'official';
+
+    // 用户登录状态（模拟）
+    let isLoggedIn = false;
+    let currentUser = null;
 
     // 初始化页面
     document.addEventListener('DOMContentLoaded', function() {
@@ -782,6 +929,7 @@
         renderMoments();
         initNavigation();
         initBannerSlider();
+        checkLoginStatus();
     });
 
     // 渲染分类
@@ -858,13 +1006,13 @@
     function renderMoments() {
         const list = document.getElementById('momentsList');
         const moments = [
-            { user: '官方公告', avatar: '📢', content: '新年活动火热进行中，首存即送888体验金！', time: '10分钟前', likes: 128 },
-            { user: '幸运玩家', avatar: '🎉', content: '刚刚在真人百家乐赢了一万多，太开心了！', time: '30分钟前', likes: 56 },
-            { user: '系统通知', avatar: '🔔', content: '系统维护已完成，感谢您的耐心等待。', time: '1小时前', likes: 23 },
-            { user: '活动专员', avatar: '🎁', content: '周末双倍积分活动开启，快来参与吧！', time: '2小时前', likes: 89 }
+            { id: 1, user: '官方公告', avatar: '📢', content: '新年活动火热进行中，首存即送888体验金！', time: '10分钟前', likes: 128, comments: [] },
+            { id: 2, user: '幸运玩家', avatar: '🎉', content: '刚刚在真人百家乐赢了一万多，太开心了！', time: '30分钟前', likes: 56, comments: [{user:'小明',text:'厉害！'}] },
+            { id: 3, user: '系统通知', avatar: '🔔', content: '系统维护已完成，感谢您的耐心等待。', time: '1小时前', likes: 23, comments: [] },
+            { id: 4, user: '活动专员', avatar: '🎁', content: '周末双倍积分活动开启，快来参与吧！', time: '2小时前', likes: 89, comments: [] }
         ];
         list.innerHTML = moments.map(m => `
-            <div class="moment-item" onclick="handleAction('moment')">
+            <div class="moment-item">
                 <div class="moment-user">
                     <div class="moment-avatar">${m.avatar}</div>
                     <div>
@@ -874,6 +1022,12 @@
                 </div>
                 <p style="font-size:14px;line-height:1.6;margin-bottom:10px;">${m.content}</p>
                 <div style="font-size:12px;color:#888;">❤️ ${m.likes} 点赞</div>
+                <div class="comment-section">
+                    <div class="comment-input-box">
+                        <input type="text" class="comment-input" placeholder="写评论..." onclick="checkLoginForComment(event)">
+                        <button class="comment-submit" onclick="submitComment(${m.id})">发送</button>
+                    </div>
+                </div>
             </div>
         `).join('');
     }
@@ -995,7 +1149,52 @@
 
     // 跳转登录（正式站）
     function goToLogin() {
-        window.open(CONFIG.loginUrl, '_blank');
+        // 模拟登录成功（实际应跳转到登录页）
+        // window.open(CONFIG.loginUrl, '_blank');
+        simulateLogin();
+    }
+
+    // 从弹窗跳转登录
+    function goToLoginFromModal() {
+        closeModal('loginRequiredModal');
+        goToLogin();
+    }
+
+    // 模拟登录（Demo演示用）
+    function simulateLogin() {
+        isLoggedIn = true;
+        currentUser = { name: '玩家' + Math.floor(Math.random() * 9000 + 1000) };
+        updateUserUI();
+        showFeedback('登录成功', '欢迎回来，' + currentUser.name + '！');
+    }
+
+    // 检查登录状态
+    function checkLoginStatus() {
+        updateUserUI();
+    }
+
+    // 更新用户界面
+    function updateUserUI() {
+        const loginBtn = document.getElementById('loginBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const userName = document.getElementById('userName');
+
+        if (isLoggedIn && currentUser) {
+            loginBtn.style.display = 'none';
+            userDropdown.style.display = 'flex';
+            userName.textContent = currentUser.name;
+        } else {
+            loginBtn.style.display = 'inline-flex';
+            userDropdown.style.display = 'none';
+        }
+    }
+
+    // 退出登录
+    function handleLogout() {
+        isLoggedIn = false;
+        currentUser = null;
+        updateUserUI();
+        showFeedback('已退出', '您已成功退出登录');
     }
 
     // 跳转注册（正式站）
@@ -1031,6 +1230,49 @@
     function resetBannerInterval() {
         clearInterval(bannerInterval);
         bannerInterval = setInterval(nextSlide, 4000);
+    }
+
+    // 朋友圈Tab切换
+    function switchMomentsTab(tab) {
+        currentMomentsTab = tab;
+        // 更新Tab样式
+        document.querySelectorAll('.moments-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // 显示/隐藏发布区域（只在大舞台显示）
+        const publishArea = document.getElementById('publishArea');
+        if (tab === 'stage') {
+            publishArea.style.display = 'block';
+        } else {
+            publishArea.style.display = 'none';
+        }
+    }
+
+    // 处理发布动态
+    function handlePublish() {
+        if (!isLoggedIn) {
+            showModal('loginRequiredModal');
+            return;
+        }
+        showFeedback('发布动态', '功能开发中，敬请期待！');
+    }
+
+    // 检查评论登录状态
+    function checkLoginForComment(event) {
+        if (!isLoggedIn) {
+            event.preventDefault();
+            event.target.blur();
+            showModal('loginRequiredModal');
+        }
+    }
+
+    // 提交评论
+    function submitComment(momentId) {
+        if (!isLoggedIn) {
+            showModal('loginRequiredModal');
+            return;
+        }
+        showFeedback('评论成功', '您的评论已发布！');
     }
     </script>
 </body>
