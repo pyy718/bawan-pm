@@ -172,6 +172,26 @@
             flex-direction: column;
             gap: 12px;
         }
+        /* 发布按钮 */
+        .publish-float-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #1a1a2e;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255,215,0,0.4);
+            transition: all 0.3s;
+            border: none;
+        }
+        .publish-float-btn:hover {
+            transform: scale(1.15) translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255,215,0,0.5);
+        }
         .contact-btn {
             width: 50px;
             height: 50px;
@@ -526,41 +546,6 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
-        /* 发布区域样式 */
-        .publish-area {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .publish-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .publish-box:hover {
-            background: rgba(255,255,255,0.08);
-        }
-        .publish-icon { font-size: 24px; }
-        .publish-text {
-            flex: 1;
-            color: #888;
-            font-size: 14px;
-        }
-        .publish-btn {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #1a1a2e;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
         /* 评论区域样式 */
         .comment-section {
             margin-top: 10px;
@@ -691,6 +676,7 @@
 
     <!-- 联系方式悬浮按钮 -->
     <div class="contact-float">
+        <button class="publish-float-btn" id="publishFloatBtn" onclick="handlePublish()" title="发布动态">+</button>
         <div class="contact-btn tg" onclick="openContact('tg')" title="Telegram">📱</div>
         <div class="contact-btn wa" onclick="openContact('wa')" title="WhatsApp">💬</div>
     </div>
@@ -786,14 +772,6 @@
                 <div class="moments-tab active" onclick="switchMomentsTab('official')">官方动态</div>
                 <div class="moments-tab" onclick="switchMomentsTab('stage')">大舞台</div>
                 <div class="moments-tab" onclick="switchMomentsTab('notice')">公告中心</div>
-            </div>
-        </div>
-        <!-- 大舞台发布区域 -->
-        <div class="publish-area" id="publishArea" style="display:none;">
-            <div class="publish-box" onclick="handlePublish()">
-                <span class="publish-icon">📝</span>
-                <span class="publish-text">分享你的精彩时刻...</span>
-                <button class="publish-btn">发布</button>
             </div>
         </div>
         <div class="moments-list" id="momentsList"></div>
@@ -1239,12 +1217,12 @@
         document.querySelectorAll('.moments-tab').forEach(t => t.classList.remove('active'));
         event.target.classList.add('active');
 
-        // 显示/隐藏发布区域（只在大舞台显示）
-        const publishArea = document.getElementById('publishArea');
+        // 显示/隐藏发布按钮（只在大舞台显示）
+        const publishBtn = document.getElementById('publishFloatBtn');
         if (tab === 'stage') {
-            publishArea.style.display = 'block';
+            publishBtn.style.display = 'flex';
         } else {
-            publishArea.style.display = 'none';
+            publishBtn.style.display = 'none';
         }
     }
 
