@@ -748,6 +748,24 @@
                     </div>
                     <div class="game-grid" id="hotGames"></div>
                 </section>
+
+                <!-- 新游推荐 -->
+                <section class="game-section">
+                    <div class="section-title">
+                        <h2>新游推荐</h2>
+                        <a href="#" onclick="handleAction('viewAll')">查看全部 ></a>
+                    </div>
+                    <div class="game-grid" id="newGames"></div>
+                </section>
+
+                <!-- 今日必玩 -->
+                <section class="game-section">
+                    <div class="section-title">
+                        <h2>今日必玩</h2>
+                        <a href="#" onclick="handleAction('viewAll')">查看全部 ></a>
+                    </div>
+                    <div class="game-grid" id="todayGames"></div>
+                </section>
             </div>
         </div>
     </main>
@@ -933,9 +951,25 @@
 
     // 渲染游戏
     function renderGames(gameList) {
-        const grid = document.getElementById('hotGames');
-        const displayGames = gameList || games.filter(g => g.tag === 'hot' || g.tag === 'new').slice(0, 8);
-        grid.innerHTML = displayGames.map(game => `
+        // 热门推荐
+        const hotGrid = document.getElementById('hotGames');
+        const hotGames = games.filter(g => g.tag === 'hot').slice(0, 8);
+        hotGrid.innerHTML = renderGameCards(hotGames);
+
+        // 新游推荐
+        const newGrid = document.getElementById('newGames');
+        const newGames = games.filter(g => g.tag === 'new').slice(0, 8);
+        newGrid.innerHTML = renderGameCards(newGames);
+
+        // 今日必玩
+        const todayGrid = document.getElementById('todayGames');
+        const todayGames = games.filter(g => g.tag === 'vip' || g.category === '真人').slice(0, 8);
+        todayGrid.innerHTML = renderGameCards(todayGames);
+    }
+
+    // 渲染游戏卡片
+    function renderGameCards(gameList) {
+        return gameList.map(game => `
             <div class="game-card" onclick="handleAction('game', '${game.name}')">
                 <div class="game-cover">
                     <div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);"></div>
