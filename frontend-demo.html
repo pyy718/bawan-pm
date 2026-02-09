@@ -513,6 +513,12 @@
             margin: 0;
             padding: 0;
             font-size: 0;
+            transition: all 0.3s ease;
+        }
+        .moments-banner.hidden {
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
         .moments-banner img {
             width: 100%;
@@ -525,6 +531,9 @@
         .moments-header {
             padding: 15px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .moments-tabs { display: flex; gap: 15px; }
         .moments-tab {
@@ -533,17 +542,176 @@
             border-radius: 20px;
             font-size: 14px;
             cursor: pointer;
+            transition: all 0.3s;
         }
         .moments-tab.active { background: #ffd700; color: #1a1a2e; }
+        .moments-publish-btn {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            border: none;
+        }
+        .moments-publish-btn:hover {
+            transform: scale(1.05);
+        }
         .moment-item {
             padding: 15px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02);
         }
-        .moment-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .moment-header-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
         .moment-avatar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
             background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .moment-user-info { flex: 1; }
+        .moment-username {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .user-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: normal;
+        }
+        .badge-official {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        .badge-days {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: #fff;
+        }
+        .moment-signature {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .moment-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ddd;
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+        .moment-images {
+            display: grid;
+            gap: 4px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .moment-images.grid-1 { grid-template-columns: 1fr; max-width: 240px; }
+        .moment-images.grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .moment-images.grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .moment-images.grid-4 { grid-template-columns: repeat(2, 1fr); }
+        .moment-img {
+            aspect-ratio: 1;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .moment-img > div {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s;
+        }
+        .moment-img:hover > div {
+            transform: scale(1.05);
+        }
+        .moment-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .moment-time {
+            font-size: 12px;
+            color: #888;
+        }
+        .moment-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #888;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+        .action-btn:hover { color: #ffd700; }
+        .action-btn.liked { color: #ff6b6b; }
+        .likes-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .likes-icon { color: #ff6b6b; margin-right: 5px; }
+        .likes-users { color: #ffd700; }
+        .comments-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 8px;
+        }
+        .comment-item-row {
+            padding: 6px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .comment-item-row:not(:last-child) {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .comment-user-name {
+            color: #ffd700;
+            font-weight: 500;
+        }
+        .comment-official-tag {
+            font-size: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 4px;
+        }
+        .comment-text-content { color: #ddd; }
+        .view-more-comments {
+            color: #ffd700;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 0 0;
         }
 
         /* 评论区域样式 */
@@ -782,15 +950,15 @@
             <span>🔔 注册即可发布动态、获得官方打赏</span>
         </div>
         <!-- 朋友圈顶部图片 -->
-        <div class="moments-banner">
+        <div class="moments-banner" id="momentsBanner">
             <img src="https://brave.wzznft.com/i/2026/01/13/ovhpa1.png" alt="朋友圈">
         </div>
         <div class="moments-header">
             <div class="moments-tabs">
                 <div class="moments-tab active" onclick="switchMomentsTab('official')">官方动态</div>
                 <div class="moments-tab" onclick="switchMomentsTab('stage')">大舞台</div>
-                <div class="moments-tab" onclick="switchMomentsTab('notice')">公告中心</div>
             </div>
+            <button class="moments-publish-btn" onclick="handlePublish()" title="发布动态">📷</button>
         </div>
         <div class="moments-list" id="momentsList"></div>
     </div>
@@ -1043,34 +1211,141 @@
         `).join('');
     }
 
+    // 示例图片渐变色
+    const sampleImages = [
+        'linear-gradient(135deg, #667eea, #764ba2)',
+        'linear-gradient(135deg, #f093fb, #f5576c)',
+        'linear-gradient(135deg, #4facfe, #00f2fe)',
+        'linear-gradient(135deg, #43e97b, #38f9d7)'
+    ];
+
     // 渲染朋友圈/动态
     function renderMoments() {
         const list = document.getElementById('momentsList');
-        const moments = [
-            { id: 1, user: '官方公告', avatar: '📢', content: '新年活动火热进行中，首存即送888体验金！', time: '10分钟前', likes: 128, comments: [] },
-            { id: 2, user: '幸运玩家', avatar: '🎉', content: '刚刚在真人百家乐赢了一万多，太开心了！', time: '30分钟前', likes: 56, comments: [{user:'小明',text:'厉害！'}] },
-            { id: 3, user: '系统通知', avatar: '🔔', content: '系统维护已完成，感谢您的耐心等待。', time: '1小时前', likes: 23, comments: [] },
-            { id: 4, user: '活动专员', avatar: '🎁', content: '周末双倍积分活动开启，快来参与吧！', time: '2小时前', likes: 89, comments: [] }
+        const moments = currentMomentsTab === 'official' ? getOfficialMoments() : getStageMoments();
+        list.innerHTML = moments.map(m => renderMomentCard(m)).join('');
+    }
+
+    // 官方动态数据
+    function getOfficialMoments() {
+        return [
+            { id: 1, user: '星耀国际', avatar: '🏆', badge: 'official', signature: '官方认证',
+              content: '🔥新春活动火热进行中！首存即送888体验金，更有神秘大奖等你来拿！',
+              images: [0, 1, 2], time: '10分钟前', likes: ['幸运玩家', '金牌会员'], likeCount: 128,
+              comments: [{ user: '幸运玩家', text: '活动太给力了！', isOfficial: false },
+                         { user: '星耀国际', text: '感谢支持！', isOfficial: true }] },
+            { id: 2, user: '活动专员', avatar: '🎁', badge: 'official', signature: '官方活动发布',
+              content: '🎉周末双倍积分活动开启！所有游戏积分翻倍，VIP会员额外加成20%！',
+              images: [3], time: '2小时前', likes: ['小明'], likeCount: 89,
+              comments: [{ user: '小明', text: '周末必玩！', isOfficial: false }] },
+            { id: 3, user: '客服中心', avatar: '💬', badge: 'official', signature: '7×24小时在线',
+              content: '📢温馨提示：为保障您的账户安全，请勿将账号密码透露给他人。',
+              images: [], time: '3小时前', likes: [], likeCount: 45, comments: [] }
         ];
-        list.innerHTML = moments.map(m => `
-            <div class="moment-item">
-                <div class="moment-user">
-                    <div class="moment-avatar">${m.avatar}</div>
-                    <div>
-                        <div style="font-weight:500;">${m.user}</div>
-                        <div style="font-size:12px;color:#888;">${m.time}</div>
-                    </div>
-                </div>
-                <p style="font-size:14px;line-height:1.6;margin-bottom:10px;">${m.content}</p>
-                <div style="font-size:12px;color:#888;">❤️ ${m.likes} 点赞</div>
-                <div class="comment-section">
-                    <div class="comment-input-box">
-                        <input type="text" class="comment-input" placeholder="写评论..." onclick="checkLoginForComment(event)">
-                        <button class="comment-submit" onclick="submitComment(${m.id})">发送</button>
-                    </div>
+    }
+
+    // 大舞台数据
+    function getStageMoments() {
+        return [
+            { id: 101, user: '夏侯虾草', avatar: '👩', badge: 'days', days: 47, signature: '运气就是实力',
+              content: '星耀牛逼！新号50天了终于爆了一次！继续干！',
+              images: [0, 1, 2, 3], time: '刚刚', likes: ['夏侯虾草', '许死画'], likeCount: 14,
+              comments: [{ user: '星耀国际', text: '恭喜恭喜！', isOfficial: true }] },
+            { id: 102, user: '龙腾虎跃', avatar: '🐉', badge: 'days', days: 68, signature: '稳中求胜',
+              content: '兄弟们，今天真人百家乐连开8把庄，直接起飞！',
+              images: [1, 2], time: '2小时前', likes: ['老玩家', '新手'], likeCount: 89,
+              comments: [{ user: '老玩家', text: '大佬带带我', isOfficial: false }] },
+            { id: 103, user: '财神到家', avatar: '💰', badge: 'days', days: 41, signature: '今天也要加油',
+              content: '电子游戏糖果派对终于爆了！截图留念！',
+              images: [2, 3], time: '3小时前', likes: ['小财神'], likeCount: 23, comments: [] }
+        ];
+    }
+
+    // 渲染单个动态卡片
+    function renderMomentCard(item) {
+        const badgeHtml = getBadgeHtml(item);
+        const imagesHtml = renderMomentImages(item.images);
+        const likesHtml = renderMomentLikes(item);
+        const commentsHtml = renderMomentComments(item.comments);
+
+        return `
+        <div class="moment-item" data-id="${item.id}">
+            <div class="moment-header-row">
+                <div class="moment-avatar">${item.avatar}</div>
+                <div class="moment-user-info">
+                    <div class="moment-username">${item.user} ${badgeHtml}</div>
+                    <div class="moment-signature">${item.signature || ''}</div>
                 </div>
             </div>
+            ${item.content ? `<div class="moment-content">${item.content}</div>` : ''}
+            ${imagesHtml}
+            <div class="moment-footer">
+                <span class="moment-time">${item.time}</span>
+                <div class="moment-actions">
+                    <span class="action-btn" onclick="toggleLike(${item.id})">♡ 赞</span>
+                    <span class="action-btn" onclick="openComment(${item.id})">💬 评论</span>
+                </div>
+            </div>
+            ${likesHtml}
+            ${commentsHtml}
+        </div>`;
+    }
+
+    // 获取徽章HTML
+    function getBadgeHtml(item) {
+        if (item.badge === 'official') {
+            return '<span class="user-badge badge-official">官方</span>';
+        } else if (item.badge === 'days' && item.days) {
+            return `<span class="user-badge badge-days">${item.days}天</span>`;
+        }
+        return '';
+    }
+
+    // 渲染图片网格
+    function renderMomentImages(images) {
+        if (!images || images.length === 0) return '';
+        const gridClass = `grid-${Math.min(images.length, 4)}`;
+        const imgsHtml = images.slice(0, 4).map(idx => `
+            <div class="moment-img">
+                <div style="background:${sampleImages[idx % sampleImages.length]};"></div>
+            </div>
         `).join('');
+        return `<div class="moment-images ${gridClass}">${imgsHtml}</div>`;
+    }
+
+    // 渲染点赞
+    function renderMomentLikes(item) {
+        if (!item.likes || item.likes.length === 0) return '';
+        const names = item.likes.slice(0, 3).join(', ');
+        const more = item.likeCount > 3 ? `...等${item.likeCount}人` : '';
+        return `<div class="likes-section"><span class="likes-icon">♥</span><span class="likes-users">${names}${more}点了赞</span></div>`;
+    }
+
+    // 渲染评论
+    function renderMomentComments(comments) {
+        if (!comments || comments.length === 0) return '';
+        const list = comments.slice(0, 4).map(c => `
+            <div class="comment-item-row">
+                <span class="comment-user-name">${c.user}</span>
+                ${c.isOfficial ? '<span class="comment-official-tag">官方</span>' : ''}
+                <span class="comment-text-content">：${c.text}</span>
+            </div>
+        `).join('');
+        return `<div class="comments-section">${list}</div>`;
+    }
+
+    // 点赞功能
+    function toggleLike(id) {
+        showFeedback('点赞成功', '您已点赞该动态');
+    }
+
+    // 打开评论
+    function openComment(id) {
+        if (!isLoggedIn) {
+            showModal('loginRequiredModal');
+            return;
+        }
+        showFeedback('评论', '评论功能开发中');
     }
 
     // 初始化导航
@@ -1279,14 +1554,8 @@
         // 更新Tab样式
         document.querySelectorAll('.moments-tab').forEach(t => t.classList.remove('active'));
         event.target.classList.add('active');
-
-        // 显示/隐藏发布按钮（只在大舞台显示）
-        const publishBtn = document.getElementById('publishFloatBtn');
-        if (tab === 'stage') {
-            publishBtn.style.display = 'flex';
-        } else {
-            publishBtn.style.display = 'none';
-        }
+        // 重新渲染动态列表
+        renderMoments();
     }
 
     // 处理发布动态
