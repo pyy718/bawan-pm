@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>试玩网 - 朋友圈功能PRD</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.8;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header p { color: rgba(255,255,255,0.8); font-size: 14px; }
+        .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
+        .meta-info {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .meta-info table { width: 100%; }
+        .meta-info th { text-align: left; width: 120px; color: #666; font-weight: normal; }
+        .meta-info td { color: #333; font-weight: 500; }
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .section h2 {
+            font-size: 20px;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .section h3 {
+            font-size: 16px;
+            color: #333;
+            margin: 20px 0 12px;
+            padding-left: 12px;
+            border-left: 3px solid #764ba2;
+        }
+        .section h4 {
+            font-size: 14px;
+            color: #555;
+            margin: 15px 0 8px;
+        }
+        .section p { margin-bottom: 12px; color: #555; font-size: 14px; }
+        .section ul, .section ol { padding-left: 20px; margin-bottom: 12px; }
+        .section li { margin-bottom: 6px; font-size: 14px; color: #555; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border: 1px solid #eee;
+        }
+        th { background: #f5f7fa; color: #333; font-weight: 600; }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-right: 4px;
+        }
+        .tag-required { background: #ffe6e6; color: #f56c6c; }
+        .tag-optional { background: #e6f7e6; color: #67c23a; }
+        .tag-admin { background: #e7f3ff; color: #409eff; }
+        .highlight {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            border-left: 4px solid #ffd700;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+        }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #409eff;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #e83e8c;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>朋友圈功能 PRD</h1>
+        <p>试玩网 - 社交互动模块产品需求文档</p>
+    </header>
+
+    <div class="container">
+        <!-- 文档信息 -->
+        <div class="meta-info">
+            <table>
+                <tr><th>文档版本</th><td>V1.0</td></tr>
+                <tr><th>更新日期</th><td>2026-02-10</td></tr>
+                <tr><th>所属模块</th><td>内容管理 > 朋友圈动态</td></tr>
+                <tr><th>关联后台</th><td>admin-all-in-one.html</td></tr>
+            </table>
+        </div>
+
+        <!-- 一、功能概述 -->
+        <div class="section">
+            <h2>一、功能概述</h2>
+            <h3>1.1 功能定位</h3>
+            <p>朋友圈是试玩网的社交互动模块，类似微信朋友圈，用于展示官方公告、用户晒单分享，增强用户粘性和平台活跃度。</p>
+
+            <h3>1.2 核心价值</h3>
+            <ul>
+                <li><strong>官方宣传：</strong>发布活动公告、优惠信息，触达用户</li>
+                <li><strong>用户互动：</strong>用户分享中奖截图，形成社区氛围</li>
+                <li><strong>信任背书：</strong>真实用户晒单增强新用户信任感</li>
+                <li><strong>活跃留存：</strong>社交功能提升用户停留时间和回访率</li>
+            </ul>
+
+            <h3>1.3 页面入口</h3>
+            <table>
+                <tr><th>端</th><th>入口位置</th></tr>
+                <tr><td>PC端</td><td>顶部导航菜单「朋友圈」</td></tr>
+                <tr><td>H5端</td><td>底部Tab导航「朋友圈」</td></tr>
+            </table>
+        </div>
+
+        <!-- 二、页面结构 -->
+        <div class="section">
+            <h2>二、页面结构</h2>
+            <h3>2.1 页面布局</h3>
+            <table>
+                <tr><th>区域</th><th>说明</th><th>是否可配置</th></tr>
+                <tr><td>顶部Banner</td><td>朋友圈专属背景图，下滑自动隐藏</td><td><span class="tag tag-admin">后台配置</span></td></tr>
+                <tr><td>导航栏</td><td>返回按钮、标题、发布按钮</td><td>固定</td></tr>
+                <tr><td>Tab切换</td><td>官方动态 / 大舞台</td><td>固定</td></tr>
+                <tr><td>动态列表</td><td>动态卡片流式布局</td><td>内容可配置</td></tr>
+                <tr><td>评论输入框</td><td>点击评论时从底部弹出</td><td>固定</td></tr>
+            </table>
+
+            <h3>2.2 Tab分类说明</h3>
+            <table>
+                <tr><th>Tab名称</th><th>内容类型</th><th>发布权限</th></tr>
+                <tr><td>官方动态</td><td>平台公告、活动通知、官方回复</td><td>仅管理员</td></tr>
+                <tr><td>大舞台</td><td>用户晒单、中奖分享、心得交流</td><td>注册用户</td></tr>
+            </table>
+        </div>
+
+        <!-- 三、动态卡片结构 -->
+        <div class="section">
+            <h2>三、动态卡片结构</h2>
+            <h3>3.1 卡片组成元素</h3>
+            <table>
+                <tr><th>元素</th><th>说明</th><th>必填</th></tr>
+                <tr><td>用户头像</td><td>圆角方形，44×44px</td><td><span class="tag tag-required">必填</span></td></tr>
+                <tr><td>用户名</td><td>显示昵称</td><td><span class="tag tag-required">必填</span></td></tr>
+                <tr><td>用户徽章</td><td>官方标识 或 登录天数</td><td><span class="tag tag-optional">可选</span></td></tr>
+                <tr><td>个性签名</td><td>用户自定义签名</td><td><span class="tag tag-optional">可选</span></td></tr>
+                <tr><td>动态内容</td><td>文字内容，支持展开收起</td><td><span class="tag tag-optional">可选</span></td></tr>
+                <tr><td>图片/视频</td><td>最多9张图片或1个视频</td><td><span class="tag tag-optional">可选</span></td></tr>
+                <tr><td>发布时间</td><td>相对时间或绝对时间</td><td><span class="tag tag-required">必填</span></td></tr>
+                <tr><td>点赞按钮</td><td>点赞数量和点赞用户列表</td><td><span class="tag tag-required">必填</span></td></tr>
+                <tr><td>评论按钮</td><td>点击弹出底部评论框</td><td><span class="tag tag-required">必填</span></td></tr>
+            </table>
+
+            <h3>3.2 图片网格布局</h3>
+            <table>
+                <tr><th>图片数量</th><th>布局方式</th></tr>
+                <tr><td>1张</td><td>单图展示，最大宽度240px</td></tr>
+                <tr><td>2张</td><td>2列网格</td></tr>
+                <tr><td>3张</td><td>3列网格</td></tr>
+                <tr><td>4张</td><td>2×2网格</td></tr>
+                <tr><td>5-6张</td><td>3列网格</td></tr>
+                <tr><td>7-9张</td><td>3×3网格</td></tr>
+            </table>
+        </div>
+
+        <!-- 四、用户等级系统 -->
+        <div class="section">
+            <h2>四、用户等级系统</h2>
+            <h3>4.1 等级规则</h3>
+            <div class="highlight">
+                <strong>核心规则：</strong>登录1天 = 1级，累计登录天数即为用户等级
+            </div>
+            <table>
+                <tr><th>字段</th><th>说明</th><th>示例</th></tr>
+                <tr><td>登录天数</td><td>用户累计登录平台的天数</td><td>47天</td></tr>
+                <tr><td>徽章显示</td><td>红色背景徽章，显示"XX天"</td><td><code>badge-days</code></td></tr>
+            </table>
+
+            <h3>4.2 徽章类型</h3>
+            <table>
+                <tr><th>徽章类型</th><th>适用对象</th><th>样式</th></tr>
+                <tr><td>官方徽章</td><td>管理员发布的动态</td><td>紫色渐变背景，显示"官方"</td></tr>
+                <tr><td>天数徽章</td><td>普通用户动态</td><td>红色渐变背景，显示"XX天"</td></tr>
+            </table>
+        </div>
+
+        <!-- 五、评论功能 -->
+        <div class="section">
+            <h2>五、评论功能</h2>
+            <h3>5.1 评论交互流程</h3>
+            <ol>
+                <li>用户点击动态卡片的「评论」按钮</li>
+                <li>底部弹出评论输入框（带遮罩层）</li>
+                <li>输入框自动获取焦点</li>
+                <li>用户可输入文字，也可添加图片（最多3张）</li>
+                <li>点击「发送」提交评论</li>
+                <li>评论成功后关闭输入框，刷新评论列表</li>
+            </ol>
+
+            <h3>5.2 评论输入框功能</h3>
+            <table>
+                <tr><th>功能</th><th>说明</th></tr>
+                <tr><td>文字输入</td><td>支持多行文字输入</td></tr>
+                <tr><td>图片上传</td><td>点击「+」添加图片，最多3张</td></tr>
+                <tr><td>图片预览</td><td>已添加的图片显示缩略图</td></tr>
+                <tr><td>删除图片</td><td>点击图片右上角「×」删除</td></tr>
+                <tr><td>发送按钮</td><td>提交评论内容</td></tr>
+            </table>
+
+            <h3>5.3 评论显示规则</h3>
+            <ul>
+                <li>默认显示前4条评论</li>
+                <li>超过4条显示「查看更多」</li>
+                <li>官方回复显示「官方」标识</li>
+                <li>支持回复他人评论</li>
+            </ul>
+        </div>
+
+        <!-- 六、发布功能 -->
+        <div class="section">
+            <h2>六、发布功能</h2>
+            <h3>6.1 发布入口</h3>
+            <table>
+                <tr><th>位置</th><th>说明</th><th>显示条件</th></tr>
+                <tr><td>导航栏右侧</td><td>「+」按钮，紫色渐变背景</td><td>始终显示</td></tr>
+            </table>
+
+            <h3>6.2 发布弹窗内容</h3>
+            <table>
+                <tr><th>元素</th><th>说明</th></tr>
+                <tr><td>取消按钮</td><td>关闭发布弹窗</td></tr>
+                <tr><td>标题</td><td>"发布动态"</td></tr>
+                <tr><td>发表按钮</td><td>提交动态，内容为空时禁用</td></tr>
+                <tr><td>文字输入框</td><td>placeholder: "这一刻的想法..."</td></tr>
+                <tr><td>媒体预览区</td><td>显示已上传的图片/视频</td></tr>
+                <tr><td>图片按钮</td><td>选择图片，最多9张</td></tr>
+                <tr><td>视频按钮</td><td>选择视频，仅1个（与图片互斥）</td></tr>
+            </table>
+
+            <h3>6.3 发布权限</h3>
+            <div class="info-box">
+                <strong>权限说明：</strong>
+                <ul style="margin-top:8px;">
+                    <li>未登录用户：点击发布按钮弹出登录提示</li>
+                    <li>已登录用户：可在「大舞台」Tab发布动态</li>
+                    <li>管理员：可在「官方动态」Tab发布内容</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 七、后台配置项 -->
+        <div class="section">
+            <h2>七、后台配置项</h2>
+            <div class="highlight">
+                <strong>关联后台：</strong>admin-all-in-one.html > 内容管理 > 朋友圈动态
+            </div>
+
+            <h3>7.1 动态管理</h3>
+            <table>
+                <tr><th>配置项</th><th>说明</th><th>操作</th></tr>
+                <tr><td>官方动态列表</td><td>查看所有官方发布的动态</td><td>查看、编辑、删除</td></tr>
+                <tr><td>发布官方动态</td><td>管理员发布官方公告</td><td>新增、编辑、删除</td></tr>
+                <tr><td>审核设置</td><td>用户动态是否需要审核</td><td>开启/关闭</td></tr>
+            </table>
+
+            <h3>7.2 大舞台帖子管理</h3>
+            <div class="info-box">
+                <strong>功能说明：</strong>管理用户在「大舞台」发布的所有帖子，支持筛选、审核、隐藏、删除等操作
+            </div>
+            <h4>7.2.1 筛选条件</h4>
+            <table>
+                <tr><th>筛选项</th><th>说明</th></tr>
+                <tr><td>用户名</td><td>按用户昵称模糊搜索</td></tr>
+                <tr><td>登录天数</td><td>1-30天 / 31-60天 / 60天以上</td></tr>
+                <tr><td>状态</td><td>待审核 / 已发布 / 已隐藏</td></tr>
+                <tr><td>时间范围</td><td>按发布时间筛选</td></tr>
+            </table>
+            <h4>7.2.2 批量操作</h4>
+            <table>
+                <tr><th>操作</th><th>说明</th></tr>
+                <tr><td>批量通过</td><td>将选中的待审核帖子设为已发布</td></tr>
+                <tr><td>批量隐藏</td><td>将选中的帖子设为隐藏状态</td></tr>
+                <tr><td>批量删除</td><td>永久删除选中的帖子</td></tr>
+            </table>
+            <h4>7.2.3 帖子详情</h4>
+            <table>
+                <tr><th>信息项</th><th>说明</th></tr>
+                <tr><td>用户信息</td><td>头像、昵称、登录天数、个性签名</td></tr>
+                <tr><td>帖子内容</td><td>文字内容全文</td></tr>
+                <tr><td>媒体内容</td><td>图片列表或视频预览</td></tr>
+                <tr><td>互动数据</td><td>点赞数、评论数、点赞用户列表</td></tr>
+                <tr><td>评论列表</td><td>所有评论内容及评论者信息</td></tr>
+            </table>
+
+            <h3>7.3 Banner配置</h3>
+            <table>
+                <tr><th>配置项</th><th>说明</th><th>建议值</th></tr>
+                <tr><td>Banner图片URL</td><td>朋友圈顶部背景图</td><td>尺寸：750×300px</td></tr>
+                <tr><td>是否显示</td><td>控制Banner显示/隐藏</td><td>默认显示</td></tr>
+            </table>
+
+            <h3>7.4 评论管理</h3>
+            <table>
+                <tr><th>配置项</th><th>说明</th></tr>
+                <tr><td>评论列表</td><td>查看所有评论，支持删除敏感内容</td></tr>
+                <tr><td>敏感词过滤</td><td>配置敏感词库，自动过滤</td></tr>
+                <tr><td>图片评论</td><td>是否允许用户发送图片评论</td></tr>
+            </table>
+        </div>
+
+        <!-- 八、数据字段说明 -->
+        <div class="section">
+            <h2>八、数据字段说明</h2>
+            <h3>8.1 动态数据结构</h3>
+            <table>
+                <tr><th>字段名</th><th>类型</th><th>说明</th></tr>
+                <tr><td>id</td><td>Number</td><td>动态唯一标识</td></tr>
+                <tr><td>user</td><td>String</td><td>用户昵称</td></tr>
+                <tr><td>avatar</td><td>String</td><td>头像URL或emoji</td></tr>
+                <tr><td>badge</td><td>String</td><td>徽章类型：official/days</td></tr>
+                <tr><td>days</td><td>Number</td><td>登录天数（badge为days时）</td></tr>
+                <tr><td>signature</td><td>String</td><td>个性签名</td></tr>
+                <tr><td>content</td><td>String</td><td>动态文字内容</td></tr>
+                <tr><td>images</td><td>Array</td><td>图片列表（最多9张）</td></tr>
+                <tr><td>video</td><td>String</td><td>视频URL（与图片互斥）</td></tr>
+                <tr><td>time</td><td>String</td><td>发布时间</td></tr>
+                <tr><td>likes</td><td>Array</td><td>点赞用户列表</td></tr>
+                <tr><td>likeCount</td><td>Number</td><td>点赞总数</td></tr>
+                <tr><td>comments</td><td>Array</td><td>评论列表</td></tr>
+            </table>
+
+            <h3>8.2 评论数据结构</h3>
+            <table>
+                <tr><th>字段名</th><th>类型</th><th>说明</th></tr>
+                <tr><td>user</td><td>String</td><td>评论用户昵称</td></tr>
+                <tr><td>text</td><td>String</td><td>评论文字内容</td></tr>
+                <tr><td>images</td><td>Array</td><td>评论图片（最多3张）</td></tr>
+                <tr><td>isOfficial</td><td>Boolean</td><td>是否为官方回复</td></tr>
+                <tr><td>replyTo</td><td>String</td><td>回复的用户（可选）</td></tr>
+            </table>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>试玩网 朋友圈功能PRD V1.0 | 更新日期：2026-02-10</p>
+        </div>
+    </div>
+</body>
+</html>

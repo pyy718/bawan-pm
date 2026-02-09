@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>试玩网 - 运营使用手册</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.8;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        .header p { color: #ccc; font-size: 16px; }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .toc {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .toc h2 {
+            font-size: 20px;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffd700;
+        }
+        .toc-list { list-style: none; }
+        .toc-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .toc-list a {
+            color: #409eff;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .toc-list a:hover { color: #1a1a2e; }
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .section h2 {
+            font-size: 22px;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 25px 0 15px;
+            padding-left: 12px;
+            border-left: 4px solid #409eff;
+        }
+        .section h4 {
+            font-size: 16px;
+            color: #555;
+            margin: 20px 0 10px;
+        }
+        .section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            border-left: 4px solid #ffd700;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .highlight-box strong { color: #856404; }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #409eff;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .info-box strong { color: #0056b3; }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #e6a23c;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning-box strong { color: #856404; }
+        .danger-box {
+            background: #ffe6e6;
+            border-left: 4px solid #f56c6c;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .danger-box strong { color: #c00; }
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .feature-card h5 {
+            font-size: 15px;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            padding-left: 0;
+        }
+        .step-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 15px;
+        }
+        .step-list li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: #409eff;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f5f7fa;
+            color: #333;
+            font-weight: 600;
+        }
+        tr:hover { background: #fafafa; }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        .tag-blue { background: #e7f3ff; color: #409eff; }
+        .tag-green { background: #e6f7e6; color: #67c23a; }
+        .tag-orange { background: #fff3e6; color: #e6a23c; }
+        .tag-red { background: #ffe6e6; color: #f56c6c; }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>试玩网 运营使用手册</h1>
+        <p>让每一位运营人员快速上手，高效管理平台</p>
+    </header>
+
+    <div class="container">
+        <!-- 目录 -->
+        <div class="toc">
+            <h2>目录导航</h2>
+            <ul class="toc-list">
+                <li><a href="#login">一、登录后台</a></li>
+                <li><a href="#dashboard">二、数据看板 - 了解平台运营状况</a></li>
+                <li><a href="#users">三、用户管理 - 掌握用户动态</a></li>
+                <li><a href="#games">四、游戏管理 - 丰富平台内容</a></li>
+                <li><a href="#content">五、内容管理 - 打造吸引力</a></li>
+                <li><a href="#downstream">六、下游配置 - 连接正式站</a></li>
+                <li><a href="#system">七、系统管理 - 基础配置</a></li>
+                <li><a href="#faq">八、常见问题</a></li>
+            </ul>
+        </div>
+
+        <!-- 一、登录后台 -->
+        <div class="section" id="login">
+            <h2>一、登录后台</h2>
+
+            <h3>1.1 登录地址</h3>
+            <p>在浏览器中输入后台管理地址，进入登录页面。</p>
+
+            <h3>1.2 登录需要什么？</h3>
+            <table>
+                <tr><th>项目</th><th>说明</th></tr>
+                <tr><td>账号</td><td>管理员分配给你的登录账号</td></tr>
+                <tr><td>密码</td><td>你的登录密码</td></tr>
+                <tr><td>Google验证码</td><td>手机Google验证器APP上显示的6位数字（每30秒更新一次）</td></tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>重要提醒：</strong>你的电脑IP必须在白名单中才能登录！如果提示"IP不在白名单"，请联系管理员添加你的IP地址。
+            </div>
+
+            <h3>1.3 Google验证器怎么用？</h3>
+            <ol class="step-list">
+                <li>在手机应用商店下载「Google Authenticator」APP</li>
+                <li>打开APP，点击右下角「+」号</li>
+                <li>选择「输入设置密钥」</li>
+                <li>输入管理员给你的密钥（一串字母数字）</li>
+                <li>保存后，APP会显示6位数字验证码</li>
+                <li>登录时输入这个验证码即可</li>
+            </ol>
+
+            <div class="highlight-box">
+                <strong>为什么需要Google验证？</strong><br>
+                这是双重安全保护，即使密码泄露，没有手机验证码也无法登录，保护平台数据安全。
+            </div>
+        </div>
+
+        <!-- 二、数据看板 -->
+        <div class="section" id="dashboard">
+            <h2>二、数据看板 - 了解平台运营状况</h2>
+
+            <p>数据看板是你每天必看的页面，它告诉你平台运营得怎么样。</p>
+
+            <h3>2.1 核心数据指标</h3>
+            <table>
+                <tr><th>指标</th><th>含义</th><th>运营意义</th></tr>
+                <tr>
+                    <td><span class="tag tag-blue">有效点击</span></td>
+                    <td>有多少人访问了试玩网（同一个人重复访问只算1次）</td>
+                    <td>反映推广效果，数字越大说明引流越成功</td>
+                </tr>
+                <tr>
+                    <td><span class="tag tag-green">有效试玩</span></td>
+                    <td>有多少人真正点击了游戏进行试玩</td>
+                    <td>反映网站吸引力，试玩率高说明游戏展示做得好</td>
+                </tr>
+                <tr>
+                    <td><span class="tag tag-orange">注册成功</span></td>
+                    <td>有多少试玩用户最终注册成为正式用户</td>
+                    <td>最重要的指标！直接反映转化效果</td>
+                </tr>
+                <tr>
+                    <td>试玩用户</td>
+                    <td>累计有多少人试玩过</td>
+                    <td>平台总体规模</td>
+                </tr>
+                <tr>
+                    <td>注册用户</td>
+                    <td>累计有多少人注册成功</td>
+                    <td>平台转化成果</td>
+                </tr>
+            </table>
+
+            <h3>2.2 关键比率怎么看？</h3>
+            <div class="feature-card">
+                <h5>点击率 = 有效试玩 ÷ 有效点击 × 100%</h5>
+                <p>例如：点击率66%，意味着100个访客中有66个人试玩了游戏。</p>
+                <p><strong>正常范围：</strong>50%-80%。低于50%需要优化首页展示。</p>
+            </div>
+            <div class="feature-card">
+                <h5>转化率 = 注册成功 ÷ 有效试玩 × 100%</h5>
+                <p>例如：转化率15%，意味着100个试玩用户中有15个注册了。</p>
+                <p><strong>正常范围：</strong>10%-25%。低于10%需要优化注册引导。</p>
+            </div>
+
+            <h3>2.3 图表怎么用？</h3>
+            <table>
+                <tr><th>图表</th><th>用途</th></tr>
+                <tr><td>访问趋势图</td><td>看每天的数据变化，发现异常波动</td></tr>
+                <tr><td>时段分析图</td><td>找出流量高峰时段，在高峰期做活动效果更好</td></tr>
+                <tr><td>游戏试玩排行</td><td>知道哪些游戏最受欢迎，可以重点推荐</td></tr>
+                <tr><td>注册来源排行</td><td>知道用户从哪里来的，优化推广渠道</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>运营建议：</strong>每天早上查看昨天的数据，每周对比上周数据，发现问题及时调整。
+            </div>
+        </div>
+
+        <!-- 三、用户管理 -->
+        <div class="section" id="users">
+            <h2>三、用户管理 - 掌握用户动态</h2>
+
+            <h3>3.1 后台用户</h3>
+            <p>管理能登录后台的人员账号。</p>
+
+            <div class="feature-card">
+                <h5>角色说明</h5>
+                <table>
+                    <tr><th>角色</th><th>能做什么</th></tr>
+                    <tr><td>超级管理员</td><td>所有功能都能用</td></tr>
+                    <tr><td>运营</td><td>管理游戏、内容、查看数据，不能管理系统设置</td></tr>
+                    <tr><td>客服</td><td>只能查看用户信息，不能修改</td></tr>
+                </table>
+            </div>
+
+            <div class="warning-box">
+                <strong>安全提醒：</strong>如果员工离职，记得及时禁用其账号！
+            </div>
+
+            <h3>3.2 试玩用户</h3>
+            <p>所有在试玩网玩过游戏的访客记录。</p>
+
+            <div class="highlight-box">
+                <strong>这个功能有什么用？</strong><br>
+                <ul style="margin-top:10px;padding-left:20px;">
+                    <li>了解用户喜欢玩什么游戏</li>
+                    <li>看用户试玩了多久（时间长说明游戏吸引人）</li>
+                    <li>追踪用户是否最终注册了</li>
+                    <li>导出数据做分析报告</li>
+                </ul>
+            </div>
+
+            <h3>3.3 注册用户</h3>
+            <p>从试玩网成功注册到正式站的用户。</p>
+            <p>这些是真正转化成功的用户，是运营的核心成果。</p>
+        </div>
+
+        <!-- 四、游戏管理 -->
+        <div class="section" id="games">
+            <h2>四、游戏管理 - 丰富平台内容</h2>
+
+            <h3>4.1 游戏类别</h3>
+            <p>管理游戏的分类，让用户更容易找到想玩的游戏。</p>
+            <table>
+                <tr><th>类别</th><th>说明</th></tr>
+                <tr><td>真人</td><td>真人荷官游戏，如百家乐、龙虎斗</td></tr>
+                <tr><td>棋牌</td><td>扑克、麻将等棋牌类游戏</td></tr>
+                <tr><td>电子</td><td>老虎机、水果机等电子游戏</td></tr>
+                <tr><td>体育</td><td>足球、篮球等体育竞猜</td></tr>
+                <tr><td>彩票</td><td>各类彩票游戏</td></tr>
+                <tr><td>捕鱼</td><td>捕鱼达人等休闲游戏</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>运营技巧：</strong>可以调整类别的排序，把最热门的类别放在前面，提高用户点击率。
+            </div>
+
+            <h3>4.2 游戏列表</h3>
+            <p>管理平台上所有可试玩的游戏。</p>
+
+            <div class="feature-card">
+                <h5>游戏信息包括</h5>
+                <ul style="padding-left:20px;">
+                    <li><strong>游戏名称：</strong>显示给用户看的名字</li>
+                    <li><strong>游戏厂商：</strong>如AG、PG、PP等</li>
+                    <li><strong>游戏标签：</strong>HOT（热门）、NEW（新游）、VIP（推荐）</li>
+                    <li><strong>状态：</strong>启用/禁用，禁用后用户看不到这个游戏</li>
+                </ul>
+            </div>
+
+            <h3>4.3 推荐游戏</h3>
+            <p>设置首页展示的推荐游戏，分为三个区域：</p>
+            <table>
+                <tr><th>区域</th><th>展示位置</th><th>建议放什么</th></tr>
+                <tr><td>热门推荐</td><td>首页第一排</td><td>数据表现最好的游戏</td></tr>
+                <tr><td>新游推荐</td><td>首页第二排</td><td>最新上线的游戏</td></tr>
+                <tr><td>今日必玩</td><td>首页第三排</td><td>想重点推广的游戏</td></tr>
+            </table>
+
+            <div class="highlight-box">
+                <strong>为什么要设置推荐？</strong><br>
+                用户进入首页后，最先看到的就是推荐游戏。好的推荐能提高试玩率和转化率。
+            </div>
+        </div>
+
+        <!-- 五、内容管理 -->
+        <div class="section" id="content">
+            <h2>五、内容管理 - 打造吸引力</h2>
+
+            <h3>5.1 Banner管理</h3>
+            <p>首页顶部的大图轮播，是用户进入网站第一眼看到的内容。</p>
+
+            <div class="feature-card">
+                <h5>Banner设置要点</h5>
+                <ul style="padding-left:20px;">
+                    <li><strong>图片尺寸：</strong>建议1200×400像素，保证清晰度</li>
+                    <li><strong>标题文案：</strong>简洁有力，突出卖点</li>
+                    <li><strong>跳转链接：</strong>点击后跳转到哪里</li>
+                    <li><strong>排序：</strong>数字越小越靠前</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>运营建议：</strong>Banner不要超过5张，太多用户看不完。每张停留4秒左右最佳。
+            </div>
+
+            <h3>5.2 优惠活动</h3>
+            <p>展示平台的各种优惠活动，吸引用户注册。</p>
+            <table>
+                <tr><th>字段</th><th>说明</th></tr>
+                <tr><td>活动标题</td><td>如"新用户首存送100%"</td></tr>
+                <tr><td>活动标签</td><td>如"新人专享"、"限时活动"</td></tr>
+                <tr><td>活动图片</td><td>活动宣传图</td></tr>
+                <tr><td>活动详情</td><td>详细的活动规则说明</td></tr>
+            </table>
+
+            <h3>5.3 朋友圈动态</h3>
+            <p>类似微信朋友圈的功能，展示用户中奖信息和官方公告。</p>
+
+            <div class="feature-card">
+                <h5>三个Tab页</h5>
+                <table>
+                    <tr><th>Tab</th><th>内容</th><th>谁能发</th></tr>
+                    <tr><td>官方动态</td><td>平台公告、活动通知</td><td>仅管理员</td></tr>
+                    <tr><td>大舞台</td><td>用户晒单、中奖分享</td><td>注册用户</td></tr>
+                    <tr><td>公告中心</td><td>系统通知、维护公告</td><td>仅管理员</td></tr>
+                </table>
+            </div>
+
+            <h3>5.4 滚动公告</h3>
+            <p>首页中间滚动显示的中奖信息，营造热闹氛围。</p>
+
+            <div class="warning-box">
+                <strong>两种公告类型：</strong><br>
+                <strong>模板型：</strong>系统自动生成，如"恭喜玩家A***在XX游戏中斩获¥8888"<br>
+                <strong>文本型：</strong>自定义内容，如"新用户注册即送888体验金"
+            </div>
+
+            <div class="feature-card">
+                <h5>模板型配置</h5>
+                <p>设置金额范围（如1000-50000），系统会随机生成金额，配合随机用户名和游戏名，自动生成逼真的中奖信息。</p>
+            </div>
+        </div>
+
+        <!-- 六、下游配置 -->
+        <div class="section" id="downstream">
+            <h2>六、下游配置 - 连接正式站</h2>
+
+            <p>下游配置是试玩网和正式站之间的桥梁，配置正确才能让用户顺利注册。</p>
+
+            <h3>6.1 什么是下游？</h3>
+            <div class="highlight-box">
+                <strong>简单理解：</strong>试玩网是"引流站"，正式站是"目标站"。用户在试玩网体验后，点击注册会跳转到正式站完成注册。这个正式站就叫"下游"。
+            </div>
+
+            <h3>6.2 配置项说明</h3>
+            <table>
+                <tr><th>配置项</th><th>说明</th></tr>
+                <tr><td>下游名称</td><td>给这个正式站起个名字，方便识别</td></tr>
+                <tr><td>登录地址</td><td>正式站的登录页面URL</td></tr>
+                <tr><td>注册地址</td><td>正式站的注册页面URL</td></tr>
+                <tr><td>状态</td><td>启用/禁用</td></tr>
+            </table>
+
+            <div class="danger-box">
+                <strong>重要提醒：</strong>下游地址配置错误会导致用户无法注册！修改前请仔细核对URL是否正确。
+            </div>
+        </div>
+
+        <!-- 七、系统管理 -->
+        <div class="section" id="system">
+            <h2>七、系统管理 - 基础配置</h2>
+
+            <h3>7.1 网站设置</h3>
+            <table>
+                <tr><th>设置项</th><th>说明</th></tr>
+                <tr><td>网站名称</td><td>显示在浏览器标签和页面上的名字</td></tr>
+                <tr><td>联系方式</td><td>Telegram、WhatsApp等客服链接</td></tr>
+                <tr><td>公告内容</td><td>顶部公告条显示的文字</td></tr>
+            </table>
+
+            <h3>7.2 IP白名单</h3>
+            <p>只有在白名单中的IP才能登录后台，保护系统安全。</p>
+
+            <div class="warning-box">
+                <strong>注意：</strong>添加新员工时，记得把他的IP加入白名单。员工换电脑或换网络后，IP可能会变，需要重新添加。
+            </div>
+        </div>
+
+        <!-- 八、常见问题 -->
+        <div class="section" id="faq">
+            <h2>八、常见问题</h2>
+
+            <h3>Q1: 登录时提示"IP不在白名单"怎么办？</h3>
+            <div class="feature-card">
+                <p>联系管理员，告诉他你的IP地址，让他添加到白名单中。</p>
+                <p>查看自己IP的方法：百度搜索"我的IP"即可看到。</p>
+            </div>
+
+            <h3>Q2: Google验证码总是错误怎么办？</h3>
+            <div class="feature-card">
+                <p>检查手机时间是否准确。Google验证码依赖时间同步，手机时间不对会导致验证码错误。</p>
+                <p>解决方法：手机设置 → 日期和时间 → 开启"自动设置"。</p>
+            </div>
+
+            <h3>Q3: 数据看板的数据多久更新一次？</h3>
+            <div class="feature-card">
+                <p>实时数据每5分钟更新一次，历史数据每天凌晨统计前一天的。</p>
+            </div>
+
+            <h3>Q4: 修改了游戏推荐，前台多久生效？</h3>
+            <div class="feature-card">
+                <p>保存后立即生效。如果没看到变化，请刷新前台页面（Ctrl+F5强制刷新）。</p>
+            </div>
+
+            <h3>Q5: 用户注册后在哪里查看？</h3>
+            <div class="feature-card">
+                <p>在「用户管理」→「注册用户」中查看。可以看到用户的注册时间、来源等信息。</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>试玩网运营使用手册 V1.0 | 更新日期：2026-02-10</p>
+    </footer>
+</body>
+</html>

@@ -740,7 +740,7 @@
                     <div class="win-marquee-inner" id="winMarquee"></div>
                 </div>
 
-                <!-- 热门游戏 -->
+                <!-- 热门推荐 -->
                 <section class="game-section">
                     <div class="section-title">
                         <h2>热门推荐</h2>
@@ -750,7 +750,7 @@
                 </section>
 
                 <!-- 新游推荐 -->
-                <section class="game-section">
+                <section class="game-section" style="margin-top: 40px;">
                     <div class="section-title">
                         <h2>新游推荐</h2>
                         <a href="#" onclick="handleAction('viewAll')">查看全部 ></a>
@@ -759,7 +759,7 @@
                 </section>
 
                 <!-- 今日必玩 -->
-                <section class="game-section">
+                <section class="game-section" style="margin-top: 40px;">
                     <div class="section-title">
                         <h2>今日必玩</h2>
                         <a href="#" onclick="handleAction('viewAll')">查看全部 ></a>
@@ -983,18 +983,47 @@
         `).join('');
     }
 
-    // 渲染中奖滚动
+    // 渲染滚动公告（对应后台配置）
     function renderWinMarquee() {
         const marquee = document.getElementById('winMarquee');
-        const wins = [
-            '恭喜 玩家A*** 在真人百家乐中赢得 ¥12,888',
-            '恭喜 玩家B*** 在捕鱼达人中赢得 ¥8,666',
-            '恭喜 玩家C*** 在财神到中赢得 ¥25,000',
-            '恭喜 玩家D*** 在德州扑克中赢得 ¥6,888',
-            '恭喜 玩家E*** 在足球竞猜中赢得 ¥15,000'
+
+        // 滚动公告配置（模拟后台数据）
+        const scrollConfig = [
+            { type: 'template', minAmount: 1000, maxAmount: 50000 },
+            { type: 'template', minAmount: 5000, maxAmount: 100000 },
+            { type: 'text', content: '新用户注册即送888体验金，首存100%红利！' },
+            { type: 'text', content: 'VIP专属返水高达1.2%，极速提款秒到账！' }
         ];
-        marquee.innerHTML = wins.map(w => `<span class="win-item">${w}</span>`).join('') +
-                           wins.map(w => `<span class="win-item">${w}</span>`).join('');
+
+        // 生成公告内容
+        const messages = scrollConfig.map(config => {
+            if (config.type === 'template') {
+                return generateRandomWin(config.minAmount, config.maxAmount);
+            } else {
+                return config.content;
+            }
+        });
+
+        // 渲染（复制一份实现无缝滚动）
+        marquee.innerHTML = messages.map(m => `<span class="win-item">${m}</span>`).join('') +
+                           messages.map(m => `<span class="win-item">${m}</span>`).join('');
+    }
+
+    // 生成随机中奖信息（模板型）
+    function generateRandomWin(minAmount, maxAmount) {
+        // 随机用户名
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const userName = '玩家' + chars[Math.floor(Math.random() * 26)] + '***';
+
+        // 从游戏列表随机取游戏名
+        const gameNames = games.map(g => g.name);
+        const gameName = gameNames[Math.floor(Math.random() * gameNames.length)];
+
+        // 随机金额（从配置的范围内生成）
+        const amount = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
+        const formattedAmount = amount.toLocaleString();
+
+        return `恭喜 ${userName} 在${gameName}中斩获 ¥${formattedAmount}`;
     }
 
     // 渲染优惠活动

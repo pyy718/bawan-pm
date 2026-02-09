@@ -321,7 +321,7 @@
                 <div class="menu-title"><span class="icon">🔧</span><span>系统管理</span><span class="arrow">›</span></div>
                 <div class="sub-menu">
                     <a onclick="showPage('sysConfig')">网站配置</a>
-                    <a onclick="showPage('sysMessage')">站内信</a>
+                    <a onclick="showPage('sysMessage')">滚动公告</a>
                     <a onclick="showPage('sysWhitelist')">IP白名单</a>
                 </div>
             </div>
@@ -642,20 +642,65 @@
         <!-- 朋友圈动态管理 -->
         <div class="page-section" id="page-contentMoments">
             <div class="content-card">
-                <div class="card-header"><h3>💬 朋友圈动态管理</h3><button class="btn btn-primary" onclick="openModal('momentModal')">+ 发布动态</button></div>
-                <div class="config-tabs">
-                    <div class="config-tab active">官方动态</div>
-                    <div class="config-tab">大舞台</div>
-                    <div class="config-tab">公告中心</div>
+                <div class="card-header"><h3>💬 朋友圈动态管理</h3><button class="btn btn-primary" onclick="openModal('momentModal')">+ 发布官方动态</button></div>
+                <div class="config-tabs" id="momentsTabs">
+                    <div class="config-tab active" onclick="switchMomentsTab('official')">官方动态</div>
+                    <div class="config-tab" onclick="switchMomentsTab('stage')">大舞台帖子</div>
+                    <div class="config-tab" onclick="switchMomentsTab('banner')">Banner配置</div>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>ID</th><th>发布者</th><th>内容</th><th>点赞数</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
-                    <tbody>
-                        <tr><td>1</td><td>官方公告</td><td>新年活动火热进行中，首存即送888体验金！</td><td>128</td><td>2026-01-09 10:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
-                        <tr><td>2</td><td>系统通知</td><td>系统维护已完成，感谢您的耐心等待。</td><td>23</td><td>2026-01-08 15:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
-                        <tr><td>3</td><td>活动专员</td><td>周末双倍积分活动开启，快来参与吧！</td><td>89</td><td>2026-01-07 09:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
-                    </tbody>
-                </table>
+                <!-- 官方动态Tab -->
+                <div id="momentsOfficial">
+                    <table class="data-table">
+                        <thead><tr><th>ID</th><th>发布者</th><th>内容</th><th>点赞</th><th>评论</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>星耀国际</td><td>🔥新春活动火热进行中！首存即送888体验金...</td><td>128</td><td>3</td><td>2026-02-10 10:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link" onclick="openModal('momentDetailModal')">详情</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
+                            <tr><td>2</td><td>活动专员</td><td>🎉周末双倍积分活动开启！所有游戏积分翻倍...</td><td>89</td><td>1</td><td>2026-02-09 14:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link" onclick="openModal('momentDetailModal')">详情</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
+                            <tr><td>3</td><td>客服中心</td><td>📢温馨提示：为保障您的账户安全...</td><td>45</td><td>0</td><td>2026-02-08 09:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('momentModal')">编辑</a><a class="action-link" onclick="openModal('momentDetailModal')">详情</a><a class="action-link danger" onclick="confirmAction('删除动态', '确定要删除该动态吗？')">删除</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 大舞台帖子Tab -->
+                <div id="momentsStage" style="display:none;">
+                    <div class="search-bar">
+                        <div class="search-item"><label>用户名</label><input type="text" placeholder="搜索用户名"></div>
+                        <div class="search-item"><label>登录天数</label><select><option value="">全部</option><option>1-30天</option><option>31-60天</option><option>60天以上</option></select></div>
+                        <div class="search-item"><label>状态</label><select><option value="">全部</option><option>待审核</option><option>已发布</option><option>已隐藏</option></select></div>
+                        <div class="search-item"><label>时间范围</label><input type="date"> ~ <input type="date"></div>
+                        <button class="btn btn-primary">🔍 搜索</button>
+                        <button class="btn btn-default">重置</button>
+                    </div>
+                    <div class="action-bar">
+                        <div class="action-bar-left">
+                            <button class="btn btn-success" onclick="confirmAction('批量通过', '确定要批量通过选中的帖子吗？')">✓ 批量通过</button>
+                            <button class="btn btn-warning" onclick="confirmAction('批量隐藏', '确定要批量隐藏选中的帖子吗？')">👁 批量隐藏</button>
+                            <button class="btn btn-danger" onclick="confirmAction('批量删除', '确定要批量删除选中的帖子吗？')">🗑 批量删除</button>
+                        </div>
+                        <span style="color:#999;font-size:13px;">共 8 条记录</span>
+                    </div>
+                    <table class="data-table">
+                        <thead><tr><th><input type="checkbox" class="checkbox"></th><th>ID</th><th>用户</th><th>天数</th><th>内容预览</th><th>图片</th><th>点赞</th><th>评论</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
+                        <tbody>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>101</td><td>夏侯虾草</td><td><span class="status-tag warning">47天</span></td><td>星耀牛逼！耀哥给个热门...</td><td>4张</td><td>14</td><td>2</td><td>2026-02-09 04:26</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link warning" onclick="confirmAction('隐藏帖子', '确定要隐藏该帖子吗？')">隐藏</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>102</td><td>蒋张书爱</td><td><span class="status-tag warning">32天</span></td><td>今天运气不错，小赚一笔！</td><td>视频</td><td>33</td><td>1</td><td>2026-02-09 01:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link warning" onclick="confirmAction('隐藏帖子', '确定要隐藏该帖子吗？')">隐藏</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>103</td><td>赵孙茶面</td><td><span class="status-tag warning">28天</span></td><td>可以来一次5个宙斯...</td><td>1张</td><td>0</td><td>0</td><td>2026-02-10 12:00</td><td><span class="status-tag info">待审核</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link success" onclick="confirmAction('通过审核', '确定要通过该帖子吗？')">通过</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>104</td><td>苏肉铝</td><td><span class="status-tag warning">55天</span></td><td>今天状态不错！截图留念</td><td>2张</td><td>8</td><td>1</td><td>2026-02-10 11:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link warning" onclick="confirmAction('隐藏帖子', '确定要隐藏该帖子吗？')">隐藏</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>105</td><td>龙腾虎跃</td><td><span class="status-tag warning">68天</span></td><td>兄弟们，今天真人百家乐连开8把庄...</td><td>6张</td><td>89</td><td>3</td><td>2026-02-10 10:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link warning" onclick="confirmAction('隐藏帖子', '确定要隐藏该帖子吗？')">隐藏</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>106</td><td>财神到家</td><td><span class="status-tag warning">41天</span></td><td>电子游戏糖果派对终于爆了！</td><td>2张</td><td>23</td><td>1</td><td>2026-02-10 09:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link warning" onclick="confirmAction('隐藏帖子', '确定要隐藏该帖子吗？')">隐藏</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>107</td><td>欧皇附体</td><td><span class="status-tag warning">72天</span></td><td>（视频动态）</td><td>视频</td><td>156</td><td>2</td><td>2026-02-10 08:00</td><td><span class="status-tag success">已发布</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link warning" onclick="confirmAction('隐藏帖子', '确定要隐藏该帖子吗？')">隐藏</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                            <tr><td><input type="checkbox" class="checkbox"></td><td>108</td><td>稳如老狗</td><td><span class="status-tag warning">35天</span></td><td>今天小玩一下，不贪心...</td><td>1张</td><td>45</td><td>1</td><td>2026-02-10 07:00</td><td><span class="status-tag danger">已隐藏</span></td><td><a class="action-link" onclick="openModal('postDetailModal')">详情</a><a class="action-link success" onclick="confirmAction('恢复显示', '确定要恢复显示该帖子吗？')">恢复</a><a class="action-link danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">删除</a></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <span>共 8 条</span>
+                        <button class="page-btn active">1</button>
+                    </div>
+                </div>
+                <!-- Banner配置Tab -->
+                <div id="momentsBanner" style="display:none;">
+                    <div class="form-item"><label>朋友圈顶部Banner图片</label><input type="text" value="https://brave.wzznft.com/i/2026/01/13/ovhpa1.png"><p class="tip">建议尺寸：750×300px，支持JPG/PNG格式</p></div>
+                    <div class="form-item"><label>是否显示Banner</label><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                    <button class="btn btn-primary" onclick="confirmAction('保存配置', '确定要保存Banner配置吗？')">💾 保存配置</button>
+                </div>
             </div>
         </div>
 
@@ -703,16 +748,18 @@
             </div>
         </div>
 
-        <!-- 站内信 -->
+        <!-- 首页滚动公告配置 -->
         <div class="page-section" id="page-sysMessage">
             <div class="content-card">
-                <div class="card-header"><h3>📧 站内信管理</h3><button class="btn btn-primary" onclick="openModal('messageModal')">+ 发送站内信</button></div>
+                <div class="card-header"><h3>📢 首页滚动公告配置</h3><button class="btn btn-primary" onclick="openModal('scrollMsgModal')">+ 添加公告</button></div>
+                <p style="color:#409eff;font-size:13px;margin-bottom:15px;padding:10px;background:#ecf5ff;border-radius:4px;">💡 配置的公告将在前端首页滚动区域展示，支持两种类型：模板型（随机生成中奖信息）和文本型（固定文案）</p>
                 <table class="data-table">
-                    <thead><tr><th>ID</th><th>标题</th><th>接收对象</th><th>发送时间</th><th>状态</th><th>操作</th></tr></thead>
+                    <thead><tr><th>ID</th><th>类型</th><th>内容预览</th><th>金额范围</th><th>状态</th><th>排序</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td>1</td><td>新年活动通知</td><td>全部用户</td><td>2026-01-01 00:00</td><td><span class="status-tag success">已发送</span></td><td><a class="action-link" onclick="openModal('messageViewModal')">查看</a><a class="action-link danger" onclick="confirmAction('删除站内信', '确定要删除该站内信吗？')">删除</a></td></tr>
-                        <tr><td>2</td><td>系统维护公告</td><td>全部用户</td><td>2026-01-05 10:00</td><td><span class="status-tag success">已发送</span></td><td><a class="action-link" onclick="openModal('messageViewModal')">查看</a><a class="action-link danger" onclick="confirmAction('删除站内信', '确定要删除该站内信吗？')">删除</a></td></tr>
-                        <tr><td>3</td><td>春节活动预告</td><td>注册用户</td><td>-</td><td><span class="status-tag warning">草稿</span></td><td><a class="action-link" onclick="openModal('messageModal')">编辑</a><a class="action-link" onclick="confirmAction('发送站内信', '确定要发送该站内信吗？')">发送</a><a class="action-link danger" onclick="confirmAction('删除站内信', '确定要删除该站内信吗？')">删除</a></td></tr>
+                        <tr><td>1</td><td><span class="status-tag info">模板型</span></td><td>恭喜 玩家*** 在【随机游戏】中斩获 ¥金额</td><td>1,000 ~ 50,000</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td>1</td><td><a class="action-link" onclick="openModal('scrollMsgModal')">编辑</a><a class="action-link danger">删除</a></td></tr>
+                        <tr><td>2</td><td><span class="status-tag info">模板型</span></td><td>恭喜 玩家*** 在【随机游戏】中斩获 ¥金额</td><td>5,000 ~ 100,000</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td>2</td><td><a class="action-link" onclick="openModal('scrollMsgModal')">编辑</a><a class="action-link danger">删除</a></td></tr>
+                        <tr><td>3</td><td><span class="status-tag warning">文本型</span></td><td>新用户注册即送888体验金，首存100%红利！</td><td>-</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td>3</td><td><a class="action-link" onclick="openModal('scrollMsgModal')">编辑</a><a class="action-link danger">删除</a></td></tr>
+                        <tr><td>4</td><td><span class="status-tag warning">文本型</span></td><td>VIP专属返水高达1.2%，极速提款秒到账！</td><td>-</td><td><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></td><td>4</td><td><a class="action-link" onclick="openModal('scrollMsgModal')">编辑</a><a class="action-link danger">删除</a></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1002,6 +1049,41 @@
     </div>
 </div>
 
+<!-- 弹窗：帖子详情 -->
+<div class="modal-overlay" id="postDetailModal">
+    <div class="modal" style="width:600px;">
+        <div class="modal-header"><h3>📋 帖子详情</h3><span class="modal-close" onclick="closeModal('postDetailModal')">×</span></div>
+        <div class="modal-body">
+            <div style="display:flex;gap:15px;margin-bottom:20px;">
+                <div style="width:50px;height:50px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;">👩</div>
+                <div><div style="font-weight:600;">夏侯虾草 <span class="status-tag warning">47天</span></div><div style="color:#999;font-size:13px;">2026-02-09 04:26:45</div></div>
+            </div>
+            <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:15px;">
+                <p>星耀牛逼！耀哥给个热门，我新号50天了终于爆了一次！坚持玩了50天了终于爆了，现在我只相信耀哥了！继续干！</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:15px;">
+                <div style="height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:6px;"></div>
+                <div style="height:80px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:6px;"></div>
+                <div style="height:80px;background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:6px;"></div>
+                <div style="height:80px;background:linear-gradient(135deg,#43e97b,#38f9d7);border-radius:6px;"></div>
+            </div>
+            <div style="display:flex;gap:20px;color:#666;font-size:14px;margin-bottom:15px;">
+                <span>❤️ 14 点赞</span><span>💬 2 评论</span>
+            </div>
+            <div style="border-top:1px solid #eee;padding-top:15px;">
+                <h4 style="font-size:14px;margin-bottom:10px;">评论列表</h4>
+                <div style="background:#f8f9fa;padding:10px;border-radius:6px;margin-bottom:8px;font-size:13px;"><span style="color:#409eff;">星耀国际</span> <span class="status-tag info" style="font-size:10px;">官方</span>：恭喜恭喜！</div>
+                <div style="background:#f8f9fa;padding:10px;border-radius:6px;font-size:13px;"><span style="color:#409eff;">败北</span>：厉害了</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" onclick="confirmAction('隐藏帖子', '确定要隐藏该帖子吗？')">👁 隐藏</button>
+            <button class="btn btn-danger" onclick="confirmAction('删除帖子', '确定要删除该帖子吗？')">🗑 删除</button>
+            <button class="btn btn-default" onclick="closeModal('postDetailModal')">关闭</button>
+        </div>
+    </div>
+</div>
+
 <!-- 弹窗：联系方式 -->
 <div class="modal-overlay" id="contactModal">
     <div class="modal">
@@ -1016,32 +1098,50 @@
     </div>
 </div>
 
-<!-- 弹窗：站内信发送/编辑 -->
-<div class="modal-overlay" id="messageModal">
+<!-- 弹窗：滚动公告配置 -->
+<div class="modal-overlay" id="scrollMsgModal">
     <div class="modal">
-        <div class="modal-header"><h3>发送/编辑站内信</h3><span class="modal-close" onclick="closeModal('messageModal')">×</span></div>
+        <div class="modal-header"><h3>添加/编辑滚动公告</h3><span class="modal-close" onclick="closeModal('scrollMsgModal')">×</span></div>
         <div class="modal-body">
-            <div class="form-item"><label><span class="required">*</span>标题</label><input type="text" placeholder="请输入站内信标题"></div>
-            <div class="form-item"><label><span class="required">*</span>接收对象</label><select><option>全部用户</option><option>注册用户</option><option>试玩用户</option><option>VIP用户</option></select></div>
-            <div class="form-item"><label><span class="required">*</span>内容</label><textarea placeholder="请输入站内信内容" rows="6"></textarea></div>
-            <div class="form-item"><label>发送时间</label><select><option>立即发送</option><option>定时发送</option></select></div>
-            <div class="form-item"><label>状态</label><select><option>草稿</option><option>待发送</option></select></div>
+            <div class="form-item">
+                <label><span class="required">*</span>公告类型</label>
+                <select id="scrollMsgType" onchange="toggleScrollMsgType()">
+                    <option value="template">模板型（随机中奖信息）</option>
+                    <option value="text">文本型（固定文案）</option>
+                </select>
+            </div>
+            <div id="templateConfig">
+                <div class="form-item">
+                    <label>模板预览</label>
+                    <div style="background:#f5f7fa;padding:12px;border-radius:4px;color:#666;font-size:13px;">
+                        恭喜 <span style="color:#409eff;">玩家***</span> 在 <span style="color:#67c23a;">【随机游戏】</span> 中斩获 <span style="color:#e6a23c;">¥随机金额</span>
+                    </div>
+                    <div class="tip">系统将自动随机生成：用户名+***、后台已有游戏名称</div>
+                </div>
+                <div class="form-item">
+                    <label><span class="required">*</span>金额范围</label>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <input type="number" value="1000" min="1" style="width:120px;" placeholder="最小金额">
+                        <span>~</span>
+                        <input type="number" value="50000" min="1" style="width:120px;" placeholder="最大金额">
+                        <span style="color:#999;font-size:13px;">元</span>
+                    </div>
+                </div>
+            </div>
+            <div id="textConfig" style="display:none;">
+                <div class="form-item">
+                    <label><span class="required">*</span>公告内容</label>
+                    <textarea placeholder="请输入具体公告文案" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="form-item"><label>排序</label><input type="number" value="1" min="1" placeholder="数字越小越靠前"></div>
+            <div class="form-item">
+                <label>状态</label>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                <span style="margin-left:10px;color:#999;font-size:13px;">开启后在前端展示</span>
+            </div>
         </div>
-        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('messageModal')">取消</button><button class="btn btn-primary">保存</button></div>
-    </div>
-</div>
-
-<!-- 弹窗：站内信查看 -->
-<div class="modal-overlay" id="messageViewModal">
-    <div class="modal">
-        <div class="modal-header"><h3>站内信详情</h3><span class="modal-close" onclick="closeModal('messageViewModal')">×</span></div>
-        <div class="modal-body">
-            <div class="form-item"><label>标题</label><input type="text" value="新年活动通知" disabled></div>
-            <div class="form-item"><label>接收对象</label><input type="text" value="全部用户" disabled></div>
-            <div class="form-item"><label>发送时间</label><input type="text" value="2026-01-01 00:00" disabled></div>
-            <div class="form-item"><label>内容</label><textarea disabled rows="6">新年活动火热进行中，首存即送888体验金！</textarea></div>
-        </div>
-        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('messageViewModal')">关闭</button></div>
+        <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('scrollMsgModal')">取消</button><button class="btn btn-primary">保存</button></div>
     </div>
 </div>
 
@@ -1105,6 +1205,13 @@ function confirmAction(title, message) {
         return true;
     }
     return false;
+}
+
+// 切换滚动公告类型显示
+function toggleScrollMsgType() {
+    const type = document.getElementById('scrollMsgType').value;
+    document.getElementById('templateConfig').style.display = type === 'template' ? 'block' : 'none';
+    document.getElementById('textConfig').style.display = type === 'text' ? 'block' : 'none';
 }
 
 // Toast提示函数
@@ -1282,6 +1389,57 @@ function refreshDashboard() {
         setTimeout(() => {
             showToast('数据刷新完成！', 'success');
         }, 500);
+    }
+}
+
+// 朋友圈帖子管理Tab切换
+function switchMomentsTab(tab) {
+    // 更新Tab样式
+    document.querySelectorAll('#momentsTabs .config-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // 隐藏所有内容区
+    document.getElementById('momentsOfficial').style.display = 'none';
+    document.getElementById('momentsStage').style.display = 'none';
+    document.getElementById('momentsBanner').style.display = 'none';
+
+    // 显示对应内容
+    const idMap = { 'official': 'momentsOfficial', 'stage': 'momentsStage', 'banner': 'momentsBanner' };
+    document.getElementById(idMap[tab]).style.display = 'block';
+}
+
+// 查看帖子详情
+function viewPostDetail(postId) {
+    openModal('postDetailModal');
+}
+
+// 批量操作
+function batchApprove() {
+    const checked = document.querySelectorAll('#moments-stage input[type="checkbox"]:checked');
+    if (checked.length === 0) {
+        showToast('请先选择要操作的帖子', 'warning');
+        return;
+    }
+    showToast('已批量通过 ' + checked.length + ' 条帖子', 'success');
+}
+
+function batchHide() {
+    const checked = document.querySelectorAll('#moments-stage input[type="checkbox"]:checked');
+    if (checked.length === 0) {
+        showToast('请先选择要操作的帖子', 'warning');
+        return;
+    }
+    showToast('已批量隐藏 ' + checked.length + ' 条帖子', 'success');
+}
+
+function batchDelete() {
+    const checked = document.querySelectorAll('#moments-stage input[type="checkbox"]:checked');
+    if (checked.length === 0) {
+        showToast('请先选择要操作的帖子', 'warning');
+        return;
+    }
+    if (confirm('确定要删除选中的 ' + checked.length + ' 条帖子吗？')) {
+        showToast('已批量删除 ' + checked.length + ' 条帖子', 'success');
     }
 }
 

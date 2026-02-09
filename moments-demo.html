@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>试玩网 - 朋友圈</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        /* 顶部Banner图片 */
+        .top-banner {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #1a1a2e, #2d1f3d);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .top-banner.hidden {
+            height: 0;
+            opacity: 0;
+        }
+        .top-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .top-banner-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: #fff;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #eee;
+        }
+        .header-back {
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .header-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .header-action {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        .header-action:active {
+            transform: scale(0.95);
+        }
+
+        /* Tab切换 */
+        .tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 14px 0;
+            font-size: 15px;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .tab-item.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* 动态列表容器 */
+        .moments-container {
+            padding-bottom: 80px;
+        }
+
+        /* 动态卡片 */
+        .moment-card {
+            background: #fff;
+            margin-bottom: 10px;
+            padding: 15px;
+        }
+        .moment-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .moment-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .moment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .moment-user-info {
+            flex: 1;
+        }
+        .moment-username {
+            font-size: 15px;
+            font-weight: 600;
+            color: #576b95;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .user-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: normal;
+        }
+        .badge-official {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        .badge-days {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: #fff;
+        }
+        .moment-signature {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+        .moment-more {
+            color: #999;
+            font-size: 18px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        /* 动态内容 */
+        .moment-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+        .moment-content.collapsed {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .expand-btn {
+            color: #576b95;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        /* 图片网格 */
+        .moment-images {
+            display: grid;
+            gap: 4px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .moment-images.grid-1 { grid-template-columns: 1fr; max-width: 240px; }
+        .moment-images.grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .moment-images.grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .moment-images.grid-4 { grid-template-columns: repeat(2, 1fr); }
+        .moment-images.grid-5,
+        .moment-images.grid-6 { grid-template-columns: repeat(3, 1fr); }
+        .moment-images.grid-7,
+        .moment-images.grid-8,
+        .moment-images.grid-9 { grid-template-columns: repeat(3, 1fr); }
+        .moment-img {
+            aspect-ratio: 1;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .moment-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .moment-img:hover img {
+            transform: scale(1.05);
+        }
+
+        /* 视频播放器 */
+        .moment-video {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            max-width: 280px;
+            background: #000;
+        }
+        .moment-video video {
+            width: 100%;
+            display: block;
+        }
+        .video-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .video-play-btn.hidden { display: none; }
+
+        /* 时间和操作栏 */
+        .moment-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .moment-time {
+            font-size: 12px;
+            color: #999;
+        }
+        .moment-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+        .action-btn:hover { color: #667eea; }
+        .action-btn.liked { color: #ff6b6b; }
+        .action-btn .icon { font-size: 16px; }
+
+        /* 点赞列表 */
+        .likes-section {
+            background: #f7f7f7;
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .likes-icon { color: #ff6b6b; margin-right: 5px; }
+        .likes-users { color: #576b95; }
+
+        /* 评论区 */
+        .comments-section {
+            background: #f7f7f7;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 8px;
+        }
+        .comment-item {
+            padding: 6px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .comment-item:not(:last-child) {
+            border-bottom: 1px solid #eee;
+        }
+        .comment-user {
+            color: #576b95;
+            font-weight: 500;
+        }
+        .comment-official {
+            font-size: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 4px;
+        }
+        .comment-text { color: #333; }
+        .comment-reply { color: #576b95; }
+        .view-more-comments {
+            color: #576b95;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 0 0;
+        }
+
+        /* 底部评论输入框 */
+        .comment-input-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 450px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .comment-input-bar.show {
+            display: flex;
+            transform: translateY(0);
+        }
+        .comment-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .comment-input-images {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .comment-img-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        .comment-img-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .comment-img-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .comment-add-img {
+            width: 60px;
+            height: 60px;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+            font-size: 24px;
+        }
+        .comment-input {
+            flex: 1;
+            background: #f5f5f5;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+        .comment-send {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 18px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 发布弹窗 */
+        .publish-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .publish-modal.show { display: flex; }
+        .publish-panel {
+            background: #fff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px 16px 0 0;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .publish-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .publish-cancel {
+            color: #666;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .publish-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .publish-submit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .publish-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .publish-body { padding: 15px; }
+        .publish-textarea {
+            width: 100%;
+            min-height: 120px;
+            border: none;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+        .publish-textarea::placeholder { color: #999; }
+
+        /* 媒体上传区 */
+        .publish-media {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .media-item {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .media-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .media-add {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+            font-size: 12px;
+            gap: 4px;
+        }
+        .media-add .icon { font-size: 24px; }
+        .media-add:hover { border-color: #667eea; color: #667eea; }
+
+        /* 媒体类型选择 */
+        .media-type-btns {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+        .media-type-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .media-type-btn:hover { background: #e8e8e8; }
+
+        /* 图片预览弹窗 */
+        .image-preview {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-preview.show { display: flex; }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .preview-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 400;
+            display: none;
+        }
+        .toast.show { display: block; }
+
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 99;
+            display: none;
+        }
+        .overlay.show { display: block; }
+    </style>
+</head>
+<body>
+    <!-- 顶部Banner图片 -->
+    <div class="top-banner" id="topBanner">
+        <img src="https://brave.wzznft.com/i/2026/01/13/ovhpa1.png" alt="朋友圈">
+    </div>
+
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-back" onclick="history.back()">‹</div>
+        <div class="header-title" id="pageTitle">朋友圈</div>
+        <div class="header-action" id="publishBtn" onclick="openPublish()">📷</div>
+    </header>
+
+    <!-- Tab切换 -->
+    <div class="tabs">
+        <div class="tab-item active" data-tab="official" onclick="switchTab('official')">官方动态</div>
+        <div class="tab-item" data-tab="moments" onclick="switchTab('moments')">大舞台</div>
+    </div>
+
+    <!-- 动态列表 -->
+    <div class="moments-container" id="momentsContainer"></div>
+
+    <!-- 底部评论输入 -->
+    <div class="comment-input-bar" id="commentBar">
+        <div class="comment-input-images" id="commentImages"></div>
+        <div class="comment-input-row">
+            <label class="comment-add-img">
+                +
+                <input type="file" accept="image/*" hidden onchange="addCommentImage(event)">
+            </label>
+            <input type="text" class="comment-input" placeholder="写评论..." id="commentInput">
+            <button class="comment-send" onclick="sendComment()">发送</button>
+        </div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay" onclick="closeCommentBar()"></div>
+
+    <!-- 发布弹窗 -->
+    <div class="publish-modal" id="publishModal">
+        <div class="publish-panel">
+            <div class="publish-header">
+                <span class="publish-cancel" onclick="closePublish()">取消</span>
+                <span class="publish-title">发布动态</span>
+                <button class="publish-submit" id="publishSubmit" onclick="submitPublish()">发表</button>
+            </div>
+            <div class="publish-body">
+                <textarea class="publish-textarea" id="publishText" placeholder="这一刻的想法..."></textarea>
+                <div class="publish-media" id="publishMedia"></div>
+            </div>
+            <div class="media-type-btns">
+                <label class="media-type-btn">
+                    <span>📷</span> 图片
+                    <input type="file" accept="image/*" multiple hidden onchange="handleImageUpload(event)">
+                </label>
+                <label class="media-type-btn">
+                    <span>🎬</span> 视频
+                    <input type="file" accept="video/*" hidden onchange="handleVideoUpload(event)">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片预览 -->
+    <div class="image-preview" id="imagePreview" onclick="closePreview()">
+        <span class="preview-close">×</span>
+        <img src="" id="previewImg">
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+    // 当前Tab
+    let currentTab = 'official';
+    let uploadedMedia = [];
+    let commentImages = [];
+    let currentCommentId = null;
+    let lastScrollTop = 0;
+
+    // 示例图片（使用渐变色块模拟）
+    const sampleImages = [
+        'linear-gradient(135deg, #667eea, #764ba2)',
+        'linear-gradient(135deg, #f093fb, #f5576c)',
+        'linear-gradient(135deg, #4facfe, #00f2fe)',
+        'linear-gradient(135deg, #43e97b, #38f9d7)',
+        'linear-gradient(135deg, #fa709a, #fee140)',
+        'linear-gradient(135deg, #a8edea, #fed6e3)'
+    ];
+
+    // 官方动态数据
+    const officialData = [
+        {
+            id: 1,
+            user: '星耀国际',
+            avatar: '🏆',
+            badge: 'official',
+            signature: '官方认证',
+            content: '🔥新春活动火热进行中！首存即送888体验金，更有神秘大奖等你来拿！活动时间有限，抓紧参与！连续签到7天额外赠送188红包！',
+            images: [0, 1, 2],
+            video: null,
+            time: '10分钟前',
+            likes: ['幸运玩家', '金牌会员', '钻石VIP', '老王', '小李'],
+            likeCount: 128,
+            comments: [
+                { user: '幸运玩家', text: '活动太给力了！', isOfficial: false },
+                { user: '星耀国际', text: '感谢支持，祝您游戏愉快！', isOfficial: true },
+                { user: '钻石VIP', text: '已参与，期待大奖', isOfficial: false }
+            ]
+        },
+        {
+            id: 2,
+            user: '活动专员',
+            avatar: '🎁',
+            badge: 'official',
+            signature: '官方活动发布',
+            content: '🎉周末双倍积分活动开启！所有游戏积分翻倍，VIP会员额外加成20%！活动时间：每周六日全天有效',
+            images: [3],
+            video: null,
+            time: '2小时前',
+            likes: ['小明', '阿强', '大海'],
+            likeCount: 89,
+            comments: [
+                { user: '小明', text: '周末必玩！', isOfficial: false }
+            ]
+        },
+        {
+            id: 3,
+            user: '客服中心',
+            avatar: '💬',
+            badge: 'official',
+            signature: '7×24小时在线',
+            content: '📢温馨提示：为保障您的账户安全，请勿将账号密码透露给他人。如遇任何问题，请联系在线客服，我们将竭诚为您服务！',
+            images: [],
+            video: null,
+            time: '3小时前',
+            likes: ['用户A', '用户B'],
+            likeCount: 45,
+            comments: []
+        },
+        {
+            id: 4,
+            user: '星耀国际',
+            avatar: '🏆',
+            badge: 'official',
+            signature: '官方认证',
+            content: '🎬【精彩回顾】恭喜玩家"龙腾四海"在真人百家乐中连续开出庄家大胜，单局斩获88888！实力与运气并存，你也可以！',
+            images: [],
+            video: 'sample',
+            time: '5小时前',
+            likes: ['龙腾四海', '财神到', '好运来'],
+            likeCount: 256,
+            comments: [
+                { user: '龙腾四海', text: '感谢平台！继续加油', isOfficial: false },
+                { user: '星耀国际', text: '恭喜恭喜！祝您财源滚滚！', isOfficial: true },
+                { user: '新手玩家', text: '太厉害了，求带', isOfficial: false },
+                { user: '老司机', text: '这运气绝了', isOfficial: false }
+            ]
+        },
+        {
+            id: 5,
+            user: '活动专员',
+            avatar: '🎁',
+            badge: 'official',
+            signature: '官方活动发布',
+            content: '💰【充值返利】本周充值满1000返100，满5000返600，满10000返1500！上不封顶，多充多送！',
+            images: [4, 5],
+            video: null,
+            time: '昨天 18:30',
+            likes: ['VIP玩家', '土豪哥'],
+            likeCount: 167,
+            comments: [
+                { user: 'VIP玩家', text: '已充值，坐等返利', isOfficial: false },
+                { user: '活动专员', text: '返利将在24小时内到账，请注意查收！', isOfficial: true }
+            ]
+        }
+    ];
+
+    // 大舞台数据（用户动态）
+    const momentsData = [
+        {
+            id: 101,
+            user: '夏侯虾草',
+            avatar: '👩',
+            badge: 'days',
+            days: 47,
+            signature: '运气就是实力',
+            content: '星耀牛逼！耀哥给个热门，我新号50天了终于爆了一次！坚持玩了50天了终于爆了，现在我只相信耀哥了！继续干！',
+            images: [0, 1, 2, 3],
+            video: null,
+            time: '2026-02-09 04:26:45',
+            likes: ['夏侯虾草', '许死画', '华气果', '老王', '小李'],
+            likeCount: 14,
+            comments: [
+                { user: '星耀国际', text: '恭喜恭喜！', isOfficial: true },
+                { user: '败北', text: '厉害了', isOfficial: false }
+            ]
+        },
+        {
+            id: 102,
+            user: '蒋张书爱',
+            avatar: '🚗',
+            badge: 'days',
+            days: 32,
+            signature: '依旧稳定',
+            content: '今天运气不错，小赚一笔！',
+            images: [],
+            video: 'sample',
+            time: '23小时前',
+            likes: ['蒋张书爱', '西门钙粥', '独孤建鼠'],
+            likeCount: 33,
+            comments: [
+                { user: '西门钙粥', text: '厉害！', isOfficial: false }
+            ]
+        },
+        {
+            id: 103,
+            user: '赵孙茶面',
+            avatar: '👨',
+            badge: 'days',
+            days: 28,
+            signature: '佛系玩家',
+            content: '可以来一次5个宙斯 让我也体验一下上热门的感觉吗？🙏',
+            images: [4],
+            video: null,
+            time: '刚刚',
+            likes: [],
+            likeCount: 0,
+            comments: []
+        },
+        {
+            id: 104,
+            user: '苏肉铝',
+            avatar: '🎮',
+            badge: 'days',
+            days: 55,
+            signature: '小赌怡情',
+            content: '今天状态不错！截图留念',
+            images: [5, 0],
+            video: null,
+            time: '1小时前',
+            likes: ['晓夏土', '大海', '阿明'],
+            likeCount: 8,
+            comments: [
+                { user: '星耀国际', text: '恭喜！', isOfficial: true }
+            ]
+        },
+        {
+            id: 105,
+            user: '龙腾虎跃',
+            avatar: '🐉',
+            badge: 'days',
+            days: 68,
+            signature: '稳中求胜',
+            content: '兄弟们，今天真人百家乐连开8把庄，直接起飞！分享一下我的心得：跟趋势，不贪心，见好就收！',
+            images: [1, 2, 3, 4, 5, 0],
+            video: null,
+            time: '2小时前',
+            likes: ['老玩家', '新手', '路人甲', '财神爷'],
+            likeCount: 89,
+            comments: [
+                { user: '老玩家', text: '大佬带带我', isOfficial: false },
+                { user: '新手', text: '学习了！', isOfficial: false },
+                { user: '星耀国际', text: '恭喜大佬！', isOfficial: true }
+            ]
+        },
+        {
+            id: 106,
+            user: '财神到家',
+            avatar: '💰',
+            badge: 'days',
+            days: 41,
+            signature: '今天也要加油',
+            content: '电子游戏糖果派对终于爆了！虽然不多但是很开心，截图留念！',
+            images: [2, 3],
+            video: null,
+            time: '3小时前',
+            likes: ['小财神', '发财树'],
+            likeCount: 23,
+            comments: [
+                { user: '小财神', text: '恭喜恭喜！', isOfficial: false }
+            ]
+        },
+        {
+            id: 107,
+            user: '欧皇附体',
+            avatar: '👑',
+            badge: 'days',
+            days: 72,
+            signature: '运气爆棚',
+            content: '',
+            images: [],
+            video: 'sample',
+            time: '4小时前',
+            likes: ['羡慕哥', '我也想', '太强了'],
+            likeCount: 156,
+            comments: [
+                { user: '羡慕哥', text: '这也太欧了吧！', isOfficial: false },
+                { user: '我也想', text: '求沾欧气！', isOfficial: false }
+            ]
+        },
+        {
+            id: 108,
+            user: '稳如老狗',
+            avatar: '🐕',
+            badge: 'days',
+            days: 35,
+            signature: '慢慢来比较快',
+            content: '今天小玩一下，不贪心，赚够饭钱就收手。给新手一个建议：设定目标，到了就走，千万别恋战！',
+            images: [0],
+            video: null,
+            time: '5小时前',
+            likes: ['学习了', '有道理'],
+            likeCount: 45,
+            comments: [
+                { user: '学习了', text: '说得对！', isOfficial: false }
+            ]
+        }
+    ];
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        renderMoments();
+        initScrollListener();
+    });
+
+    // 滚动监听 - 隐藏顶部Banner
+    function initScrollListener() {
+        window.addEventListener('scroll', function() {
+            const banner = document.getElementById('topBanner');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > 50) {
+                banner.classList.add('hidden');
+            } else {
+                banner.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop;
+        });
+    }
+
+    // 渲染动态列表
+    function renderMoments() {
+        const container = document.getElementById('momentsContainer');
+        const data = currentTab === 'official' ? officialData : momentsData;
+        container.innerHTML = data.map(item => renderMomentCard(item)).join('');
+    }
+
+    // 切换Tab
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-item').forEach(t => {
+            t.classList.toggle('active', t.dataset.tab === tab);
+        });
+        document.getElementById('pageTitle').textContent = tab === 'official' ? '官方动态' : '大舞台';
+        renderMoments();
+    }
+
+    // 渲染单个动态卡片
+    function renderMomentCard(item) {
+        const badgeHtml = getBadgeHtml(item);
+        const imagesHtml = renderImages(item.images);
+        const videoHtml = item.video ? renderVideo() : '';
+        const likesHtml = renderLikes(item);
+        const commentsHtml = renderComments(item.comments);
+
+        return `
+        <div class="moment-card" data-id="${item.id}">
+            <div class="moment-header">
+                <div class="moment-avatar">
+                    <div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:24px;">${item.avatar}</div>
+                </div>
+                <div class="moment-user-info">
+                    <div class="moment-username">
+                        ${item.user}
+                        ${badgeHtml}
+                    </div>
+                    <div class="moment-signature">${item.signature || ''}</div>
+                </div>
+                <div class="moment-more">···</div>
+            </div>
+            ${item.content ? `<div class="moment-content">${item.content}</div>` : ''}
+            ${imagesHtml}
+            ${videoHtml}
+            <div class="moment-footer">
+                <span class="moment-time">${item.time}</span>
+                <div class="moment-actions">
+                    <span class="action-btn" onclick="toggleLike(${item.id})">
+                        <span class="icon">♡</span> 赞
+                    </span>
+                    <span class="action-btn" onclick="openCommentBar(${item.id})">
+                        <span class="icon">💬</span> 评论
+                    </span>
+                </div>
+            </div>
+            ${likesHtml}
+            ${commentsHtml}
+        </div>`;
+    }
+
+    // 获取徽章HTML
+    function getBadgeHtml(item) {
+        if (item.badge === 'official') {
+            return '<span class="user-badge badge-official">官方</span>';
+        } else if (item.badge === 'days' && item.days) {
+            return `<span class="user-badge badge-days">${item.days}天</span>`;
+        }
+        return '';
+    }
+
+    // 渲染图片网格
+    function renderImages(images) {
+        if (!images || images.length === 0) return '';
+        const gridClass = `grid-${Math.min(images.length, 9)}`;
+        const imgsHtml = images.map(idx => `
+            <div class="moment-img" onclick="previewImage(${idx})">
+                <div style="width:100%;height:100%;background:${sampleImages[idx % sampleImages.length]};"></div>
+            </div>
+        `).join('');
+        return `<div class="moment-images ${gridClass}">${imgsHtml}</div>`;
+    }
+
+    // 渲染视频
+    function renderVideo() {
+        return `
+        <div class="moment-video">
+            <div style="width:100%;height:200px;background:linear-gradient(135deg,#1a1a2e,#2d1f3d);display:flex;align-items:center;justify-content:center;">
+                <div class="video-play-btn" onclick="playVideo(this)">▶</div>
+            </div>
+        </div>`;
+    }
+
+    // 渲染点赞
+    function renderLikes(item) {
+        if (!item.likes || item.likes.length === 0) return '';
+        const names = item.likes.slice(0, 3).join(', ');
+        const more = item.likeCount > 3 ? `...等${item.likeCount}人` : '';
+        return `
+        <div class="likes-section">
+            <span class="likes-icon">♥</span>
+            <span class="likes-users">${names}${more}点了赞</span>
+        </div>`;
+    }
+
+    // 渲染评论
+    function renderComments(comments) {
+        if (!comments || comments.length === 0) return '';
+        const list = comments.slice(0, 4).map(c => `
+            <div class="comment-item">
+                <span class="comment-user">${c.user}</span>
+                ${c.isOfficial ? '<span class="comment-official">官方</span>' : ''}
+                <span class="comment-text">：${c.text}</span>
+            </div>
+        `).join('');
+        const more = comments.length > 4 ? '<div class="view-more-comments">查看更多</div>' : '';
+        return `<div class="comments-section">${list}${more}</div>`;
+    }
+
+    // 点赞
+    function toggleLike(id) {
+        showToast('点赞成功');
+    }
+
+    // 打开评论输入框
+    function openCommentBar(id) {
+        currentCommentId = id;
+        commentImages = [];
+        renderCommentImages();
+        document.getElementById('commentBar').classList.add('show');
+        document.getElementById('overlay').classList.add('show');
+        document.getElementById('commentInput').focus();
+    }
+
+    // 关闭评论输入框
+    function closeCommentBar() {
+        document.getElementById('commentBar').classList.remove('show');
+        document.getElementById('overlay').classList.remove('show');
+        document.getElementById('commentInput').value = '';
+        commentImages = [];
+        renderCommentImages();
+    }
+
+    // 添加评论图片
+    function addCommentImage(event) {
+        const file = event.target.files[0];
+        if (file && commentImages.length < 3) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                commentImages.push(e.target.result);
+                renderCommentImages();
+            };
+            reader.readAsDataURL(file);
+        }
+        event.target.value = '';
+    }
+
+    // 渲染评论图片
+    function renderCommentImages() {
+        const container = document.getElementById('commentImages');
+        if (commentImages.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+        container.innerHTML = commentImages.map((src, i) => `
+            <div class="comment-img-item">
+                <img src="${src}">
+                <span class="comment-img-remove" onclick="removeCommentImage(${i})">×</span>
+            </div>
+        `).join('');
+    }
+
+    // 移除评论图片
+    function removeCommentImage(index) {
+        commentImages.splice(index, 1);
+        renderCommentImages();
+    }
+
+    // 发送评论
+    function sendComment() {
+        const input = document.getElementById('commentInput');
+        if (input.value.trim() || commentImages.length > 0) {
+            showToast('评论发送成功');
+            closeCommentBar();
+        }
+    }
+
+    // 打开发布弹窗
+    function openPublish() {
+        document.getElementById('publishModal').classList.add('show');
+        uploadedMedia = [];
+        renderUploadedMedia();
+    }
+
+    // 关闭发布弹窗
+    function closePublish() {
+        document.getElementById('publishModal').classList.remove('show');
+        document.getElementById('publishText').value = '';
+        uploadedMedia = [];
+        renderUploadedMedia();
+    }
+
+    // 处理图片上传
+    function handleImageUpload(event) {
+        const files = event.target.files;
+        for (let file of files) {
+            if (uploadedMedia.length < 9) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedMedia.push({ type: 'image', src: e.target.result });
+                    renderUploadedMedia();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        event.target.value = '';
+    }
+
+    // 处理视频上传
+    function handleVideoUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            uploadedMedia = []; // 视频只能单个
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedMedia.push({ type: 'video', src: e.target.result });
+                renderUploadedMedia();
+            };
+            reader.readAsDataURL(file);
+        }
+        event.target.value = '';
+    }
+
+    // 渲染已上传媒体
+    function renderUploadedMedia() {
+        const container = document.getElementById('publishMedia');
+        const html = uploadedMedia.map((m, i) => `
+            <div class="media-item">
+                ${m.type === 'image'
+                    ? `<img src="${m.src}">`
+                    : `<video src="${m.src}"></video>`}
+                <span class="media-remove" onclick="removeMedia(${i})">×</span>
+            </div>
+        `).join('');
+        container.innerHTML = html;
+    }
+
+    // 移除媒体
+    function removeMedia(index) {
+        uploadedMedia.splice(index, 1);
+        renderUploadedMedia();
+    }
+
+    // 提交发布
+    function submitPublish() {
+        const text = document.getElementById('publishText').value.trim();
+        if (!text && uploadedMedia.length === 0) {
+            showToast('请输入内容或添加图片/视频');
+            return;
+        }
+        showToast('发布成功！');
+        closePublish();
+    }
+
+    // 预览图片
+    function previewImage(idx) {
+        showToast('图片预览');
+    }
+
+    // 关闭预览
+    function closePreview() {
+        document.getElementById('imagePreview').classList.remove('show');
+    }
+
+    // 播放视频
+    function playVideo(btn) {
+        showToast('视频播放中...');
+        btn.classList.add('hidden');
+    }
+
+    // Toast提示
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+    </script>
+</body>
+</html>
