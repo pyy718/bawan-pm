@@ -1215,10 +1215,6 @@
 
     <!-- 朋友圈页 -->
     <div class="page" id="page-moments" style="display:none;">
-        <!-- 朋友圈专属提示条 -->
-        <div class="moments-notice">
-            <span>🔔 注册即可发布动态、获得官方打赏</span>
-        </div>
         <!-- 朋友圈顶部图片 -->
         <div class="moments-banner" id="momentsBanner">
             <img src="https://brave.wzznft.com/i/2026/01/13/ovhpa1.png" alt="朋友圈">
@@ -1227,7 +1223,6 @@
         <div class="moments-tabs-bar">
             <div class="moments-tab-item active" data-tab="official" onclick="switchMomentsTab('official')">官方动态</div>
             <div class="moments-tab-item" data-tab="stage" onclick="switchMomentsTab('stage')">大舞台</div>
-            <div class="moments-tab-item" data-tab="announcement" onclick="switchMomentsTab('announcement')">公告中心</div>
         </div>
         <!-- 动态列表 -->
         <div class="moments-list" id="momentsList"></div>
@@ -1549,10 +1544,8 @@
         let moments;
         if (currentMomentsTab === 'official') {
             moments = getOfficialMoments();
-        } else if (currentMomentsTab === 'stage') {
-            moments = getStageMoments();
         } else {
-            moments = getAnnouncementMoments();
+            moments = getStageMoments();
         }
         list.innerHTML = moments.map(m => renderMomentCard(m)).join('');
     }
@@ -1617,27 +1610,6 @@
               content: '今天小玩一下，不贪心，赚够饭钱就收手。给新手一个建议：设定目标，到了就走，千万别恋战！',
               images: [5], time: '5小时前', likes: ['学习了', '有道理'], likeCount: 45,
               comments: [{ user: '学习了', text: '说得对！', isOfficial: false }] }
-        ];
-    }
-
-    // 公告中心数据
-    function getAnnouncementMoments() {
-        return [
-            { id: 201, user: '系统公告', avatar: '📢', badge: 'official', signature: '官方系统通知',
-              content: '【系统维护通知】为提升用户体验，平台将于2026年2月15日凌晨2:00-4:00进行系统升级维护，届时将暂停所有服务。请各位玩家提前做好安排，感谢您的理解与支持！',
-              images: [], time: '1小时前', likes: ['知道了', '收到'], likeCount: 56, comments: [] },
-            { id: 202, user: '安全中心', avatar: '🔒', badge: 'official', signature: '账户安全守护',
-              content: '【安全提醒】近期发现有不法分子冒充平台客服进行诈骗，请注意：官方客服不会主动索要您的密码、验证码等敏感信息。如遇可疑情况，请立即联系官方客服核实！',
-              images: [], time: '3小时前', likes: ['已阅', '感谢提醒'], likeCount: 89, comments: [] },
-            { id: 203, user: '系统公告', avatar: '📢', badge: 'official', signature: '官方系统通知',
-              content: '【新功能上线】朋友圈功能全新升级！现在您可以发布图片、视频，与其他玩家互动交流。快来分享您的精彩时刻吧！',
-              images: [0, 1], time: '昨天 10:00', likes: ['太棒了', '期待'], likeCount: 234, comments: [] },
-            { id: 204, user: '财务中心', avatar: '💳', badge: 'official', signature: '资金安全保障',
-              content: '【提款说明】为保障资金安全，单笔提款超过50000元需进行人工审核，审核时间约1-2小时。VIP会员享受优先审核特权，感谢您的理解！',
-              images: [], time: '昨天 15:30', likes: ['了解了'], likeCount: 67, comments: [] },
-            { id: 205, user: '系统公告', avatar: '📢', badge: 'official', signature: '官方系统通知',
-              content: '【春节放假通知】2026年春节期间（2月10日-2月17日），客服服务时间调整为9:00-21:00，游戏服务正常运行。祝大家新春快乐，万事如意！🧧',
-              images: [2], time: '2天前', likes: ['新年快乐', '恭喜发财'], likeCount: 456, comments: [] }
         ];
     }
 
