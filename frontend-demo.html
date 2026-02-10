@@ -500,6 +500,46 @@
             background: #f5f5f5;
             min-height: 100vh;
         }
+        /* 朋友圈顶部导航 */
+        .moments-header {
+            background: #fff;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #eee;
+        }
+        .moments-header-back {
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            padding: 5px;
+            width: 36px;
+        }
+        .moments-header-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #333;
+        }
+        .moments-header-action {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        .moments-header-action:active {
+            transform: scale(0.95);
+        }
         .moments-notice {
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             color: #1a1a2e;
@@ -1215,6 +1255,12 @@
 
     <!-- 朋友圈页 -->
     <div class="page" id="page-moments" style="display:none;">
+        <!-- 朋友圈顶部导航 -->
+        <header class="moments-header">
+            <div class="moments-header-back" onclick="showPage('home')">‹</div>
+            <div class="moments-header-title" id="momentsPageTitle">朋友圈</div>
+            <div class="moments-header-action" onclick="handlePublish()">📷</div>
+        </header>
         <!-- 朋友圈顶部图片 -->
         <div class="moments-banner" id="momentsBanner">
             <img src="https://brave.wzznft.com/i/2026/01/13/ovhpa1.png" alt="朋友圈">
@@ -1226,8 +1272,6 @@
         </div>
         <!-- 动态列表 -->
         <div class="moments-list" id="momentsList"></div>
-        <!-- 发布按钮 -->
-        <div class="moments-fab" onclick="handlePublish()">📷</div>
     </div>
 
     <!-- 底部导航 - 移动端 -->
@@ -1965,8 +2009,13 @@
     function switchMomentsTab(tab) {
         currentMomentsTab = tab;
         // 更新Tab样式
-        document.querySelectorAll('.moments-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.moments-tab-item').forEach(t => t.classList.remove('active'));
         event.target.classList.add('active');
+        // 更新顶部标题
+        const titleEl = document.getElementById('momentsPageTitle');
+        if (titleEl) {
+            titleEl.textContent = tab === 'official' ? '官方动态' : '大舞台';
+        }
         // 重新渲染动态列表
         renderMoments();
     }
