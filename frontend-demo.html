@@ -657,6 +657,11 @@
         .moment-images.grid-2 { grid-template-columns: repeat(2, 1fr); }
         .moment-images.grid-3 { grid-template-columns: repeat(3, 1fr); }
         .moment-images.grid-4 { grid-template-columns: repeat(2, 1fr); }
+        .moment-images.grid-5,
+        .moment-images.grid-6 { grid-template-columns: repeat(3, 1fr); }
+        .moment-images.grid-7,
+        .moment-images.grid-8,
+        .moment-images.grid-9 { grid-template-columns: repeat(3, 1fr); }
         .moment-img {
             aspect-ratio: 1;
             overflow: hidden;
@@ -1679,8 +1684,8 @@
     // 渲染图片网格
     function renderMomentImages(images) {
         if (!images || images.length === 0) return '';
-        const gridClass = `grid-${Math.min(images.length, 4)}`;
-        const imgsHtml = images.slice(0, 4).map(idx => `
+        const gridClass = `grid-${Math.min(images.length, 9)}`;
+        const imgsHtml = images.slice(0, 9).map(idx => `
             <div class="moment-img">
                 <div style="background:${sampleImages[idx % sampleImages.length]};"></div>
             </div>
