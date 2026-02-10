@@ -493,10 +493,12 @@
             margin: 10px;
         }
 
-        /* 朋友圈页 */
+        /* 朋友圈页 - 浅色主题 */
         #page-moments {
             margin: 0;
             padding: 0;
+            background: #f5f5f5;
+            min-height: 100vh;
         }
         .moments-notice {
             background: linear-gradient(135deg, #ffd700, #ffaa00);
@@ -509,11 +511,13 @@
         }
         .moments-banner {
             width: 100%;
+            height: 180px;
             line-height: 0;
             margin: 0;
             padding: 0;
             font-size: 0;
             transition: all 0.3s ease;
+            overflow: hidden;
         }
         .moments-banner.hidden {
             height: 0;
@@ -522,50 +526,72 @@
         }
         .moments-banner img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
             display: block;
             margin: 0;
             padding: 0;
             vertical-align: top;
         }
-        .moments-header {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        /* Tab切换栏 */
+        .moments-tabs-bar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #fff;
+            border-bottom: 1px solid #eee;
         }
-        .moments-tabs { display: flex; gap: 15px; }
-        .moments-tab {
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            font-size: 14px;
+        .moments-tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 14px 0;
+            font-size: 15px;
+            color: #666;
             cursor: pointer;
+            position: relative;
             transition: all 0.3s;
         }
-        .moments-tab.active { background: #ffd700; color: #1a1a2e; }
-        .moments-publish-btn {
-            width: 36px;
-            height: 36px;
+        .moments-tab-item.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        .moments-tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
             background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 8px;
+            border-radius: 2px;
+        }
+        /* 发布悬浮按钮 */
+        .moments-fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
-            border: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            z-index: 50;
         }
-        .moments-publish-btn:hover {
-            transform: scale(1.05);
+        .moments-fab:active { transform: scale(0.95); }
+        /* 动态列表容器 */
+        .moments-list {
+            padding-bottom: 80px;
         }
+        /* 动态卡片 - 浅色主题 */
         .moment-item {
+            background: #fff;
+            margin-bottom: 10px;
             padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            background: rgba(255,255,255,0.02);
         }
         .moment-header-row {
             display: flex;
@@ -589,7 +615,7 @@
         .moment-username {
             font-size: 15px;
             font-weight: 600;
-            color: #ffd700;
+            color: #576b95;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -610,13 +636,13 @@
         }
         .moment-signature {
             font-size: 12px;
-            color: #888;
+            color: #999;
             margin-top: 2px;
         }
         .moment-content {
             font-size: 15px;
             line-height: 1.6;
-            color: #ddd;
+            color: #333;
             margin-bottom: 12px;
             word-break: break-all;
         }
@@ -652,7 +678,7 @@
         }
         .moment-time {
             font-size: 12px;
-            color: #888;
+            color: #999;
         }
         .moment-actions {
             display: flex;
@@ -664,24 +690,24 @@
             align-items: center;
             gap: 4px;
             font-size: 13px;
-            color: #888;
+            color: #666;
             cursor: pointer;
             padding: 5px;
             transition: all 0.3s;
         }
-        .action-btn:hover { color: #ffd700; }
+        .action-btn:hover { color: #667eea; }
         .action-btn.liked { color: #ff6b6b; }
         .likes-section {
-            background: rgba(255,255,255,0.05);
+            background: #f7f7f7;
             border-radius: 6px;
             padding: 8px 10px;
             margin-top: 10px;
             font-size: 13px;
         }
         .likes-icon { color: #ff6b6b; margin-right: 5px; }
-        .likes-users { color: #ffd700; }
+        .likes-users { color: #576b95; }
         .comments-section {
-            background: rgba(255,255,255,0.05);
+            background: #f7f7f7;
             border-radius: 6px;
             padding: 10px;
             margin-top: 8px;
@@ -692,10 +718,10 @@
             line-height: 1.5;
         }
         .comment-item-row:not(:last-child) {
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid #eee;
         }
         .comment-user-name {
-            color: #ffd700;
+            color: #576b95;
             font-weight: 500;
         }
         .comment-official-tag {
@@ -706,9 +732,9 @@
             border-radius: 2px;
             margin-left: 4px;
         }
-        .comment-text-content { color: #ddd; }
+        .comment-text-content { color: #333; }
         .view-more-comments {
-            color: #ffd700;
+            color: #576b95;
             font-size: 13px;
             cursor: pointer;
             padding: 8px 0 0;
@@ -718,7 +744,7 @@
         .comment-section {
             margin-top: 10px;
             padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid #eee;
         }
         .comment-input-box {
             display: flex;
@@ -727,17 +753,17 @@
         }
         .comment-input {
             flex: 1;
-            background: rgba(255,255,255,0.05);
+            background: #f5f5f5;
             border: none;
             padding: 10px 15px;
             border-radius: 20px;
-            color: #fff;
+            color: #333;
             font-size: 13px;
         }
-        .comment-input::placeholder { color: #666; }
+        .comment-input::placeholder { color: #999; }
         .comment-submit {
-            background: #ffd700;
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
             border: none;
             padding: 8px 16px;
             border-radius: 20px;
@@ -761,7 +787,7 @@
             font-size: 12px;
         }
         .comment-content { flex: 1; }
-        .comment-user { color: #ffd700; margin-right: 8px; }
+        .comment-user { color: #576b95; margin-right: 8px; }
 
         /* 底部评论输入框 */
         .comment-input-bar {
@@ -769,9 +795,9 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #1e1e32;
+            background: #fff;
             padding: 10px 15px;
-            border-top: 1px solid rgba(255,215,0,0.1);
+            border-top: 1px solid #eee;
             display: none;
             flex-direction: column;
             gap: 10px;
@@ -813,13 +839,13 @@
         .comment-add-img {
             width: 60px;
             height: 60px;
-            border: 1px dashed rgba(255,255,255,0.3);
+            border: 1px dashed #ddd;
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #888;
+            color: #999;
             font-size: 24px;
         }
         .comment-input-row {
@@ -835,7 +861,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.5);
             z-index: 2000;
             display: none;
             justify-content: center;
@@ -843,7 +869,7 @@
         }
         .publish-modal.show { display: flex; }
         .publish-panel {
-            background: #1e1e32;
+            background: #fff;
             width: 100%;
             max-width: 500px;
             border-radius: 16px 16px 0 0;
@@ -855,21 +881,21 @@
             align-items: center;
             justify-content: space-between;
             padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid #eee;
         }
         .publish-cancel {
-            color: #888;
+            color: #666;
             font-size: 15px;
             cursor: pointer;
         }
         .publish-title {
             font-size: 16px;
             font-weight: 600;
-            color: #fff;
+            color: #333;
         }
         .publish-submit {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
             border: none;
             padding: 6px 16px;
             border-radius: 15px;
@@ -886,13 +912,13 @@
             min-height: 120px;
             border: none;
             background: transparent;
-            color: #fff;
+            color: #333;
             font-size: 15px;
             line-height: 1.6;
             resize: none;
             outline: none;
         }
-        .publish-textarea::placeholder { color: #666; }
+        .publish-textarea::placeholder { color: #999; }
         .publish-media {
             display: flex;
             flex-wrap: wrap;
@@ -1192,15 +1218,16 @@
         <div class="moments-banner" id="momentsBanner">
             <img src="https://brave.wzznft.com/i/2026/01/13/ovhpa1.png" alt="朋友圈">
         </div>
-        <div class="moments-header">
-            <div class="moments-tabs">
-                <div class="moments-tab active" onclick="switchMomentsTab('official')">官方动态</div>
-                <div class="moments-tab" onclick="switchMomentsTab('stage')">大舞台</div>
-                <div class="moments-tab" onclick="switchMomentsTab('announcement')">公告中心</div>
-            </div>
-            <button class="moments-publish-btn" onclick="handlePublish()" title="发布动态">📷</button>
+        <!-- Tab切换 -->
+        <div class="moments-tabs-bar">
+            <div class="moments-tab-item active" data-tab="official" onclick="switchMomentsTab('official')">官方动态</div>
+            <div class="moments-tab-item" data-tab="stage" onclick="switchMomentsTab('stage')">大舞台</div>
+            <div class="moments-tab-item" data-tab="announcement" onclick="switchMomentsTab('announcement')">公告中心</div>
         </div>
+        <!-- 动态列表 -->
         <div class="moments-list" id="momentsList"></div>
+        <!-- 发布按钮 -->
+        <div class="moments-fab" onclick="handlePublish()">📷</div>
     </div>
 
     <!-- 底部导航 - 移动端 -->
