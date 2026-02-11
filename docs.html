@@ -305,6 +305,14 @@
                 <span class="nav-icon">✨</span>
                 <span>前端功能清单</span>
             </div>
+            <div class="nav-item" onclick="showDoc('launch')">
+                <span class="nav-icon">🚀</span>
+                <span>上线前准备清单</span>
+            </div>
+            <div class="nav-item" onclick="showDoc('operation')">
+                <span class="nav-icon">📱</span>
+                <span>运营使用手册</span>
+            </div>
         </aside>
 
         <!-- 内容区域 -->
@@ -1221,6 +1229,945 @@
 
                 <h3>8.3 朋友圈宣传语</h3>
                 <p>🔔 注册即可发布动态、获得官方打赏</p>
+            </div>
+
+            <!-- 上线前准备清单 -->
+            <div class="doc-page" id="doc-launch">
+                <h1>试玩网 上线前准备清单</h1>
+
+                <table class="doc-info-table">
+                    <tr>
+                        <th>文档类型</th>
+                        <td>上线检查清单</td>
+                    </tr>
+                    <tr>
+                        <th>更新日期</th>
+                        <td>2026-02-11</td>
+                    </tr>
+                    <tr>
+                        <th>适用对象</th>
+                        <td>技术团队、运营团队、项目负责人</td>
+                    </tr>
+                </table>
+
+                <hr>
+
+                <h2>一、域名与服务器配置</h2>
+
+                <h3>1.1 域名准备</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查项</th>
+                            <th>说明</th>
+                            <th>负责人</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>正式域名购买</td>
+                            <td>购买生产环境使用的正式域名（如 www.shiwanwang.com）</td>
+                            <td>技术负责人</td>
+                        </tr>
+                        <tr>
+                            <td>域名备案</td>
+                            <td>如使用国内服务器，需完成ICP备案（约15-20个工作日）</td>
+                            <td>运营负责人</td>
+                        </tr>
+                        <tr>
+                            <td>域名解析配置</td>
+                            <td>配置DNS解析，将域名指向服务器IP地址</td>
+                            <td>技术负责人</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>1.2 服务器配置</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查项</th>
+                            <th>说明</th>
+                            <th>负责人</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>服务器环境搭建</td>
+                            <td>配置Web服务器（Nginx/Apache）、数据库、缓存等</td>
+                            <td>技术负责人</td>
+                        </tr>
+                        <tr>
+                            <td>HTTPS证书配置</td>
+                            <td>申请并配置SSL证书，启用HTTPS访问</td>
+                            <td>技术负责人</td>
+                        </tr>
+                        <tr>
+                            <td>CDN加速配置</td>
+                            <td>如需国内访问优化，配置CDN服务</td>
+                            <td>技术负责人</td>
+                        </tr>
+                        <tr>
+                            <td>防火墙配置</td>
+                            <td>配置服务器防火墙规则，开放必要端口</td>
+                            <td>技术负责人</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>二、安全配置</h2>
+
+                <h3>2.1 后台安全</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查项</th>
+                            <th>说明</th>
+                            <th>当前状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>后台登录密码</td>
+                            <td>修改默认密码，使用强密码（字母+数字+特殊字符）</td>
+                            <td>⚠️ 当前为 admin/123456</td>
+                        </tr>
+                        <tr>
+                            <td>Google验证码</td>
+                            <td>为所有后台账号配置Google验证器，启用二次验证</td>
+                            <td>⚠️ 当前可留空登录</td>
+                        </tr>
+                        <tr>
+                            <td>IP白名单配置</td>
+                            <td>配置后台登录IP白名单，限制访问来源</td>
+                            <td>需配置</td>
+                        </tr>
+                        <tr>
+                            <td>后台访问路径</td>
+                            <td>修改后台访问路径，避免使用 /admin 等常见路径</td>
+                            <td>建议修改</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2.2 前端安全</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查项</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>XSS防护</td>
+                            <td>检查所有用户输入点，防止跨站脚本攻击</td>
+                        </tr>
+                        <tr>
+                            <td>SQL注入防护</td>
+                            <td>使用参数化查询，防止SQL注入</td>
+                        </tr>
+                        <tr>
+                            <td>CSRF防护</td>
+                            <td>添加CSRF Token验证</td>
+                        </tr>
+                        <tr>
+                            <td>敏感信息保护</td>
+                            <td>确保API密钥、数据库密码等不暴露在前端代码中</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>三、数据与内容准备</h2>
+
+                <h3>3.1 游戏数据</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查项</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>游戏配置导入</td>
+                            <td>将所有游戏数据（名称、URL、图片、分类、标签）导入数据库</td>
+                        </tr>
+                        <tr>
+                            <td>游戏链接测试</td>
+                            <td>逐个测试游戏URL是否可用，确保跳转正常</td>
+                        </tr>
+                        <tr>
+                            <td>游戏图片上传</td>
+                            <td>上传所有游戏封面图片到服务器，获取图片URL</td>
+                        </tr>
+                        <tr>
+                            <td>游戏分类配置</td>
+                            <td>确认6大分类（真人、棋牌、电子、体育、彩票、捕鱼）配置完整</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3.2 内容素材</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查项</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Banner图片</td>
+                            <td>准备首页轮播图（建议尺寸：1920×400px，移动端自适应）</td>
+                        </tr>
+                        <tr>
+                            <td>Logo图标</td>
+                            <td>准备网站Logo和favicon图标</td>
+                        </tr>
+                        <tr>
+                            <td>客服联系方式</td>
+                            <td>配置Telegram、WhatsApp等客服联系方式</td>
+                        </tr>
+                        <tr>
+                            <td>公司信息</td>
+                            <td>准备"关于我们"、公司简介等内容</td>
+                        </tr>
+                        <tr>
+                            <td>滚动公告内容</td>
+                            <td>配置首页滚动公告文案</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>四、功能测试</h2>
+
+                <h3>4.1 核心功能测试</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>测试项</th>
+                            <th>测试内容</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>游戏试玩</td>
+                            <td>测试所有游戏链接是否正常跳转和加载</td>
+                        </tr>
+                        <tr>
+                            <td>用户注册流程</td>
+                            <td>测试注册按钮跳转、注册表单提交、数据记录</td>
+                        </tr>
+                        <tr>
+                            <td>用户登录流程</td>
+                            <td>测试登录按钮跳转、登录验证、会话保持</td>
+                        </tr>
+                        <tr>
+                            <td>后台管理功能</td>
+                            <td>测试后台所有模块的增删改查功能</td>
+                        </tr>
+                        <tr>
+                            <td>数据统计功能</td>
+                            <td>测试数据看板统计是否准确</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4.2 兼容性测试</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>测试项</th>
+                            <th>测试范围</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>浏览器兼容</td>
+                            <td>Chrome、Safari、Firefox、Edge等主流浏览器</td>
+                        </tr>
+                        <tr>
+                            <td>移动端适配</td>
+                            <td>iOS、Android不同屏幕尺寸测试</td>
+                        </tr>
+                        <tr>
+                            <td>响应式布局</td>
+                            <td>测试不同分辨率下的页面显示</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4.3 性能测试</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>测试项</th>
+                            <th>测试标准</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>页面加载速度</td>
+                            <td>首屏加载时间 < 3秒</td>
+                        </tr>
+                        <tr>
+                            <td>图片加载优化</td>
+                            <td>图片压缩、懒加载实现</td>
+                        </tr>
+                        <tr>
+                            <td>并发压力测试</td>
+                            <td>测试服务器承载能力</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>五、运营准备</h2>
+
+                <h3>5.1 客服系统</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>准备项</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>在线客服工具</td>
+                            <td>配置在线客服系统（如LiveChat、Intercom等）</td>
+                        </tr>
+                        <tr>
+                            <td>客服人员培训</td>
+                            <td>培训客服人员熟悉系统操作和常见问题处理</td>
+                        </tr>
+                        <tr>
+                            <td>FAQ文档</td>
+                            <td>准备常见问题解答文档</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>5.2 监控与告警</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>准备项</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>网站监控</td>
+                            <td>配置网站可用性监控（如UptimeRobot）</td>
+                        </tr>
+                        <tr>
+                            <td>错误日志监控</td>
+                            <td>配置错误日志收集和告警</td>
+                        </tr>
+                        <tr>
+                            <td>性能监控</td>
+                            <td>配置服务器性能监控（CPU、内存、磁盘）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>5.3 数据分析</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>准备项</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Google Analytics</td>
+                            <td>配置GA追踪代码，监控访问数据</td>
+                        </tr>
+                        <tr>
+                            <td>用户行为分析</td>
+                            <td>配置用户行为追踪（点击、转化等）</td>
+                        </tr>
+                        <tr>
+                            <td>数据报表</td>
+                            <td>准备日报、周报、月报模板</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>六、备份与应急</h2>
+
+                <h3>6.1 数据备份</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>备份项</th>
+                            <th>备份策略</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>数据库备份</td>
+                            <td>每日自动备份，保留30天</td>
+                        </tr>
+                        <tr>
+                            <td>代码备份</td>
+                            <td>使用Git版本控制，推送到远程仓库</td>
+                        </tr>
+                        <tr>
+                            <td>图片资源备份</td>
+                            <td>定期备份到云存储</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>6.2 应急预案</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>场景</th>
+                            <th>应对措施</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>网站宕机</td>
+                            <td>准备备用服务器，快速切换</td>
+                        </tr>
+                        <tr>
+                            <td>数据丢失</td>
+                            <td>从备份恢复数据</td>
+                        </tr>
+                        <tr>
+                            <td>安全攻击</td>
+                            <td>启用防护模式，联系安全团队</td>
+                        </tr>
+                        <tr>
+                            <td>流量激增</td>
+                            <td>启用CDN，扩容服务器</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h2>七、上线检查清单</h2>
+
+                <blockquote>
+                    <strong>⚠️ 上线前请逐项确认以下内容</strong>
+                </blockquote>
+
+                <h3>7.1 技术检查</h3>
+                <ul>
+                    <li>✅ 域名解析已生效</li>
+                    <li>✅ HTTPS证书已配置</li>
+                    <li>✅ 数据库连接正常</li>
+                    <li>✅ 所有API接口测试通过</li>
+                    <li>✅ 游戏链接全部可用</li>
+                    <li>✅ 图片资源加载正常</li>
+                    <li>✅ 移动端适配完成</li>
+                    <li>✅ 浏览器兼容性测试通过</li>
+                </ul>
+
+                <h3>7.2 安全检查</h3>
+                <ul>
+                    <li>✅ 后台密码已修改</li>
+                    <li>✅ Google验证已启用</li>
+                    <li>✅ IP白名单已配置</li>
+                    <li>✅ 防火墙规则已设置</li>
+                    <li>✅ 敏感信息已隐藏</li>
+                </ul>
+
+                <h3>7.3 内容检查</h3>
+                <ul>
+                    <li>✅ 游戏数据已导入</li>
+                    <li>✅ Banner图片已上传</li>
+                    <li>✅ 客服联系方式已配置</li>
+                    <li>✅ 公告内容已设置</li>
+                    <li>✅ 所有文案已校对</li>
+                </ul>
+
+                <h3>7.4 运营检查</h3>
+                <ul>
+                    <li>✅ 客服系统已就绪</li>
+                    <li>✅ 监控告警已配置</li>
+                    <li>✅ 数据统计已启用</li>
+                    <li>✅ 备份策略已实施</li>
+                    <li>✅ 应急预案已准备</li>
+                </ul>
+
+                <hr>
+
+                <p style="margin-top: 40px; padding: 20px; background: #f0f9ff; border-left: 4px solid #667eea; border-radius: 8px;">
+                    <strong>💡 提示：</strong>建议在正式上线前进行灰度发布，先开放给小部分用户测试，确认无问题后再全量上线。
+                </p>
+            </div>
+
+            <!-- 运营使用手册 -->
+            <div class="doc-page" id="doc-operation">
+                <h1>试玩网 运营使用手册（业务版）</h1>
+
+                <table class="doc-info-table">
+                    <tr>
+                        <th>文档类型</th>
+                        <td>运营操作指南</td>
+                    </tr>
+                    <tr>
+                        <th>更新日期</th>
+                        <td>2026-02-11</td>
+                    </tr>
+                    <tr>
+                        <th>适用对象</th>
+                        <td>运营人员、客服人员、内容管理员</td>
+                    </tr>
+                </table>
+
+                <hr>
+
+                <h2>一、后台登录</h2>
+
+                <h3>1.1 如何登录后台</h3>
+                <p><strong>功能说明：</strong>进入后台管理系统，管理网站内容和数据。</p>
+
+                <p><strong>操作步骤：</strong></p>
+                <ul>
+                    <li>访问后台地址（如：https://你的域名/admin）</li>
+                    <li>输入账号和密码</li>
+                    <li>输入Google验证码（手机验证器APP中的6位数字）</li>
+                    <li>点击登录按钮</li>
+                </ul>
+
+                <blockquote>
+                    <strong>⚠️ 注意：</strong>只有IP在白名单中的设备才能登录后台，如无法登录请联系技术人员添加IP。
+                </blockquote>
+
+                <hr>
+
+                <h2>二、数据统计</h2>
+
+                <h3>2.1 数据看板</h3>
+                <p><strong>功能说明：</strong>查看网站核心运营数据，了解用户访问和转化情况。</p>
+
+                <p><strong>可以看到什么：</strong></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>数据指标</th>
+                            <th>含义</th>
+                            <th>用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>有效点击</td>
+                            <td>有多少人访问了网站</td>
+                            <td>了解流量情况</td>
+                        </tr>
+                        <tr>
+                            <td>有效试玩</td>
+                            <td>有多少人点击了游戏</td>
+                            <td>了解用户兴趣</td>
+                        </tr>
+                        <tr>
+                            <td>注册成功</td>
+                            <td>有多少人完成了注册</td>
+                            <td>评估转化效果</td>
+                        </tr>
+                        <tr>
+                            <td>试玩用户</td>
+                            <td>累计试玩用户总数</td>
+                            <td>了解用户规模</td>
+                        </tr>
+                        <tr>
+                            <td>注册用户</td>
+                            <td>累计注册用户总数</td>
+                            <td>了解注册规模</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>如何使用：</strong></p>
+                <ul>
+                    <li>选择时间范围（今天、昨天、最近7天、最近30天）</li>
+                    <li>查看统计卡片了解核心数据</li>
+                    <li>查看趋势图了解数据变化</li>
+                    <li>查看游戏排行了解热门游戏</li>
+                    <li>点击刷新按钮更新最新数据</li>
+                </ul>
+
+                <hr>
+
+                <h2>三、用户管理</h2>
+
+                <h3>3.1 后台用户管理</h3>
+                <p><strong>功能说明：</strong>管理后台登录账号，添加运营人员和客服人员。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>新增后台账号（为新员工开通后台权限）</li>
+                    <li>编辑账号信息（修改姓名、角色）</li>
+                    <li>重置密码（员工忘记密码时使用）</li>
+                    <li>重置Google密钥（员工更换手机时使用）</li>
+                    <li>禁用账号（员工离职时使用）</li>
+                </ul>
+
+                <h3>3.2 试玩用户管理</h3>
+                <p><strong>功能说明：</strong>查看和管理试玩用户信息。</p>
+
+                <p><strong>可以看到什么：</strong></p>
+                <ul>
+                    <li>用户ID和昵称</li>
+                    <li>试玩次数</li>
+                    <li>最后试玩时间</li>
+                    <li>注册状态（是否已注册）</li>
+                </ul>
+
+                <h3>3.3 注册用户管理</h3>
+                <p><strong>功能说明：</strong>查看和管理已注册用户信息。</p>
+
+                <p><strong>可以看到什么：</strong></p>
+                <ul>
+                    <li>用户账号和姓名</li>
+                    <li>注册时间</li>
+                    <li>注册来源（从哪个渠道注册）</li>
+                    <li>用户状态</li>
+                </ul>
+
+                <hr>
+
+                <h2>四、游戏管理</h2>
+
+                <h3>4.1 游戏类别管理</h3>
+                <p><strong>功能说明：</strong>管理游戏分类（真人、棋牌、电子、体育、彩票、捕鱼）。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>添加新分类</li>
+                    <li>修改分类名称和图标</li>
+                    <li>调整分类显示顺序</li>
+                    <li>启用或禁用分类</li>
+                </ul>
+
+                <h3>4.2 游戏列表管理</h3>
+                <p><strong>功能说明：</strong>管理所有游戏，这是最常用的功能。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>添加新游戏（输入游戏名称、URL、上传图片、选择分类）</li>
+                    <li>编辑游戏信息（修改名称、图片、链接）</li>
+                    <li>设置游戏标签（HOT热门、NEW新游、VIP专属）</li>
+                    <li>调整游戏排序（控制游戏在前端的显示顺序）</li>
+                    <li>上架或下架游戏</li>
+                    <li>删除游戏（移到回收站）</li>
+                </ul>
+
+                <blockquote>
+                    <strong>💡 提示：</strong>游戏图片建议尺寸为 300×200px，格式为 JPG 或 PNG。
+                </blockquote>
+
+                <h3>4.3 已删除游戏（回收站）</h3>
+                <p><strong>功能说明：</strong>查看已删除的游戏，可以恢复或永久删除。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>查看已删除的游戏列表</li>
+                    <li>恢复误删的游戏</li>
+                    <li>永久删除游戏</li>
+                </ul>
+
+                <h3>4.4 推荐游戏管理</h3>
+                <p><strong>功能说明：</strong>设置首页推荐位，突出展示热门游戏。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>设置"今日必玩"推荐游戏</li>
+                    <li>设置"热门推荐"游戏</li>
+                    <li>设置"新游推荐"游戏</li>
+                    <li>调整推荐位顺序</li>
+                </ul>
+
+                <hr>
+
+                <h2>五、内容管理</h2>
+
+                <h3>5.1 Banner管理</h3>
+                <p><strong>功能说明：</strong>管理首页轮播图，展示重要活动和推广内容。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>上传Banner图片（建议尺寸：1920×400px）</li>
+                    <li>设置Banner标题和副标题</li>
+                    <li>设置点击跳转链接</li>
+                    <li>调整Banner显示顺序</li>
+                    <li>设置Banner有效期（自动上下架）</li>
+                    <li>启用或禁用Banner</li>
+                </ul>
+
+                <h3>5.2 优惠活动管理</h3>
+                <p><strong>功能说明：</strong>发布和管理优惠活动，吸引用户注册。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>创建新活动（输入标题、上传封面、编写活动内容）</li>
+                    <li>设置活动标签（新人首存、会员专享等）</li>
+                    <li>设置活动时间（开始和结束时间）</li>
+                    <li>编辑活动内容</li>
+                    <li>上架或下架活动</li>
+                    <li>删除过期活动</li>
+                </ul>
+
+                <blockquote>
+                    <strong>💡 提示：</strong>活动封面建议尺寸为 600×400px，标题控制在20字以内效果最佳。
+                </blockquote>
+
+                <h3>5.3 朋友圈动态管理</h3>
+                <p><strong>功能说明：</strong>管理朋友圈内容，包括官方动态和用户发布的内容。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>发布官方动态（发布公告、活动预告、中奖喜报）</li>
+                    <li>审核用户动态（审核通过或拒绝）</li>
+                    <li>删除不当内容</li>
+                    <li>置顶重要动态</li>
+                    <li>回复用户评论</li>
+                </ul>
+
+                <p><strong>官方动态发布技巧：</strong></p>
+                <ul>
+                    <li>每天发布1-3条动态保持活跃</li>
+                    <li>发布中奖喜报增加信任感</li>
+                    <li>发布活动预告吸引用户关注</li>
+                    <li>配图更吸引眼球（最多9张图）</li>
+                </ul>
+
+                <hr>
+
+                <h2>六、下游配置</h2>
+
+                <h3>6.1 网页配置</h3>
+                <p><strong>功能说明：</strong>配置用户注册和登录的跳转链接。</p>
+
+                <p><strong>需要配置什么：</strong></p>
+                <ul>
+                    <li>Web端注册URL（PC用户点击注册按钮跳转的地址）</li>
+                    <li>H5端注册URL（手机用户点击注册按钮跳转的地址）</li>
+                    <li>Web端登录URL（PC用户点击登录按钮跳转的地址）</li>
+                    <li>H5端登录URL（手机用户点击登录按钮跳转的地址）</li>
+                </ul>
+
+                <h3>6.2 APP配置</h3>
+                <p><strong>功能说明：</strong>配置APP下载链接。</p>
+
+                <p><strong>需要配置什么：</strong></p>
+                <ul>
+                    <li>iOS描述文件URL（苹果用户下载地址）</li>
+                    <li>Android APK下载URL（安卓用户下载地址）</li>
+                </ul>
+
+                <h3>6.3 联系方式配置</h3>
+                <p><strong>功能说明：</strong>配置客服联系方式，方便用户咨询。</p>
+
+                <p><strong>需要配置什么：</strong></p>
+                <ul>
+                    <li>Telegram链接（如：https://t.me/your_account）</li>
+                    <li>WhatsApp链接（如：https://wa.me/1234567890）</li>
+                    <li>QQ号码</li>
+                    <li>微信号</li>
+                    <li>客服邮箱</li>
+                </ul>
+
+                <hr>
+
+                <h2>七、系统管理</h2>
+
+                <h3>7.1 网站配置</h3>
+                <p><strong>功能说明：</strong>配置网站基本信息。</p>
+
+                <p><strong>可以配置什么：</strong></p>
+                <ul>
+                    <li>网站名称</li>
+                    <li>网站Logo</li>
+                    <li>网站描述</li>
+                    <li>网站关键词（用于SEO）</li>
+                    <li>顶部公告文案</li>
+                    <li>滚动公告内容</li>
+                </ul>
+
+                <h3>7.2 站内信管理</h3>
+                <p><strong>功能说明：</strong>给用户发送系统消息和通知。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>群发消息（给所有用户发送通知）</li>
+                    <li>单独发送（给指定用户发送消息）</li>
+                    <li>查看发送记录</li>
+                    <li>查看用户阅读状态</li>
+                </ul>
+
+                <p><strong>常用场景：</strong></p>
+                <ul>
+                    <li>发送活动通知</li>
+                    <li>发送维护公告</li>
+                    <li>发送节日祝福</li>
+                    <li>发送个性化优惠</li>
+                </ul>
+
+                <h3>7.3 IP白名单管理</h3>
+                <p><strong>功能说明：</strong>管理允许登录后台的IP地址。</p>
+
+                <p><strong>可以做什么：</strong></p>
+                <ul>
+                    <li>添加新IP（员工办公IP、家庭IP）</li>
+                    <li>删除旧IP（员工离职后删除）</li>
+                    <li>查看IP登录记录</li>
+                </ul>
+
+                <blockquote>
+                    <strong>⚠️ 注意：</strong>只有超级管理员可以管理IP白名单，请谨慎操作。
+                </blockquote>
+
+                <hr>
+
+                <h2>八、日常运营工作流程</h2>
+
+                <h3>8.1 每日必做</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>工作内容</th>
+                            <th>目的</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>上午9:00</td>
+                            <td>查看数据看板，了解昨日数据</td>
+                            <td>掌握运营情况</td>
+                        </tr>
+                        <tr>
+                            <td>上午10:00</td>
+                            <td>发布1-2条官方动态</td>
+                            <td>保持朋友圈活跃</td>
+                        </tr>
+                        <tr>
+                            <td>全天</td>
+                            <td>审核用户发布的动态</td>
+                            <td>过滤不当内容</td>
+                        </tr>
+                        <tr>
+                            <td>全天</td>
+                            <td>回复用户评论和咨询</td>
+                            <td>提升用户体验</td>
+                        </tr>
+                        <tr>
+                            <td>下午18:00</td>
+                            <td>检查游戏链接是否正常</td>
+                            <td>确保用户体验</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>8.2 每周必做</h3>
+                <ul>
+                    <li>更新Banner图片（至少1张新Banner）</li>
+                    <li>发布新的优惠活动（至少1个活动）</li>
+                    <li>添加新游戏或更新游戏信息</li>
+                    <li>整理数据报表，分析运营效果</li>
+                </ul>
+
+                <h3>8.3 每月必做</h3>
+                <ul>
+                    <li>清理过期活动</li>
+                    <li>优化游戏排序（把热门游戏排前面）</li>
+                    <li>更新网站公告内容</li>
+                    <li>检查所有配置链接是否有效</li>
+                </ul>
+
+                <hr>
+
+                <h2>九、常见问题处理</h2>
+
+                <h3>9.1 用户反馈游戏打不开</h3>
+                <p><strong>处理步骤：</strong></p>
+                <ul>
+                    <li>登录后台，找到对应游戏</li>
+                    <li>检查游戏URL是否正确</li>
+                    <li>自己测试游戏链接是否可用</li>
+                    <li>如链接失效，联系游戏厂商更新链接</li>
+                    <li>更新后通知用户</li>
+                </ul>
+
+                <h3>9.2 用户反馈注册按钮点不了</h3>
+                <p><strong>处理步骤：</strong></p>
+                <ul>
+                    <li>检查"下游配置 > 网页配置"中的注册URL是否正确</li>
+                    <li>测试注册链接是否可访问</li>
+                    <li>如链接失效，更新为正确的注册地址</li>
+                </ul>
+
+                <h3>9.3 数据看板显示异常</h3>
+                <p><strong>处理步骤：</strong></p>
+                <ul>
+                    <li>点击刷新按钮重新加载数据</li>
+                    <li>检查时间筛选是否正确</li>
+                    <li>如仍异常，联系技术人员检查</li>
+                </ul>
+
+                <h3>9.4 忘记后台密码</h3>
+                <p><strong>处理步骤：</strong></p>
+                <ul>
+                    <li>联系超级管理员</li>
+                    <li>管理员在"用户管理 > 后台用户"中重置密码</li>
+                    <li>使用新密码登录</li>
+                </ul>
+
+                <hr>
+
+                <h2>十、运营技巧与建议</h2>
+
+                <h3>10.1 提升用户转化率</h3>
+                <ul>
+                    <li>定期更新Banner，突出最新活动</li>
+                    <li>把最热门的游戏排在前面</li>
+                    <li>优惠活动要有吸引力（如"首存100%"）</li>
+                    <li>朋友圈多发中奖喜报，增加信任感</li>
+                    <li>及时回复用户咨询，提升服务质量</li>
+                </ul>
+
+                <h3>10.2 保持网站活跃度</h3>
+                <ul>
+                    <li>每天发布官方动态，保持朋友圈活跃</li>
+                    <li>每周至少添加1-2款新游戏</li>
+                    <li>定期更新优惠活动，给用户新鲜感</li>
+                    <li>鼓励用户发布动态，增加互动</li>
+                </ul>
+
+                <h3>10.3 数据分析要点</h3>
+                <ul>
+                    <li>关注转化率（注册数/试玩数），低于10%需要优化</li>
+                    <li>查看游戏排行，了解用户喜好</li>
+                    <li>分析时段数据，在高峰期发布活动</li>
+                    <li>对比不同渠道的转化效果</li>
+                </ul>
+
+                <hr>
+
+                <p style="margin-top: 40px; padding: 20px; background: #fff3cd; border-left: 4px solid #ffd700; border-radius: 8px;">
+                    <strong>📞 需要帮助？</strong><br>
+                    如有任何问题，请联系技术支持团队或查看完整的PRD文档。
+                </p>
             </div>
         </main>
     </div>
